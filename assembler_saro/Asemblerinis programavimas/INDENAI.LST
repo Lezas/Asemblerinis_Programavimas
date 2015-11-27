@@ -1,0 +1,141 @@
+Turbo Assembler	 Version 2.0	    12/15/08 01:37:58	    Page 1
+Indenai.ASM
+      1					 ;
+      2					 ; Kestutis Stankevicius, II-06/3
+      3					 ; Asemblerinis	programavimas
+      4					 ;
+      5					 ; Indenu uzdavinys su realiais	skaiciais
+      6					 ;
+      7	    0000			 stekas	SEGMENT	STACK
+      8	    0000  0100*(??)				 DB 256	DUP(?)
+      9	    0100			 stekas	ENDS
+     10
+     11		  = 000D		 CR EQU	13
+     12		  = 000A		 LF EQU	10
+     13
+     14	    0000			 duomenys SEGMENT
+     15					 ; aprasome kintamuosius
+     16	    0000  0D 0A	24		  crlf	      DB CR,LF,'$'
+     17	    0003  3FF07AE147AE147B	  procent     DQ 1.03
+     18	    000B  00000000		  galut_suma  DD 0
+     19	    000F  4038000000000000	  suma	      DQ 24.0
+     20	    0017  0177			  skaitliukas DW 375
+     21	    0019  4059000000000000	  simtas      DQ 100.0
+     22	    0021  0000000A		  desimt      DD 10
+     23	    0025  0B*(??) 24		  ats	      DB 11 DUP(?),'$'
+     24	    0031  0D 0A	20 41 75 74 6F+	  aut	      DB CR,LF,	' Autorius: Kestutis Stankevicius II-06/3',CR,LF,LF,'$'
+     25		  72 69	75 73 3A 20 4B+
+     26		  65 73	74 75 74 69 73+
+     27		  20 53	74 61 6E 6B 65+
+     28		  76 69	63 69 75 73 20+
+     29		  49 49	2D 30 36 2F 33+
+     30		  0D 0A	0A 24
+     31	    005F  20 64	6F 6C 65 72 69+	  dol	      DB ' doleriu...',CR,LF,'$'
+     32		  75 2E	2E 2E 0D 0A 24
+     33	    006D  20 49	6E 64 65 6E 61+	  pran	      DB ' Indenai po tiek metu	gaus labai daug	pinigu',CR,LF,'$'
+     34		  69 20	70 6F 20 74 69+
+     35		  65 6B	20 6D 65 74 75+
+     36		  20 67	61 75 73 20 6C+
+     37		  61 62	61 69 20 64 61+
+     38		  75 67	20 70 69 6E 69+
+     39		  67 75	0D 0A 24
+     40
+     41	    009C			 duomenys ENDS
+     42
+     43	    0000			 programa SEGMENT
+     44					   ASSUME CS:programa, DS:duomenys, SS:stekas
+     45					 .386
+     46	    0000			 START:
+     47					 ; pradzia
+     48	    0000  B8 0000s		 MOV AX, duomenys
+     49	    0003  8E D8			 MOV DS, AX
+     50					 ; isvalome ekrana
+     51	    0005  B8 0002		 MOV AX, 0002h
+     52	    0008  CD 10			 INT 10h
+     53					 ; ciklu skaicius
+     54	    000A  8B 0E	0017r		 MOV CX, skaitliukas
+     55	    000E  DD 06	000Fr		 fld suma
+     56	    0012  E3 06			 jcxz toliau
+     57	    0014			 ciklas:
+     58	    0014  DC 0E	0003r		  fmul procent
+     59	    0018  E2 FA			  loop ciklas
+     60					 ;
+     61	    001A			 toliau:
+     62	    001A  DC 0E	0019r		 fmul simtas
+     63	    001E  DB 1E	000Br		 fistp galut_suma
+     64	    0022  66| A1 000Br		 MOV eax, galut_suma
+     65	    0026  66| BA 00000000	 MOV edx, 0
+     66	    002C  BE 000A		 MOV SI, 10
+     67					 ; konvertuojam
+     68	    002F			 desimtaine:
+     69
+     70	    002F  66| F7 36 0021r	 DIV desimt
+     71	    0034  80 C2	30		 ADD DL,30h
+     72	    0037  88 94	0025r		 MOV ats[SI], DL
+     73	    003B  4E			 DEC SI
+     74	    003C  33 D2			 XOR DX,DX
+     75	    003E  3C 00			 CMP AL, 0
+     76	    0040  74 13	90 90		 JE pabaiga
+     77	    0044  83 FE	08		 CMP SI, 8
+     78	    0047  74 04	90 90		 JE kablelis
+     79	    004B  EB E2			 JMP desimtaine
+     80	    004D			 kablelis:
+     81	    004D  C6 84	0025r 2C	 MOV ats[SI],2ch
+     82	    0052  4E			 DEC SI
+     83	    0053  EB DA			 JMP desimtaine
+     84					 ; pabaiga
+     85	    0055			 pabaiga:
+     86	    0055  B4 09			 MOV AH, 09h
+     87	    0057  BA 0031r		 LEA DX, aut
+     88	    005A  CD 21			 INT 21h
+     89	    005C  B4 09			 MOV AH, 09h
+     90	    005E  BA 006Dr		 LEA DX, pran
+     91	    0061  CD 21			 INT 21h
+     92	    0063  B4 09			 MOV AH, 09h
+     93	    0065  BA 0000r		 LEA DX, crlf
+     94	    0068  CD 21			 INT 21h
+     95	    006A  B4 09			 MOV AH, 09h
+     96	    006C  BA 0025r		 LEA DX, ats
+     97	    006F  CD 21			 INT 21h
+     98	    0071  B4 09			 MOV AH, 09h
+     99	    0073  BA 005Fr		 LEA DX, dol
+    100	    0076  CD 21			 INT 21h
+    101	    0078  B4 4C			 MOV AH, 4ch
+    102	    007A  CD 21			 INT 21h
+    103
+    104	    007C			 programa ENDS
+    105
+    106					 END START
+Symbol Name			  Type	 Value
+
+??DATE				  Text	 "12/15/08"
+??FILENAME			  Text	 "Indenai "
+??TIME				  Text	 "01:37:58"
+??VERSION			  Number 0200
+@CPU				  Text	 0D0FH
+@CURSEG				  Text	 PROGRAMA
+@FILENAME			  Text	 INDENAI
+@WORDSIZE			  Text	 4
+ATS				  Byte	 DUOMENYS:0025
+AUT				  Byte	 DUOMENYS:0031
+CIKLAS				  Near	 PROGRAMA:0014
+CR				  Number 000D
+CRLF				  Byte	 DUOMENYS:0000
+DESIMT				  Dword	 DUOMENYS:0021
+DESIMTAINE			  Near	 PROGRAMA:002F
+DOL				  Byte	 DUOMENYS:005F
+GALUT_SUMA			  Dword	 DUOMENYS:000B
+KABLELIS			  Near	 PROGRAMA:004D
+LF				  Number 000A
+PABAIGA				  Near	 PROGRAMA:0055
+PRAN				  Byte	 DUOMENYS:006D
+PROCENT				  Qword	 DUOMENYS:0003
+SIMTAS				  Qword	 DUOMENYS:0019
+SKAITLIUKAS			  Word	 DUOMENYS:0017
+START				  Near	 PROGRAMA:0000
+SUMA				  Qword	 DUOMENYS:000F
+TOLIAU				  Near	 PROGRAMA:001A
+Groups & Segments		  Bit Size Align  Combine Class
+DUOMENYS			  16  009C Para	  none
+PROGRAMA			  16  007C Para	  none
+STEKAS				  16  0100 Para	  Stack

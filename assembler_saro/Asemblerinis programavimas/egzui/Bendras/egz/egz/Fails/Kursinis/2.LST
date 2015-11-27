@@ -1,0 +1,178 @@
+Turbo Assembler	 Version 3.2	    18/01/06 03:22:37	    Page 1
+2.asm
+
+
+
+      1	0000			     Stekas SEGMENT STACK
+      2	0000  FF*(??)			     DB	     255 DUP(?)
+      3	00FF			     Stekas ENDS
+      4
+      5	0000			     Duomenys SEGMENT
+      6	0000  4B 75 72 73 69 6E	69+	     PRAN db "Kursinis",10,13
+      7	      73 0A 0D
+      8	000A  55 7A 64 75 6F 74	69+	     db	"Uzduotis:   Masyvo elementu suma ir vidurkis",10,13
+      9	      73 3A 09 4D 61 73	79+
+     10	      76 6F 20 65 6C 65	6D+
+     11	      65 6E 74 75 09 73	75+
+     12	      6D 61 20 69 72 09	76+
+     13	      69 64 75 72 6B 69	73+
+     14	      0A 0D
+     15	0036  41 74 6C 69 6B 6F	3A+	     db	"Atliko:Valerija Lialina II-3/3",10,13
+     16	      56 61 6C 65 72 69	6A+
+     17	      61 20 4C 69 61 6C	69+
+     18	      6E 61 20 49 49 2D	33+
+     19	      2F 33 0A 0D
+     20	0056  20 0A 0D 24		     db	" ",10,13,'$'
+     21	005A  4D 61 73 79 76 6F	20+	     PRAN1 db 'Masyvo suma: ',13,10,'$'
+     22	      73 75 6D 61 3A 20	0D+
+     23	      0A 24
+     24	006A  4D 61 73 79 76 6F	20+	     PRAN2 db 'Masyvo vidurkis:	',13,10,'$'
+     25	      76 69 64 75 72 6B	69+
+     26	      73 3A 20 0D 0A 24
+     27	007E  2C 24			     KABLELIS db ',$'
+     28	0080  0A			     des db 10
+     29	0081  00			     a db 0
+     30	0082  ?? 0D 0A 24		     ats db ?,13,10,'$'
+     31	0086  03*(??) 0D 0A 24		     SUM db 3 DUP(?),13,10,'$'
+     32	008C  02*(??) 24		     VIDURKIS db 2 DUP(?),'$'
+     33	008F  ??			     LIEK db ?
+     34	0090  66 02 0C 22 FB 2A		     MAS db 102,2,12,34,-5,'*'
+     35	0096			     Duomenys ENDS
+     36
+     37	0000			     Programa SEGMENT
+     38				     ASSUME SS:Stekas ,DS: Duomenys, CS: Programa
+     39	0000			     START:
+     40	0000  B8 0000s						  MOV AX,Duomenys
+     41	0003  8E D8						  MOV DS,AX
+     42	0005  B8 0002						  MOV AX,0002h
+     43	0008  CD 10						  INT 10h
+     44	000A  BE 0000						  MOV SI,0000
+     45	000D  B0 00						  MOV AL,00
+     46
+     47								  ;sumos skaiciavimas
+     48	000F						     CIK1:
+     49
+     50	000F  80 BC 0090r 2A					  CMP MAS[SI],'*'
+     51	0014  74 0B						  JE MAS_PAB
+     52	0016  02 84 0090r					  ADD AL,MAS[SI]
+     53	001A  46						  INC SI
+     54	001B  FE 06 0081r					  INC a
+     55	001F  EB EE						  JMP CIK1
+     56	0021							  MAS_PAB:
+     57	0021  A2 0082r						  MOV ats,AL
+Turbo Assembler	 Version 3.2	    18/01/06 03:22:37	    Page 2
+2.asm
+
+
+
+     58	0024  B9 0003						  MOV CX,0003
+     59	0027  BE 0002						  MOV SI,0002
+     60
+     61	002A						     CIK2:
+     62
+     63	002A  B4 00						  MOV AH,00
+     64	002C  F6 36 0080r					  DIV des
+     65	0030  80 C4 30						  ADD AH,30h
+     66	0033  88 A4 0086r					  MOV SUM[SI],AH
+     67	0037  4E						  DEC SI
+     68	0038  E2 F0						  LOOP CIK2
+     69	003A  B4 09						  MOV AH,09h
+     70	003C  BA 0000r						  LEA DX,PRAN
+     71	003F  CD 21						  INT 21h
+     72	0041  BA 005Ar						  LEA DX,PRAN1
+     73	0044  CD 21						  INT 21h
+     74	0046  BA 0086r						  LEA DX,SUM
+     75	0049  CD 21						  INT 21h
+     76
+     77								  ;skaiciuojam sk. pries kableli
+     78
+     79	004B  B8 0000						  MOV AX,0000
+     80	004E  A0 0082r						  MOV AL,ats
+     81	0051  F6 36 0081r					  DIV a
+     82	0055  88 26 008Fr					  MOV LIEK,AH
+     83	0059  BE 0001						  MOV SI,0001
+     84	005C  B9 0002						  MOV CX,0002
+     85
+     86	005F						    CIK3:
+     87	005F  B4 00						  MOV AH,00
+     88	0061  F6 36 0080r					  DIV des
+     89	0065  80 C4 30						  ADD AH,30h
+     90	0068  88 A4 008Cr					  MOV VIDURKIS[SI],AH
+     91	006C  4E						  DEC SI
+     92	006D  E2 F0						  LOOP CIK3
+     93	006F  B4 09						  MOV AH,09h
+     94	0071  BA 006Ar						  LEA DX,PRAN2
+     95	0074  CD 21						  INT 21h
+     96	0076  BA 008Cr						  LEA DX,VIDURKIS
+     97	0079  CD 21						  INT 21h
+     98	007B  BA 007Er						  LEA DX,KABLELIS
+     99	007E  CD 21						  INT 21h
+    100
+    101								  ;skaiciuojam skaiciu po kablelio
+    102
+    103	0080  A0 008Fr						  MOV AL,LIEK
+    104	0083  BE 0000						  MOV SI,0000
+    105	0086  B9 0002						  MOV CX,0002
+    106	0089							  CIK4:
+    107	0089  B4 00						  MOV AH,00
+    108	008B  F6 26 0080r					  MUL DES
+    109	008F  F6 36 0081r					  DIV a
+    110	0093  04 30						  ADD AL,30h
+    111	0095  88 84 008Cr					  MOV VIDURKIS[SI],AL
+    112	0099  8A C4						  MOV AL,AH
+    113	009B  46						  INC SI
+    114	009C  E2 EB						  LOOP CIK4
+Turbo Assembler	 Version 3.2	    18/01/06 03:22:37	    Page 3
+2.asm
+
+
+
+    115	009E  B4 09						  MOV AH,09h
+    116	00A0  BA 008Cr						  LEA DX,VIDURKIS
+    117	00A3  CD 21						  INT 21h
+    118	00A5  B4 07						  mov ah,07h
+    119	00A7  CD 21						  int 21h
+    120	00A9  B4 4C						  MOV AH,4CH
+    121	00AB  CD 21						  INT 21h
+    122	00AD			     Programa ENDS
+    123				     END START
+Turbo Assembler	 Version 3.2	    18/01/06 03:22:37	    Page 4
+Symbol Table
+
+
+
+
+Symbol Name			  Type	 Value
+
+??DATE				  Text	 "18/01/06"
+??FILENAME			  Text	 "2	  "
+??TIME				  Text	 "03:22:37"
+??VERSION			  Number 0314
+@CPU				  Text	 0101H
+@CURSEG				  Text	 PROGRAMA
+@FILENAME			  Text	 2
+@WORDSIZE			  Text	 2
+A				  Byte	 DUOMENYS:0081
+ATS				  Byte	 DUOMENYS:0082
+CIK1				  Near	 PROGRAMA:000F
+CIK2				  Near	 PROGRAMA:002A
+CIK3				  Near	 PROGRAMA:005F
+CIK4				  Near	 PROGRAMA:0089
+DES				  Byte	 DUOMENYS:0080
+KABLELIS			  Byte	 DUOMENYS:007E
+LIEK				  Byte	 DUOMENYS:008F
+MAS				  Byte	 DUOMENYS:0090
+MAS_PAB				  Near	 PROGRAMA:0021
+PRAN				  Byte	 DUOMENYS:0000
+PRAN1				  Byte	 DUOMENYS:005A
+PRAN2				  Byte	 DUOMENYS:006A
+START				  Near	 PROGRAMA:0000
+SUM				  Byte	 DUOMENYS:0086
+VIDURKIS			  Byte	 DUOMENYS:008C
+
+Groups & Segments		  Bit Size Align  Combine Class
+
+DUOMENYS			  16  0096 Para	  none
+PROGRAMA			  16  00AD Para	  none
+STEKAS				  16  00FF Para	  Stack
+

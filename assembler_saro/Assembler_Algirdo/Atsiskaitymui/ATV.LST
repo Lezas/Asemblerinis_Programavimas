@@ -1,0 +1,82 @@
+Turbo Assembler	 Version 3.2	    12/11/11 15:41:23	    Page 1
+c:\tasm\temp\atv.asm
+
+
+
+      1	0000			     stekas segment stack
+      2	0000  0100*(??)		     db	256 dup	(?)
+      3	0100			     stekas ends
+      4
+      5	0000			     duomenys segment
+      6	0000  24 73 61 6D 61 64	75+  origpran db '$','samaduailetsupokeksikisap'
+      7	      61 69 6C 65 74 73	75+
+      8	      70 6F 6B 65 6B 73	69+
+      9	      6B 69 73 61 70
+     10	001A  0A 0D 1A*(00)	     tekstpran db 10,13,26 dup (0)
+     11	0036			     duomenys ends
+     12
+     13	0000			     programa segment
+     14				     assume cs:programa,ds:duomenys,ss:stekas
+     15
+     16	0000			     start:
+     17
+     18	0000  B8 0000s		     mov ax,duomenys
+     19	0003  8E D8		     mov ds,ax
+     20
+     21	0005  BE 001Ar		     lea si,origpran+26
+     22	0008  B4 24		     mov ah,'$'
+     23	000A  BF 001Cr		     lea di,tekstpran+2
+     24
+     25	000D			     pradzia:
+     26				     ;sumazinam	vienetu	su dec(decrement)
+     27	000D  4E		     dec si
+     28	000E  38 24		     cmp [si],ah
+     29	0010  74 07		     je	spausd
+     30
+     31
+     32	0012  8A 04		     mov al,[si]
+     33	0014  88 05		     mov [di],al
+     34
+     35				     ;padidinam	vienetu	su inc(incriment)
+     36	0016  47		     inc di
+     37	0017  EB F4		     jmp pradzia
+     38
+     39	0019			     spausd:
+     40	0019  88 25		     mov [di], ah
+     41				     ;spausdinimas
+     42	001B  B4 09		     mov ah,09h
+     43	001D  BA 001Ar		     lea dx, tekstpran
+     44	0020  CD 21		     int 21h
+     45	0022  B4 4C		     mov ah,4ch
+     46	0024  CD 21		     int 21h
+     47
+     48	0026			     programa ends
+     49				     end start
+Turbo Assembler	 Version 3.2	    12/11/11 15:41:23	    Page 2
+Symbol Table
+
+
+
+
+Symbol Name			  Type	 Value
+
+??DATE				  Text	 "12/11/11"
+??FILENAME			  Text	 "atv	  "
+??TIME				  Text	 "15:41:23"
+??VERSION			  Number 0314
+@CPU				  Text	 0101H
+@CURSEG				  Text	 PROGRAMA
+@FILENAME			  Text	 ATV
+@WORDSIZE			  Text	 2
+ORIGPRAN			  Byte	 DUOMENYS:0000
+PRADZIA				  Near	 PROGRAMA:000D
+SPAUSD				  Near	 PROGRAMA:0019
+START				  Near	 PROGRAMA:0000
+TEKSTPRAN			  Byte	 DUOMENYS:001A
+
+Groups & Segments		  Bit Size Align  Combine Class
+
+DUOMENYS			  16  0036 Para	  none
+PROGRAMA			  16  0026 Para	  none
+STEKAS				  16  0100 Para	  Stack
+

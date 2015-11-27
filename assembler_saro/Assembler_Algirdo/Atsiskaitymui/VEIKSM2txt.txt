@@ -1,0 +1,172 @@
+Turbo Assembler	 Version 3.2	    12/11/11 21:06:34	    Page 1
+C:\tasm\temp\veiksm~2.asm
+
+
+
+      1
+      2	0000			     stekas segment stack
+      3	0000  0100*(??)		       db 256 dup(?)
+      4	0100			     stekas ends
+      5
+      6	0000			     duomenys segment
+      7
+      8	0000  0F		     a db  15
+      9	0001  0D		     b db 13
+     10	0002  05		     c db 5
+     11	0003  0A		     desimt db 10
+     12	0004  02		     du	db 2
+     13	0005  03		     trys db 3
+     14	0006  00		     temp db 0
+     15	0007  2E 24		     taskas db '.','$'
+     16	0009  56 65 69 6B 73 6D	61+  pran1 db 'Veiksmas: (a+b-c)*3/2 '
+     17	      73 3A 20 28 61 2B	62+
+     18	      2D 63 29 2A 33 2F	32+
+     19	      20
+     20	001F  0A 0D 4B 61 69 20	61+	   db 10,13, 'Kai a=15,	b=13, c=5. Ats.:'
+     21	      3D 31 35 2C 20 62	3D+
+     22	      31 33 2C 20 63 3D	35+
+     23	      2E 20 41 74 73 2E	3A
+     24	003B  0A 0D 53 76 65 69	6B+	   db 10,13, 'Sveikoji dalis =	','$'
+     25	      6F 6A 69 20 64 61	6C+
+     26	      69 73 20 3D 20 20	24
+     27	0050  0A 0D 4C 69 65 6B	61+  pran4 db 10,13, 'Liekana =	 ','$'
+     28	      6E 61 20 3D 20 20	24
+     29
+     30	005E  02*(00) 24	     temp_sveikoji db 2	dup(0),'$'
+     31	0061  02*(00) 0A 0D 24	     temp_liekana db 2 dup(0),10,13,'$'
+     32	0066  02*(00) 24	     sveikoji db 2 dup(0),'$'
+     33	0069  02*(00) 0A 0D 24	     liekana db	2 dup(0),10,13,'$'
+     34	006E  05*(00) 24	     rez db 5 dup(0),'$'
+     35	0074			     duomenys ends
+     36
+     37	0000			     program segment
+     38				       assume ds:duomenys, ss:stekas, cs:program
+     39	0000			     start:
+     40	0000  B8 0000s		     mov ax,duomenys
+     41	0003  8E D8		     mov ds,ax
+     42
+     43	0005  B8 0002		     mov ax,002h    ;ekrano isvalymas
+     44	0008  CD 10		     int 10h
+     45
+     46	000A  A0 0000r		     mov al,a
+     47	000D  8A 1E 0001r	     mov bl,b
+     48	0011  8A 0E 0002r	     mov cl,c
+     49	0015  8A 16 0005r	     mov dl,trys
+     50
+     51	0019  02 C3		     add al,bl
+     52	001B  2A C1		     sub al,cl ;atimts
+     53	001D  F6 E2		     mul dl ;daugyba
+     54	001F  8A 16 0004r	     mov dl,du
+     55	0023  F6 F2		     div dl
+     56
+     57	0025  A2 005Er		     mov temp_sveikoji,	al
+Turbo Assembler	 Version 3.2	    12/11/11 21:06:34	    Page 2
+C:\tasm\temp\veiksm~2.asm
+
+
+
+     58	0028  88 26 0061r	     mov temp_liekana, ah
+     59	002C  B4 00		     mov ah,0
+     60	002E  F6 36 0003r	     div desimt
+     61	0032  3C 00		     cmp al, 0
+     62	0034  74 08		     je	zyme
+     63	0036  A2 0066r		     mov sveikoji[0], al
+     64	0039  80 06 0066r 30	     add sveikoji[0], 30h
+     65	003E			     zyme:
+     66	003E  88 26 0067r	     mov sveikoji[1], ah
+     67	0042  80 06 0067r 30	     add sveikoji[1], 30h
+     68
+     69	0047  B4 00		     mov ah,0
+     70	0049  A0 0061r		     mov al, temp_liekana
+     71	004C  F6 36 0003r	     div desimt
+     72	0050  88 26 0069r	     mov liekana[0], ah
+     73	0054  80 06 0069r 30	     add liekana[0], 30h
+     74
+     75
+     76
+     77	0059  BE 0000		     mov si, 0
+     78	005C  B4 00		     mov ah,0
+     79	005E  A0 0061r		     mov al, temp_liekana
+     80	0061			     ciklas:
+     81	0061  F6 26 0003r	     mul desimt
+     82	0065  F6 36 0002r	     div c
+     83	0069  88 84 006Er	     mov rez[si], al
+     84	006D  80 84 006Er 30	     add rez[si], 30h
+     85	0072  8A C4		     mov al, ah
+     86	0074  3C 00		     cmp al,0
+     87	0076  74 08		     je	exit
+     88	0078  83 C6 01		     add si,1
+     89	007B  83 FE 05		     cmp si, 5 ;tikslumas
+     90	007E  75 E1		     jne ciklas
+     91
+     92	0080			     exit:
+     93
+     94	0080  80 06 005Er 30	     add temp_sveikoji,	30h
+     95
+     96	0085  B4 09		       mov ah,09h
+     97	0087  BA 0009r			lea dx,pran1
+     98	008A  CD 21			int 21h
+     99
+    100	008C  B4 09			mov ah,09h
+    101	008E  BA 0066r			lea dx,sveikoji
+    102	0091  CD 21			int 21h
+    103
+    104	0093  B4 09		       mov ah,09h
+    105	0095  BA 0050r			lea dx,pran4
+    106	0098  CD 21			int 21h
+    107
+    108	009A  B4 09			mov ah,09h
+    109	009C  BA 0069r			lea dx,liekana
+    110	009F  CD 21			int 21h
+    111
+    112	00A1  B4 4C			mov ah,4ch
+    113	00A3  CD 21			int 21h
+    114	00A5			     program ends
+Turbo Assembler	 Version 3.2	    12/11/11 21:06:34	    Page 3
+C:\tasm\temp\veiksm~2.asm
+
+
+
+    115				     end start
+Turbo Assembler	 Version 3.2	    12/11/11 21:06:34	    Page 4
+Symbol Table
+
+
+
+
+Symbol Name			  Type	 Value
+
+??DATE				  Text	 "12/11/11"
+??FILENAME			  Text	 "veiksm~2"
+??TIME				  Text	 "21:06:34"
+??VERSION			  Number 0314
+@CPU				  Text	 0101H
+@CURSEG				  Text	 PROGRAM
+@FILENAME			  Text	 VEIKSM~2
+@WORDSIZE			  Text	 2
+A				  Byte	 DUOMENYS:0000
+B				  Byte	 DUOMENYS:0001
+C				  Byte	 DUOMENYS:0002
+CIKLAS				  Near	 PROGRAM:0061
+DESIMT				  Byte	 DUOMENYS:0003
+DU				  Byte	 DUOMENYS:0004
+EXIT				  Near	 PROGRAM:0080
+LIEKANA				  Byte	 DUOMENYS:0069
+PRAN1				  Byte	 DUOMENYS:0009
+PRAN4				  Byte	 DUOMENYS:0050
+REZ				  Byte	 DUOMENYS:006E
+START				  Near	 PROGRAM:0000
+SVEIKOJI			  Byte	 DUOMENYS:0066
+TASKAS				  Byte	 DUOMENYS:0007
+TEMP				  Byte	 DUOMENYS:0006
+TEMP_LIEKANA			  Byte	 DUOMENYS:0061
+TEMP_SVEIKOJI			  Byte	 DUOMENYS:005E
+TRYS				  Byte	 DUOMENYS:0005
+ZYME				  Near	 PROGRAM:003E
+
+Groups & Segments		  Bit Size Align  Combine Class
+
+DUOMENYS			  16  0074 Para	  none
+PROGRAM				  16  00A5 Para	  none
+STEKAS				  16  0100 Para	  Stack
+

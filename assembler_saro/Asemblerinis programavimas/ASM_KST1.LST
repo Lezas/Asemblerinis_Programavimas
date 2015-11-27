@@ -1,0 +1,84 @@
+Turbo Assembler	 Version 2.0	    12/14/08 22:22:35	    Page 1
+ASM_KST1.ASM
+
+      1				     ;
+      2				     ; Kestutis	Stankevicius, II-06/3
+      3				     ; Asemblerinis programavimas
+      4				     ;
+      5				     ; 1 Auditorijos darbas:
+      6				     ;
+      7				     ;	Isvedimas i ekrana..
+      8				     ;
+      9	0000			     stekas SEGMENT STACK
+     10	0000  0100*(??)		      DB 256 DUP (?) ; isskiriame atmintyje 256	baitus
+     11	0100			     stekas ENDS
+     12
+     13	      =	000D		     CR	EQU 13
+     14	      =	000A		     LF	EQU 10
+     15
+     16	0000			     duomenys SEGMENT
+     17				     ; CR ir LF	padaro nauja eilute
+     18	0000  20 53 76 65 69 6B	69+   pranesimas DB ' Sveiki, ', CR, LF
+     19	      2C 20 0D 0A
+     20	000B  20 4C 69 6E 6B 65	6A+		 DB ' Linkejimai is Marso!', CR, LF, CR, LF
+     21	      69 6D 61 69 20 69	73+
+     22	      20 4D 61 72 73 6F	21+
+     23	      0D 0A 0D 0A
+     24	0024  20 20 4D 61 72 73	69+		 DB '  Marsietis Nr.17', '$'
+     25	      65 74 69 73 20 4E	72+
+     26	      2E 31 37 24
+     27	0036			     duomenys ENDS
+     28
+     29	0000			     programa SEGMENT
+     30				      ASSUME CS:programa, DS:duomenys, SS:stekas
+     31
+     32	0000			     START:
+     33				     ; pradzia
+     34	0000  B8 0000s		     MOV AX, duomenys
+     35	0003  8E D8		     MOV DS, AX
+     36
+     37				     ; isvalyti	ekrana
+     38	0005  B8 0002		     MOV AX, 0002h
+     39	0008  CD 10		     INT 10h
+     40
+     41				     ; pranesimo isvedimas
+     42	000A  B4 09		     MOV AH, 09h
+     43	000C  BA 0000r		     LEA DX, pranesimas
+     44	000F  CD 21		     INT 21h
+     45
+     46				     ; paspausti bet koki mygtuka
+     47	0011  B4 07		     MOV AH, 07h
+     48	0013  CD 21		     INT 21h
+     49
+     50				     ; iseiti is programos
+     51	0015  B4 4C		     MOV AH, 4ch
+     52	0017  CD 21		     INT 21h
+     53
+     54	0019			     programa ENDS
+     55
+     56				     END START
+
+Symbol Table
+
+
+Symbol Name			  Type	 Value
+
+??DATE				  Text	 "12/14/08"
+??FILENAME			  Text	 "ASM_KST1"
+??TIME				  Text	 "22:22:35"
+??VERSION			  Number 0200
+@CPU				  Text	 0101H
+@CURSEG				  Text	 PROGRAMA
+@FILENAME			  Text	 ASM_KST1
+@WORDSIZE			  Text	 2
+CR				  Number 000D
+LF				  Number 000A
+PRANESIMAS			  Byte	 DUOMENYS:0000
+START				  Near	 PROGRAMA:0000
+
+Groups & Segments		  Bit Size Align  Combine Class
+
+DUOMENYS			  16  0036 Para	  none
+PROGRAMA			  16  0019 Para	  none
+STEKAS				  16  0100 Para	  Stack
+

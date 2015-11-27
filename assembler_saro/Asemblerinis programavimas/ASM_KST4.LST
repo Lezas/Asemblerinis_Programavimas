@@ -1,0 +1,97 @@
+Turbo Assembler	 Version 2.0	    12/14/08 23:03:23	    Page 1
+ASM_KST4.ASM
+
+      1				     ;
+      2				     ; Kestutis	Stankevicius, II-06/3
+      3				     ; Asemblerinis programavimas
+      4				     ;
+      5				     ; 4 Auditorijos darbas:
+      6				     ;
+      7				     ; (a*2-c)*4 = ?
+      8				     ;
+      9	0000			     stekas SEGMENT STACK
+     10	0000  0100*(??)		      DB 256 DUP (?) ; isskiriame atmintyje 256	baitus
+     11	0100			     stekas ENDS
+     12
+     13	0000			     duomenys SEGMENT
+     14				     ; aprasome	kintamuosius
+     15	0000  02		      du     DB	2
+     16	0001  04		      keturi DB	4
+     17	0002  0A		      desimt DB	10
+     18	0003  0D		      a	     DB	13
+     19	0004  05		      c	     DB	5
+     20	0005  03*(20) 24	      rezult DB	3 DUP (' '), '$'
+     21
+     22	0009			     duomenys ENDS
+     23
+     24	0000			     programa SEGMENT
+     25				      ASSUME CS:programa, DS:duomenys, SS:stekas
+     26
+     27	0000			     START:
+     28				     ; pradzia
+     29	0000  B8 0000s		     MOV AX, duomenys
+     30	0003  8E D8		     MOV DS, AX
+     31
+     32				     ; isvalyti	ekrana
+     33	0005  B8 0002		     MOV AX, 0002h
+     34	0008  CD 10		     INT 10h
+     35
+     36				     ; skaiciavimai
+     37	000A  A0 0003r		     MOV AL, a
+     38	000D  F6 26 0000r	     MUL du
+     39	0011  2A 06 0004r	     SUB AL, c
+     40	0015  F6 26 0001r	     MUL keturi
+     41				     ; tvarkomes +1
+     42	0019  F6 36 0002r	     DIV desimt
+     43	001D  88 26 0006r	     MOV rezult+1, AH
+     44	0021  80 06 0006r 30	     ADD rezult+1, 30h
+     45				     ; tvarkomes +0
+     46	0026  B4 00		     MOV AH, 0
+     47	0028  F6 36 0002r	     DIV desimt
+     48	002C  88 26 0005r	     MOV rezult, AH
+     49	0030  80 06 0005r 30	     ADD rezult, 30h
+     50
+     51				     ; atvaizduoti
+     52	0035  B4 09		     MOV AH, 09h
+     53	0037  BA 0005r		     LEA DX, rezult
+     54	003A  CD 21		     INT 21h
+     55
+     56				     ; paspausti bet koki klavisa
+     57	003C  B4 07		     MOV AH, 07h
+     58	003E  CD 21		     INT 21h
+     59
+     60				     ; iseiti is programos
+     61	0040  B4 4C		     MOV AH, 4ch
+     62	0042  CD 21		     INT 21h
+     63
+     64	0044			     programa ENDS
+     65
+     66				     END START
+
+Symbol Table
+
+
+Symbol Name			  Type	 Value
+
+??DATE				  Text	 "12/14/08"
+??FILENAME			  Text	 "ASM_KST4"
+??TIME				  Text	 "23:03:23"
+??VERSION			  Number 0200
+@CPU				  Text	 0101H
+@CURSEG				  Text	 PROGRAMA
+@FILENAME			  Text	 ASM_KST4
+@WORDSIZE			  Text	 2
+A				  Byte	 DUOMENYS:0003
+C				  Byte	 DUOMENYS:0004
+DESIMT				  Byte	 DUOMENYS:0002
+DU				  Byte	 DUOMENYS:0000
+KETURI				  Byte	 DUOMENYS:0001
+REZULT				  Byte	 DUOMENYS:0005
+START				  Near	 PROGRAMA:0000
+
+Groups & Segments		  Bit Size Align  Combine Class
+
+DUOMENYS			  16  0009 Para	  none
+PROGRAMA			  16  0044 Para	  none
+STEKAS				  16  0100 Para	  Stack
+

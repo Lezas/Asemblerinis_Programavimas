@@ -1,0 +1,121 @@
+Stekas SEGMENT STACK
+	DB 256 DUP(' ')
+Stekas ENDS
+Duom SEGMENT
+	des DB 10
+	a DB 0
+	b DB 0
+	x DB 0
+	ivestis DB 4, 0, 4 DUP(0)
+	error DB 10,13, 'Klaida','$'
+	pran DB 10, 13,'Ivesk skaiciu','$' 
+	rez DB 10, 13, 4 DUP(' '),'$'
+Duom ENDS
+Prog SEGMENT
+	ASSUME DS:Duom, CS:Prog, SS: stekas
+START:  MOV AX,Duom
+	MOV DS,AX
+
+	MOV AH,09h
+	LEA DX,pran
+	INT 21h
+	MOV AH,0Ah
+	LEA DX,ivestis
+	INT 21h
+	
+	MOV CX,0
+	MOV CL, ivestis+1
+	LEA BX, ivestis+2
+	MOV AX,0
+	CALL PERDIRBIMAS
+	MOV b,AL
+
+	MOV AH,09h
+	LEA DX,pran
+	INT 21h
+	MOV AH,0Ah
+	LEA DX,ivestis
+	INT 21h
+
+	MOV CX,0
+	MOV CL, ivestis+1
+	LEA BX, ivestis+2
+	MOV AX,0
+	CALL PERDIRBIMAS
+	SUB AL,b
+	MOV x,AL
+
+	CMP x,0
+	JL minusas
+
+prad:MOV AX,0
+	MOV AL,x
+	LEA BX, REZ+3
+	MOV CX,3
+ciklas2: MOV AH,0
+	DIV des
+	ADD AH,30h
+	MOV [BX],AH
+	DEC BX
+	LOOP ciklas2
+	
+	MOV AH,09h
+	LEA DX,rez
+	INT 21h
+	MOV Ah, 4Ch
+	INT 21h
+
+PERDIRBIMAS PROC
+	MOV DL,30h
+	CMP [BX],DL
+	JL klaida
+	MOV DL,39h
+	CMP [BX],DL
+	JG klaida
+	MOV DL,30h
+	SUB [BX],DL
+	MOV AL,[BX]
+	DEC CL
+	CMP CL,0
+	JE pabaigaproc
+	
+
+CIKLAS:	INC BX
+	MOV DL,30h
+	CMP [BX],DL
+	JL klaida
+	MOV DL,39h
+	CMP [BX],DL
+	JG klaida
+	MOV DL,30h
+	SUB [BX],DL
+	MUL des
+	ADD AL,[BX]
+	JO klaida2
+	LOOP CIKLAS
+	
+pabaigaproc:	
+
+	RET
+PERDIRBIMAS ENDP
+
+minusas: NEG x
+	MOV rez, 2Dh
+	JMP prad 
+
+klaida: MOV AH,09h
+	LEA DX,error
+	INT 21h
+	MOV Ah, 4Ch
+	INT 21h
+	
+
+klaida2:MOV AH,09h
+	LEA DX,error
+	INT 21h
+	MOV Ah, 4Ch
+	INT 21h
+
+	
+Prog ENDS
+END START

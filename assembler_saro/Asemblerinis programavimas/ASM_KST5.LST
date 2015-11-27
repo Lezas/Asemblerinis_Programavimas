@@ -1,0 +1,107 @@
+Turbo Assembler	 Version 2.0	    12/14/08 23:27:02	    Page 1
+ASM_KST5.ASM
+
+      1				     ;
+      2				     ; Kestutis	Stankevicius, II-06/3
+      3				     ; Asemblerinis programavimas
+      4				     ;
+      5				     ; 5 Auditorijos darbas:
+      6				     ;
+      7				     ; Ivedamas ir atvaizduojamas tekstas per viduri..
+      8				     ;
+      9	0000			     stekas SEGMENT STACK
+     10	0000  0100*(??)		      DB 256 DUP (?) ; isskiriame atmintyje 256	baitus
+     11	0100			     stekas ENDS
+     12
+     13	0000			     duomenys SEGMENT
+     14				     ; aprasome	kintamuosius
+     15	0000  19 00 19*(20)	      ivsr	 DB 25,	0, 25 DUP(' ')
+     16	001B  02		      du	 DB 2
+     17	001C  49 76 65 73 6B 69	74+   pranesimas DB 'Iveskite pavarde: ','$'
+     18	      65 20 70 61 76 61	72+
+     19	      64 65 3A 20 24
+     20
+     21	002F			     duomenys ENDS
+     22
+     23	0000			     programa SEGMENT
+     24				      ASSUME CS:programa, DS:duomenys, SS:stekas
+     25
+     26	0000			     START:
+     27				     ; pradzia
+     28	0000  B8 0000s		     MOV AX, duomenys
+     29	0003  8E D8		     MOV DS, AX
+     30
+     31				     ; isvalyti	ekrana
+     32	0005  B8 0002		     MOV AX, 0002h
+     33	0008  CD 10		     INT 10h
+     34
+     35				     ; pranesimas
+     36	000A  B4 09		     MOV AH, 09h
+     37	000C  BA 001Cr		     LEA DX, pranesimas
+     38	000F  CD 21		     INT 21H
+     39
+     40				     ; ivedimas
+     41	0011  B4 0A		     MOV AH, 0Ah
+     42	0013  BA 0000r		     LEA DX, ivsr
+     43	0016  CD 21		     INT 21h
+     44
+     45				     ; $ gale ivesto teksto
+     46	0018  BF 0002r		     LEA DI, ivsr+2
+     47	001B  8A 1E 0001r	     MOV BL, ivsr+1
+     48	001F  B7 00		     MOV BH, 0
+     49	0021  03 FB		     ADD DI,BX ; adresas kur siusime $ zenkla
+     50	0023  B7 24		     MOV BH, '$'
+     51	0025  88 3D		     MOV [DI], BH ; spausdinimo	pabaiga
+     52
+     53				     ; skaiciuojam kur spausdinti
+     54	0027  B0 50		     MOV AL, 80
+     55	0029  B4 00		     MOV AH, 0
+     56	002B  2A C3		     SUB AL, BL	; atimtis
+     57	002D  F6 36 001Br	     DIV du
+     58	0031  8A D0		     MOV DL, AL	; randam kur pradeti spausdinti
+     59	0033  B6 0C		     MOV DH, 12
+     60	0035  B4 02		     MOV AH, 02	; 12 eilute
+     61	0037  B7 00		     MOV BH, 00	; puslapio numeris
+     62	0039  CD 10		     INT 10h  ;	i paskaiciuota vieta pastatom zymekli spausdinimui
+     63
+     64				     ; spausdinimas
+     65	003B  B4 09		     MOV AH, 09h
+     66	003D  BA 0002r		     LEA DX, ivsr+2
+     67	0040  CD 21		     INT 21h
+     68
+     69				     ; paspausti bet koki klavisa
+     70	0042  B4 07		     MOV AH, 07h
+     71	0044  CD 21		     INT 21h
+     72
+     73				     ; iseiti is programos
+     74	0046  B4 4C		     MOV AH, 4ch
+     75	0048  CD 21		     INT 21h
+     76
+     77	004A			     programa ENDS
+     78
+     79				     END START
+
+Symbol Table
+
+
+Symbol Name			  Type	 Value
+
+??DATE				  Text	 "12/14/08"
+??FILENAME			  Text	 "ASM_KST5"
+??TIME				  Text	 "23:27:02"
+??VERSION			  Number 0200
+@CPU				  Text	 0101H
+@CURSEG				  Text	 PROGRAMA
+@FILENAME			  Text	 ASM_KST5
+@WORDSIZE			  Text	 2
+DU				  Byte	 DUOMENYS:001B
+IVSR				  Byte	 DUOMENYS:0000
+PRANESIMAS			  Byte	 DUOMENYS:001C
+START				  Near	 PROGRAMA:0000
+
+Groups & Segments		  Bit Size Align  Combine Class
+
+DUOMENYS			  16  002F Para	  none
+PROGRAMA			  16  004A Para	  none
+STEKAS				  16  0100 Para	  Stack
+

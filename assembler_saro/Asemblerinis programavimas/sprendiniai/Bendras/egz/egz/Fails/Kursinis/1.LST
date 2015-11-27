@@ -1,0 +1,247 @@
+Turbo Assembler	 Version 3.2	    18/01/06 03:22:25	    Page 1
+1.asm
+
+
+
+      1	0000			     stekas segment stack
+      2	0000  0100*(??)			     db	256 dup	(?)
+      3	0100			     stekas ends
+      4				     ;========================
+      5	0000			     duomenys segment
+      6	0000  0A 0D 56 61 6C 65	72+	     pran1   db	10, 13,	'Valerija Lialina'
+      7	      69 6A 61 20 4C 69	61+
+      8	      6C 69 6E 61
+      9	0012  0A 0D 50 72 6F 67	72+		     db	10, 13,	'Programa papraso vartotoja ivesti simboliu eilute '
+     10	      61 6D 61 20 70 61	70+
+     11	      72 61 73 6F 20 76	61+
+     12	      72 74 6F 74 6F 6A	61+
+     13	      20 69 76 65 73 74	69+
+     14	      20 73 69 6D 62 6F	6C+
+     15	      69 75 20 65 69 6C	75+
+     16	      74 65 20
+     17	0046  0A 0D 69 72 20 76	69+		     db	10, 13,	'ir viena simboli,'
+     18	      65 6E 61 20 73 69	6D+
+     19	      62 6F 6C 69 2C
+     20	0059  0A 0D 73 75 73 6B	61+		     db	10, 13,	'suskaiciuoja nurodyto simbolio	pasirodymu eiluteje'
+     21	      69 63 69 75 6F 6A	61+
+     22	      20 6E 75 72 6F 64	79+
+     23	      74 6F 20 73 69 6D	62+
+     24	      6F 6C 69 6F 20 70	61+
+     25	      73 69 72 6F 64 79	6D+
+     26	      75 20 65 69 6C 75	74+
+     27	      65 6A 65
+     28	008D  0A 0D 73 6B 61 69	63+		     db	10, 13,	'skaiciu, ir si	skaiciu	isveda i ekrana', 10, 13,'$'
+     29	      69 75 2C 20 69 72	20+
+     30	      73 69 20 73 6B 61	69+
+     31	      63 69 75 20 69 73	76+
+     32	      65 64 61 20 69 20	65+
+     33	      6B 72 61 6E 61 0A	0D+
+     34	      24
+     35	00B8  0A 0D 49 76 65 73	6B+	     pran2   db	10, 13,	'Iveskite simboliu eilute', 10,	13,'$'
+     36	      69 74 65 20 73 69	6D+
+     37	      62 6F 6C 69 75 20	65+
+     38	      69 6C 75 74 65 0A	0D+
+     39	      24
+     40	00D5  32 ?? 32*(??)		     duom    db	50,?,50	dup (?)	     ;Eilute duomenu ivedimui
+     41	0109  0A 0D 4A 75 73 20	6E+	     er1     db	10, 13,	'Jus neivedete eilutes$'
+     42	      65 69 76 65 64 65	74+
+     43	      65 20 65 69 6C 75	74+
+     44	      65 73 24
+     45	0121  0A 0D 4A 65 69 20	6E+	     er2     db	10, 13,	'Jei norite pakartoti, spauskite [y]', 10, 13,'$'
+     46	      6F 72 69 74 65 20	70+
+     47	      61 6B 61 72 74 6F	74+
+     48	      69 2C 20 73 70 61	75+
+     49	      73 6B 69 74 65 20	5B+
+     50	      79 5D 0A 0D 24
+     51	0149  0A 0D 4A 75 73 20	6E+	     er3     db	10, 13,	'Jus neivedete simbolio$'
+     52	      65 69 76 65 64 65	74+
+     53	      65 20 73 69 6D 62	6F+
+     54	      6C 69 6F 24
+     55	0162  0A 0D 49 76 65 73	6B+	     pran3   db	10, 13,	'Iveskite skaichiuojama	simboli', 10, 13,'$'
+     56	      69 74 65 20 73 6B	61+
+     57	      69 63 68 69 75 6F	6A+
+Turbo Assembler	 Version 3.2	    18/01/06 03:22:25	    Page 2
+1.asm
+
+
+
+     58	      61 6D 61 20 73 69	6D+
+     59	      62 6F 6C 69 0A 0D	24
+     60	0185  0A 0D 53 69 6D 62	6F+	     pran4   db	10, 13,	'Simbolis kartojasi tiek kartu:	$'
+     61	      6C 69 73 20 6B 61	72+
+     62	      74 6F 6A 61 73 69	20+
+     63	      74 69 65 6B 20 6B	61+
+     64	      72 74 75 3A 20 24
+     65	01A7  000A			     des     dw	10
+     66	01A9			     duomenys ends
+     67				     ;========================
+     68	0000			     programa segment
+     69				     assume cs:programa, ds:duomenys, ss:stekas
+     70	0000			     start:
+     71	0000  B8 0000s			     mov     ax, duomenys
+     72	0003  8E D8			     mov     ds, ax	     ;Duomenu segmento prijungimas
+     73
+     74	0005  B8 0002			     mov     ax, 0002h
+     75	0008  CD 10			     int     10h	     ;Ishvalomas ekranas
+     76
+     77	000A  B4 09			     mov     ah, 09h
+     78	000C  BA 0000r			     lea     dx, pran1
+     79	000F  CD 21			     int     21h	     ;Ishvedamas praneshimas pran1
+     80
+     81	0011			     program:
+     82	0011  B4 09			     mov     ah, 09h
+     83	0013  BA 00B8r			     lea     dx, pran2
+     84	0016  CD 21			     int     21h	     ;Ishvedamas praneshimas pran2
+     85
+     86	0018  B4 0A			     mov     ah, 0ah
+     87	001A  BA 00D5r			     lea     dx, duom
+     88	001D  CD 21			     int     21h	     ;Nuskaitoma simboliu eilute
+     89
+     90				     ; Tikrina ivedima
+     91	001F  8A 0E 00D6r		     mov     cl, duom+1	     ;Nuskaito ivestu simboliu skaichiu
+     92	0023  80 F9 00			     cmp     cl, 0	     ;Tikrina ar jis nelygus 0
+     93	0026  74 03			     je	     klaida1	     ;=0
+     94	0028  EB 0B 90			     jmp     tesiam1	       ;nelygus	0
+     95	002B				     klaida1:
+     96	002B  B4 09			     mov     ah, 09h
+     97	002D  BA 0109r			     lea     dx, er1
+     98	0030  CD 21			     int     21h	     ;Ishveda klaida er1
+     99	0032  EB 71 90			     jmp     tesiam5	       ;Shuolis, ar norite testi
+    100	0035				     tesiam1:
+    101	0035  B4 09			     mov     ah, 09h
+    102	0037  BA 0162r			     lea     dx, pran3
+    103	003A  CD 21			     int     21h	     ;Ishvedamas praneshimas pran3
+    104
+    105	003C  B4 08			     mov     ah, 08h	     ;Nuskaitomas vienas simbolis
+    106	003E  CD 21			     int     21h	     ;kuris patalpintas	al
+    107				     ; Tikrina ivedima
+    108	0040  3C 0D			     cmp     al, 0dh	     ;Tikrinama, ar nebuvo nuspaustas [ENTER]
+    109	0042  74 03			     je	     klaida2
+    110	0044  EB 0B 90			     jmp     tesiam2
+    111	0047				     klaida2:
+    112	0047  B4 09			     mov     ah, 09h
+    113	0049  BA 0149r			     lea     dx, er3
+    114	004C  CD 21			     int     21h	     ;Ishveda klaida er3
+Turbo Assembler	 Version 3.2	    18/01/06 03:22:25	    Page 3
+1.asm
+
+
+
+    115	004E  EB 55 90			     jmp     tesiam5	       ;Shuolis, ar norite testi
+    116	0051				     tesiam2:
+    117	0051  33 D2			     xor     dx, dx
+    118	0053  8A D0			     mov     dl, al
+    119	0055  B4 02			     mov     ah, 02h	     ;Atspausdinamas simbolis
+    120	0057  CD 21			     int     21h
+    121				     ;skaichiuojam pasikartojima
+    122	0059  BE 00D7r			     lea     si, duom+2
+    123	005C  33 C9			     xor     cx, cx
+    124	005E  33 DB			     xor     bx, bx
+    125	0060  8A 0E 00D6r		     mov     cl, duom+1
+    126	0064				     ciklas:
+    127	0064  8A 24			     mov     ah, [si]
+    128	0066  3A E0			     cmp     ah, al
+    129	0068  74 03			     je	     prideda
+    130	006A  EB 03 90			     jmp     tesiam3
+    131	006D				     prideda:
+    132	006D  FE C3			     inc     bl
+    133	006F				     tesiam3:
+    134	006F  46			     inc     si
+    135	0070  E2 F2			     loop    ciklas
+    136
+    137				     ; Atspausdinam atsakymas
+    138	0072  B4 09			     mov     ah, 09h
+    139	0074  BA 0185r			     lea     dx, pran4
+    140	0077  CD 21			     int     21h	     ;Ishvedamas pranesimas pran4
+    141
+    142	0079  8B C3			     mov     ax, bx	     ;Atsakyma isikeliam i ax
+    143	007B  50 55 8B EC C7 46	02+	     push    '$'	     ;Uzhzhymima ishvedamo steko riba (kada sustot)
+    144	      0024 5D
+    145	0085  8B 1E 01A7r		     mov     bx, des	     ;Dalinimui	is 10
+    146
+    147	0089				     isteka:		     ;Dedam skaichius i	steka
+    148	0089  33 D2			     xor     dx, dx
+    149	008B  F7 F3			     div     bx		     ;ax - sveikoji, dx	- liekana
+    150	008D  52			     push    dx		     ;Kisham skaichius
+    151
+    152	008E  3D 0000			     cmp     ax, 0	     ;Ar dar liko skaichiu?
+    153	0091  75 F6			     jne     isteka	     ;Liko, -> isteka:
+    154
+    155	0093				     issteko:		     ;Ishtraukiami skaichiai is	steko
+    156	0093  5A			     pop     dx		     ;Ishtraukiamas sheshioliktainis skaichius
+    157	0094  83 FA 24			     cmp     dx,'$'	     ;Ieshkoma steko riba ("$")
+    158	0097  74 0C			     je	     tesiam5	     ;ats: "taip"
+    159	0099  83 C2 30			     add     dx, 30h	     ;Verchiama	i normalu atvaizdavima
+    160	009C  B4 02			     mov     ah, 02h
+    161	009E  CD 21			     int     21h	     ;Atspausdinamas skaitmuo
+    162	00A0  EB F1			     jmp     issteko
+    163
+    164	00A2				     megasuolis:
+    165	00A2  E9 FF6C			     jmp     program
+    166
+    167	00A5				     tesiam5:		     ;Ar tesim darba?
+    168	00A5  B4 09			     mov     ah, 09h
+    169	00A7  BA 0121r			     lea     dx, er2
+    170	00AA  CD 21			     int     21h	     ;Ishvedamas praneshimas er2
+    171
+Turbo Assembler	 Version 3.2	    18/01/06 03:22:25	    Page 4
+1.asm
+
+
+
+    172	00AC  B4 08			     mov     ah, 08h	     ;Nuskaitomas vienas simbolis
+    173	00AE  CD 21			     int     21h
+    174	00B0  3C 79			     cmp     al, 'y'	     ;Tikrinama, ar neivesta 'y'
+    175	00B2  74 EE			     je	     megasuolis
+    176
+    177				     ; pabaiga
+    178
+    179	00B4  B4 4C			     mov     ah, 4ch
+    180	00B6  CD 21			     int     21h	     ;Ishejimas	i DOS'a
+    181	00B8			     programa ends
+    182				     end start
+Turbo Assembler	 Version 3.2	    18/01/06 03:22:25	    Page 5
+Symbol Table
+
+
+
+
+Symbol Name			  Type	 Value
+
+??DATE				  Text	 "18/01/06"
+??FILENAME			  Text	 "1	  "
+??TIME				  Text	 "03:22:25"
+??VERSION			  Number 0314
+@CPU				  Text	 0101H
+@CURSEG				  Text	 PROGRAMA
+@FILENAME			  Text	 1
+@WORDSIZE			  Text	 2
+CIKLAS				  Near	 PROGRAMA:0064
+DES				  Word	 DUOMENYS:01A7
+DUOM				  Byte	 DUOMENYS:00D5
+ER1				  Byte	 DUOMENYS:0109
+ER2				  Byte	 DUOMENYS:0121
+ER3				  Byte	 DUOMENYS:0149
+ISSTEKO				  Near	 PROGRAMA:0093
+ISTEKA				  Near	 PROGRAMA:0089
+KLAIDA1				  Near	 PROGRAMA:002B
+KLAIDA2				  Near	 PROGRAMA:0047
+MEGASUOLIS			  Near	 PROGRAMA:00A2
+PRAN1				  Byte	 DUOMENYS:0000
+PRAN2				  Byte	 DUOMENYS:00B8
+PRAN3				  Byte	 DUOMENYS:0162
+PRAN4				  Byte	 DUOMENYS:0185
+PRIDEDA				  Near	 PROGRAMA:006D
+PROGRAM				  Near	 PROGRAMA:0011
+START				  Near	 PROGRAMA:0000
+TESIAM1				  Near	 PROGRAMA:0035
+TESIAM2				  Near	 PROGRAMA:0051
+TESIAM3				  Near	 PROGRAMA:006F
+TESIAM5				  Near	 PROGRAMA:00A5
+
+Groups & Segments		  Bit Size Align  Combine Class
+
+DUOMENYS			  16  01A9 Para	  none
+PROGRAMA			  16  00B8 Para	  none
+STEKAS				  16  0100 Para	  Stack
+

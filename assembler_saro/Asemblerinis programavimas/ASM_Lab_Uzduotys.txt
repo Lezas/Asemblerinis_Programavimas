@@ -1,0 +1,21 @@
+Asm laborai:
+
+1) Isvedimas i ekrana..
+
+2) a+b=x 
+
+3) (a+b)-c = ?  kur a,b,c skaiciai irasyti programoje jau tavo pasirinkti
+
+4) (a*2-c)*4 = ? kur, a,c skaiciai irasyti programoje
+
+5) Ivedamas is klavos ir atvaizduojamas tekstas ekrane
+
+6) Ivedamas ir atvaizduojamas tekstas per viduri atvirksciai, tai yra nomgaudas bus saduagmon
+
+7) Mini kontrolinis darbas: x = (2ab+c) / (c-b)
+
+8) x=a+b, kur a,b ivedami skaiciai ish klavos
+
+9) x=a-b, kur a,b ivedami skaiciai, esme tokia, kad gali gautis atsakyme neigiamas, reikai tai padaryti
+
+10) x=a+b, kur a,b ivedami skaichiai is klavos, ivesti galima ir neigiamus pvz: -14 ir tt.

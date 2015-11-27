@@ -1,0 +1,124 @@
+stekas segment stack
+       db 256 dup(0)
+stekas ends
+duomenys segment
+         pran db 'Laboratorinis darbas Nr.7',13,10
+              db 'Uzduotis: Apskaiciuoti masyvo elementu suma',13,10
+              db '          ir vidurki',13,10
+              db 'Darba atliko: Joana Maldziute, II-2/5 gr.',13,10,'$'
+         mas db 1,2,5,1,10,13,4,1,1,56,100,'$'
+         des db 10
+         sum db ?
+         kiek db ?
+         suma db 3 dup(0),13,10,'$'
+         pran1 db 10,13,'Masyvo elementu suma - ','$'
+         svda db ?
+         liek db ?
+         liekana db 2 dup(0),'$'
+         sveikoji db 3 dup(0),'$'
+         kablelis db ',','$'
+         simt db 100 
+         pran2 db 10,13,'Masyvo elementu vidurkis - ','$'
+         pran3 db 'Elementu skaicius masyve - '
+         kiekis db 3 dup(0),'$'
+         klaid db 10,13,'Ivyko klaida, bandykite dar karta...','$'
+duomenys ends
+programa segment
+         assume ss:stekas, ds:duomenys, cs:programa
+         start: mov ax,duomenys
+                mov ds,ax
+                ;Ekrano valymas
+                mov ax, 0600h
+                mov bh, 07                                     
+                mov cx, 0000h                                  
+                mov dx, 184Fh                                  
+                int 10h
+                ;pranesimo pran isvedimas
+                mov ah,09h
+                lea dx,pran
+                int 21h
+                mov ax,0
+                mov cx,0
+                mov dx,0
+                mov bx,0
+                ;masyvo sumos skaiciavimas
+                lea si,mas
+                sumaa: mov bl,[si]
+                       add al,bl
+                       JC klaida
+                       inc cl
+                       inc si
+                       mov dl,'$'
+                       cmp [si],dl
+                       je toliau
+                       jmp sumaa
+                toliau:
+                mov sum,al
+                mov kiek,cl              
+                lea si,suma+2
+                call isvedimas
+                mov ah,09h
+                lea dx,pran1
+                int 21h
+                mov ah,09h
+                lea dx,suma
+                int 21h                
+                mov ax,0
+                mov al,kiek
+                lea si,kiekis+2
+                call isvedimas
+                ;vidurkis
+                mov ax,0
+                mov al,sum
+                div kiek
+                mov svda,al
+                mov liek,ah                
+                lea si,sveikoji+2
+                call isvedimas
+                ;liekanos sutvarkymas
+                mov ax,0
+                mov al,liek
+                mul simt
+                div kiek               
+                lea si,liekana+1
+                call isvedimas                
+                lea dx,liekana
+                push dx 
+                lea dx,kablelis
+                push dx 
+                lea dx,sveikoji
+                push dx 
+                lea dx,pran2
+                push dx 
+                lea dx,pran3
+                push dx
+                mov cx,5
+                cik: mov ah,09h
+                     pop dx
+                     int 21h
+                loop cik
+                jmp dos
+                klaida: lea dx,klaid
+                        mov ah,09h
+                        int 21h
+                dos:              
+                ;laukia klaviso paspaudimo
+                mov ah,07h
+                int 21h 
+                ;gristam i dos'a
+                mov ah,4ch
+                int 21h 
+isvedimas proc
+          mov cx,3
+          ciklas1: mov ah,0
+                   div des
+                   add ah,30h
+                   mov [si],ah
+                   cmp al,0
+                   je pab
+                   dec si 
+          loop ciklas1
+          pab: ret
+isvedimas endp
+programa ends
+end start

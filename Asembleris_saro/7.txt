@@ -1,0 +1,90 @@
+Stekas SEGMENT STACK
+	DB 256 DUP(' ')
+Stekas ENDS
+Duom SEGMENT
+	sritis DB 25,0, 25 DUP(' ')
+	dol DB '$'
+	du DB 2 
+	des DB 10
+	eilute DB 12
+	nulis DB 0
+	p DB 'Eiluteje simbolis pasikartoja '
+	rez DB 4 DUP(' ')
+	p2 DB 'kartu','$'
+	p3 DB 'nepasikartoja','$'
+Duom ENDS
+Prog SEGMENT
+	ASSUME DS:Duom, CS:Prog, SS: stekas
+START:  MOV AX,Duom
+	MOV DS,AX
+
+	MOV AH,0Ah
+	LEA DX,sritis
+	INT 21h
+	
+	MOV BH,07h
+	MOV AX,0600h
+	MOV CX,0000
+	MOV DX,184Fh
+	INT 10h
+
+	MOV AX,0
+	MOV AL,80
+	SUB AL,sritis+1
+	DIV du
+	MOV DL,AL
+	MOV DH, eilute
+	MOV BH,0
+	MOV AH,02
+	INT 10h
+
+	LEA DI,sritis+3
+	MOV BH,sritis+2
+	MOV AX,0
+	MOV AL,sritis+1
+	MOV CX, AX
+
+	
+ciklas:	CMP [DI],BH
+	JE inkrementas
+	ciklas1:
+	INC DI
+	LOOP ciklas
+	
+	CMP nulis,0
+	JE nesutampa
+	JMP sutampa
+	
+spausdinti:
+	MOV AH,09h
+	LEA DX,p
+	INT 21h
+	
+pabaiga:
+	MOV Ah, 4Ch
+	INT 21h
+	
+nesutampa:
+MOV AH,09h
+LEA DX,p3
+INT 21h
+JMP pabaiga
+
+sutampa:
+MOV AX,0
+	MOV AL,nulis
+	LEA BX, REZ+3
+	MOV CX,3
+ciklas3: MOV AH,0
+	DIV des
+	ADD AH,30h
+	MOV [BX],AH
+	DEC BX
+	LOOP ciklas3
+JMP spausdinti
+	
+inkrementas: INC nulis
+			JMP ciklas1
+	
+Prog ENDS
+END START

@@ -1,0 +1,61 @@
+;//ivesti varda pavarde is klv arba siaip teksta.
+;//ir atspauzdinti per ekrano vidury!
+stekas segment stack
+    db 256 dup(?)
+stekas ends      
+duom segment     
+    dol db '$'   
+    du db  2     
+    ivsr db 15,?,15 dup(' ')
+    pran db 'Iveskite teksta: ','$'
+    spsr db 15 dup(' ')
+duom ends                    
+prog segment                 
+     assume ds:duom,SS:stekas,CS:prog
+start: mov ax,duom           
+       mov ds,ax             
+      ; //valom ekrana       
+      mov ax,0002            
+      int 10h                
+      ;pranesimas           
+      mov ah,09             
+      lea dx,pran           
+      int 21h               
+      ;ivedimas             
+      mov ah,0ah            
+      lea dx,ivsr           
+      int 21h               
+      ;dedam doleri y gala  
+      mov bh,00             
+      lea si,ivsr+2         
+      mov bl,ivsr+1         
+      mov bh,0              
+      add si,bx             
+      dec si                
+      mov cx, bx
+      lea di,spsr            
+      ciklas: mov bh,[si]   
+      mov [di],bh           
+      inc di                
+      dec si                
+      loop ciklas           
+      mov bh,dol            
+      mov [di],bh           
+      ;vieta ekrane CENTRAS 
+      mov al,80             
+      mov ah,00             
+      sub al,bl             
+      div du                
+      mov dl,al             
+      mov dh,13             
+      mov ah,02             
+      mov bh,00             
+      int 10h               
+      ;spauzdinam           
+      mov ah,09h            
+      lea dx,spsr           
+      int 21h               
+      mov ah,4ch            
+      int 21h               
+      prog ends             
+   end start   

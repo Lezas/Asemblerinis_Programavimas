@@ -1,0 +1,270 @@
+Turbo Assembler	 Version 3.2	    01/17/06 23:05:06	    Page 1
+2.asm
+
+
+
+      1
+      2	0000			      stekas segment stack
+      3	0000  0100*(??)		      db 256 dup (?)
+      4	0100			      stekas ends
+      5	0000			      duomenys segment
+      6	0000  14 ?? 05*(00) 0A 0D +  a db 20,?,5 dup(0),10,13,'$'; nuskaitymas is ekrano ( 20-viso kiek	nuskaito simboliu)
+      7	      24
+      8	000A  14 ?? 05*(00) 0A 0D +  b db 20,?,5 dup(0),10,13,'$';
+      9	      24
+     10	0014  0006 ????	05*(0000) +  c dw 6,?,5	dup(0),10,13,'$'
+     11	      000A 000D	0024
+     12	0028  07D5		     d dw 2005
+     13	002A  000A		     f dw 10
+     14	002C  64		     fi	db 100
+     15	002D  0A		     fo	db 10
+     16	002E  00 0A 0D 24	     i db 0,10,13,'$'  ;rez
+     17	0032  00 24		     q db 0,'$'	;spau
+     18	0034  00		     p db 0
+     19	0035  0000		     ats dw 0
+     20	0037  0000 0024		     m dw 0,'$'
+     21	003B  56 61 72 64 61 73	3A+  t1	db 'Vardas:','$'
+     22	      24
+     23	0043  0A 0D 50 61 76 61	72+  t2	db 10,13,'Pavarde:','$'
+     24	      64 65 3A 24
+     25	004E  0A 0D 47 69 6D 69	6D+  t3	db 10,13,'Gimimas:','$'
+     26	      61 73 3A 24
+     27	0059  47 69 6D 69 6D 6F	20+  t4	db 'Gimimo metai',10,10,13,'$'
+     28	      6D 65 74 61 69 0A	0A+
+     29	      0D 24
+     30	0069  20 6D 65 74 75 6B	61+  t5	db ' metukai','$'
+     31	      69 24
+     32	0072  4B 6C 61 69 64 61	21+  t6	db 'Klaida!Nepazistu nei vieno zmogaus turincio	daugiau	nei 255	metus',10,13,'$'
+     33	      4E 65 70 61 7A 69	73+
+     34	      74 75 20 6E 65 69	20+
+     35	      76 69 65 6E 6F 20	7A+
+     36	      6D 6F 67 61 75 73	20+
+     37	      74 75 72 69 6E 63	69+
+     38	      6F 20 64 61 75 67	69+
+     39	      61 75 20 6E 65 69	20+
+     40	      32 35 35 20 6D 65	74+
+     41	      75 73 0A 0D 24
+     42	00B6  0A 0A 0D 52 45 5A	55+  t7	db 10,10,13,'REZULTATAI',10,10,13,'$'
+     43	      4C 54 41 54 41 49	0A+
+     44	      0A 0D 24
+     45	00C7			      duomenys ends
+     46	0000			      programa segment
+     47				      assume cs: programa, ds:duomenys,	ss:stekas
+     48	0000  B8 0000s		       start: mov ax, duomenys
+     49	0003  8E D8			      mov ds, ax
+     50					      ;tekstinio ekrano	ishvalymas
+     51	0005  B8 0002			      mov ax, 002h
+     52	0008  CD 10			      int 10h
+     53					     ; Pavadinimas
+     54	000A  B4 09			      mov ah,09h
+     55	000C  BA 0059r			      lea dx,t4	 ; Isvedame programos pavadinima Gimimo	metai
+     56	000F  CD 21			      int 21h
+     57					      ;Vardo ivedimas
+Turbo Assembler	 Version 3.2	    01/17/06 23:05:06	    Page 2
+2.asm
+
+
+
+     58	0011  B4 09			    mov	ah,09h
+     59	0013  BA 003Br			   lea dx,t1; Isvedame Varda
+     60	0016  CD 21			   int 21h
+     61	0018  B4 0A			   mov ah,0Ah
+     62	001A  BA 0000r			   lea dx,a
+     63	001D  CD 21			   int 21h
+     64						  ;Pavardes ivedimas
+     65	001F  B4 09			    mov	ah,09h
+     66	0021  BA 0043r			   lea dx,t2 ; Isvedame	Pavarde
+     67	0024  CD 21			   int 21h
+     68	0026  B4 0A			   mov ah,0Ah
+     69	0028  BA 000Ar			   lea dx,b
+     70	002B  CD 21			   int 21h
+     71						  ;Gimimo metu	ivedimas
+     72	002D  B4 09			    mov	ah,09h
+     73	002F  BA 004Er			   lea dx,t3
+     74	0032  CD 21			   int 21h
+     75	0034  B4 0A			   mov ah,0Ah
+     76	0036  BA 0014r			   lea dx,c
+     77	0039  CD 21			   int 21h
+     78					      ;	skaiciavimai
+     79					      ;verciame
+     80	003B  C6 06 002Er 00		      mov i,0
+     81	0040  A1 0016r			      mov ax,c+2
+     82	0043  B4 00			      mov ah,0
+     83	0045  50			      push ax
+     84	0046  A1 0017r			       mov ax,c+3
+     85	0049  B4 00			      mov ah,0
+     86	004B  50			      push ax
+     87	004C  A1 0018r			       mov ax,c+4
+     88	004F  B4 00			      mov ah,0
+     89	0051  50			      push ax
+     90	0052  A1 0019r			       mov ax,c+5
+     91	0055  B4 00			      mov ah,0
+     92	0057  50			      push ax
+     93
+     94	0058  58			      pop ax
+     95	0059  2D 0030			      sub ax,30h
+     96	005C  A3 0035r			      mov ats,ax
+     97	005F  C6 06 002Er 01		      mov i,1
+     98	0064				      ups:
+     99	0064  80 06 002Er 01		      add i,1
+    100	0069  58			      pop ax
+    101	006A  2D 0030			      sub ax,30h
+    102	006D  C6 06 0034r 01		      mov p,1
+    103	0072				      daug:
+    104	0072  BB 0000			      mov bx,0
+    105	0075  80 06 0034r 01		      add p,1
+    106	007A  F7 26 002Ar		      mul f
+    107	007E  8A 3E 0034r		      mov bh,p
+    108	0082  38 3E 002Er		      cmp i,bh
+    109	0086  75 EA			      jne daug
+    110	0088  01 06 0035r		      add ats,ax
+    111	008C  8A 1E 0015r		      mov bl,byte ptr c+1
+    112	0090  38 1E 002Er		      cmp i,bl
+    113	0094  75 CE			      jne ups
+    114					      ;rezultatas ax
+Turbo Assembler	 Version 3.2	    01/17/06 23:05:06	    Page 3
+2.asm
+
+
+
+    115					      ;	atimam
+    116	0096  A1 0035r			      mov ax,ats
+    117	0099  29 06 0028r		      sub d,ax
+    118	009D  81 3E 0028r 00FF		      cmp d,255
+    119	00A3  7C 07			      jl upss
+    120	00A5  B4 09			      mov ah,09h
+    121	00A7  BA 0072r			      lea dx,t6
+    122	00AA  CD 21			      int 21h
+    123
+    124
+    125
+    126	00AC				       upss:
+    127	00AC  B4 09			       mov ah,09h
+    128	00AE  BA 00B6r			      lea dx,t7
+    129	00B1  CD 21			      int 21h
+    130					      ;	verciame isvedimui
+    131
+    132					  ;   div f
+    133
+    134	00B3  C6 06 002Er 00		  mov i,0
+    135	00B8  B8 0000			  mov ax,0
+    136	00BB  A0 0028r			  mov al,byte ptr d
+    137	00BE				  verc:
+    138	00BE  F6 36 002Dr		  div fo
+    139	00C2  A2 0032r			  mov q,al
+    140	00C5  B0 00			  mov al,0
+    141	00C7  80 06 002Er 01		  add i,1
+    142	00CC  80 C4 30			  add ah,30h
+    143	00CF  50			  push ax
+    144	00D0  B8 0000			  mov ax,0
+    145	00D3  A0 0032r			  mov al,q
+    146	00D6  3C 00			  cmp al,0
+    147	00D8  75 E4			  jne verc
+    148
+    149	00DA				  sppp:
+    150	00DA  8F 06 0037r		  pop m
+    151	00DE  80 2E 002Er 01		  sub i,1
+    152	00E3  B4 09			  mov ah,09h
+    153	00E5  BA 0037r			  lea dx,m
+    154	00E8  CD 21			  int 21h
+    155	00EA  80 3E 002Er 00		  cmp i,0
+    156	00EF  75 E9			  jne sppp
+    157				       ;   verc:
+    158				       ;    cmp	al,100
+    159				       ;    jl des
+    160				       ;    jge	simt
+    161				       ;    simt:
+    162				       ;   div fi
+    163				       ;   jmp visks
+    164				       ;
+    165				       ;   des:
+    166				       ;   cmp al,10
+    167				       ;   jl ps
+    168				       ;   div fo
+    169				       ;   visks:
+    170				       ;
+    171				       ;   ps:
+Turbo Assembler	 Version 3.2	    01/17/06 23:05:06	    Page 4
+2.asm
+
+
+
+    172				       ;   add al,30h
+    173				       ;   mov q,al
+    174				       ;   mov m,ah
+    175				       ;   mov ah,09h
+    176				       ;   lea dx,q
+    177				       ;   int 21h
+    178				       ;   mov ax,0
+    179				       ;   mov al,m
+    180				       ;   sub i,1
+    181				       ;    cmp	al,0
+    182					;   jne	verc
+    183				       ;
+    184
+    185	00F1  B4 09			  mov ah,09h
+    186	00F3  BA 0069r			  lea dx,t5
+    187	00F6  CD 21			  int 21h
+    188					  ;irasymas i faila
+    189				      ;	   mov ax,5bH
+    190				       ;   mov cx,0
+    191				       ;   lea dx, as.txt
+    192
+    193
+    194
+    195					   ;laukia klavisho paspaudimo
+    196	00F8  B4 07			  mov ah, 07h
+    197	00FA  CD 21			  int 21h
+    198					  ;pabaiga
+    199	00FC  B4 4C			   mov ah,4ch
+    200	00FE  CD 21			   int 21h
+    201	0100				   programa ends
+    202					   end start
+Turbo Assembler	 Version 3.2	    01/17/06 23:05:06	    Page 5
+Symbol Table
+
+
+
+
+Symbol Name			  Type	 Value
+
+??DATE				  Text	 "01/17/06"
+??FILENAME			  Text	 "2	  "
+??TIME				  Text	 "23:05:06"
+??VERSION			  Number 0314
+@CPU				  Text	 0101H
+@CURSEG				  Text	 PROGRAMA
+@FILENAME			  Text	 2
+@WORDSIZE			  Text	 2
+A				  Byte	 DUOMENYS:0000
+ATS				  Word	 DUOMENYS:0035
+B				  Byte	 DUOMENYS:000A
+C				  Word	 DUOMENYS:0014
+D				  Word	 DUOMENYS:0028
+DAUG				  Near	 PROGRAMA:0072
+F				  Word	 DUOMENYS:002A
+FI				  Byte	 DUOMENYS:002C
+FO				  Byte	 DUOMENYS:002D
+I				  Byte	 DUOMENYS:002E
+M				  Word	 DUOMENYS:0037
+P				  Byte	 DUOMENYS:0034
+Q				  Byte	 DUOMENYS:0032
+SPPP				  Near	 PROGRAMA:00DA
+START				  Near	 PROGRAMA:0000
+T1				  Byte	 DUOMENYS:003B
+T2				  Byte	 DUOMENYS:0043
+T3				  Byte	 DUOMENYS:004E
+T4				  Byte	 DUOMENYS:0059
+T5				  Byte	 DUOMENYS:0069
+T6				  Byte	 DUOMENYS:0072
+T7				  Byte	 DUOMENYS:00B6
+UPS				  Near	 PROGRAMA:0064
+UPSS				  Near	 PROGRAMA:00AC
+VERC				  Near	 PROGRAMA:00BE
+
+Groups & Segments		  Bit Size Align  Combine Class
+
+DUOMENYS			  16  00C7 Para	  none
+PROGRAMA			  16  0100 Para	  none
+STEKAS				  16  0100 Para	  Stack
+

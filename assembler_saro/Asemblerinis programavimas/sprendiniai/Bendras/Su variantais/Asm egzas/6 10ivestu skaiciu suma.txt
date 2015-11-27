@@ -1,0 +1,160 @@
+;ivesti 10 skaiciu ir juos sudeti
+;steko segmentas
+stekas segment stack
+db 100h dup (?)
+stekas ends
+;duomenu segmentas
+duom segment                         
+mesg1 db "Iveskite reiksmes: $"                            
+mesg2 db "Rezultatas: $"
+newline db 0dh, 0ah, '$'                  
+pradzia:                     ;isvedimo buferis 6 baitu ilgio
+dec_eilute equ pradzia+6                                   
+buffer db 6                 ;ivedimo buferis 6 baitu ilgio                     
+bufilgis db ?                                              
+bufturinys:                 
+duom ends                   
+;programos segmentas        
+programa segment                     
+start:                      
+assume cs:programa, ds:duom, ss:stekas           ;priskiria kodo segmenta data segm ir steko segmentinis registras
+;paruosiam data segmenta    
+mov ax, duom                
+mov ds, ax                  
+;ekrano valymas             
+mov ax, 2                   
+int 10h                                                     
+mov dx, offset mesg1        
+call tekstas
+mov dx, offset newline      
+call tekstas                           
+call ivedam
+mov dx, offset newline      
+call tekstas                     
+call asc2hex
+call ivedam
+mov dx, offset newline      
+call tekstas                     
+call asc2hex
+call ivedam
+mov dx, offset newline      
+call tekstas                     
+call asc2hex
+call ivedam
+mov dx, offset newline      
+call tekstas                     
+call asc2hex
+call ivedam
+mov dx, offset newline      
+call tekstas                     
+call asc2hex
+call ivedam
+mov dx, offset newline      
+call tekstas                     
+call asc2hex
+call ivedam
+mov dx, offset newline      
+call tekstas                     
+call asc2hex
+call ivedam
+mov dx, offset newline      
+call tekstas                     
+call asc2hex
+call ivedam
+mov dx, offset newline      
+call tekstas                     
+call asc2hex
+call ivedam
+mov dx, offset newline      
+call tekstas                     
+call asc2hex
+;istraukiam argumentus is steko ir is karto priskiriam kintamiesiem
+pop ax
+mov cx, 9
+skaicloop:                  
+pop bx
+add ax, bx
+loop skaicloop    
+;si kodo vieta isspausdina rezultatus naudodama spausdinimo procedura
+mov dx, ds                                               
+mov es, dx                                                                                           
+mov bp, offset mesg2                                     
+call spausdinam                                                                                
+xor ah, ah                                              
+int 16h                                                  
+mov ax, 4c00h                                            
+int 21h  
+;proceduros                                              
+;spausdinam yra rezultatu isvedimo i ekrana ir konversijos is hex i ascii procedura
+spausdinam proc near                                     
+mov di, offset dec_eilute                                
+mov bx, 0ah                                              
+xor cx, cx                                               
+dalyba:               ;sis ciklas daro hex skaiciaus konversija i ASCII koda  
+xor dx, dx            ;gautus desimtainio skaiciaus skaitmenis stumia i steka                                                 
+div bx                                                                       
+add dl, '0'                                                                  
+push dx                                                                      
+inc cx       ;cx registro pakelimas                                                                
+test ax, ax                                                                  
+jnz dalyba                                                                   
+irasom:              ;sitas ciklas is steko istraukia skaitmenis ir raso juos i buferi                                        
+pop ax                                                                       
+stosb    ;komanda dirbt su eilutinem komandom            
+loop irasom                                              
+mov byte ptr es:[di], '$'   ;isimetam  i gala skaiciaus simboli $ DOS'o funkcijai                             
+mov dx, bp                                               
+mov ah, 9                                                
+int 21h                                                  
+mov dx, offset dec_eilute                                
+int 21h                                                  
+mov dx, offset newline                                   
+int 21h                                            
+ret                                                      
+spausdinam endp                                          
+;cia galas                                               
+; antra yra paprasciausia teksto isvedimo i ekrana procedura per  DOS 9 funkcija                                  
+tekstas proc near                                        
+mov ah, 9                                                
+int 21h                                                  
+ret                                                      
+tekstas endp                                             
+;ivedam yra teksto ivedimo per klava procedura i buferi  
+ivedam proc near                                         
+mov dx, offset buffer                                    
+mov ah, 0ah                                              
+int 21h                                                  
+ret                                                      
+ivedam endp                                              
+;asc2hex yra ascii kodo konversijos i hex procedura reikalinga perversti ivestus skaicius i hex kad procas galetu veliau ;su jais operuot
+asc2hex proc near
+xor di, di
+xor ax, ax
+mov cl, bufilgis
+xor ch,ch
+xor bx, bx
+mov si, cx
+mov cl, 0ah
+xor dx, dx
+ciklas1: 
+mov bl, byte ptr bufturinys[di]
+sub bl, '0'           ;'' nurodo kad kompiliatorius verstu i ascii koda
+jb ascii_error
+cmp bl, 9
+ja ascii_error
+mul cx   
+add ax, bx
+inc di   
+cmp di, si
+jb ciklas1
+pop bx   
+push ax  
+push bx  
+ret      
+asc2hex endp
+;ascii klaidos kodas isjungiantis proga
+ascii_error: 
+mov ax, 4c00h
+int 21h  
+programa ends
+end start    

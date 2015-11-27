@@ -1,0 +1,30 @@
+;steko segmentas
+stekas SEGMENT STACK
+;tarpine atmintis - stekas 
+DB 256 DUP (?)
+; rezervuojam vieta
+stekas ENDS
+
+CR equ 13 ; CR yra eilutes perkelimas i kita/ pratraukimas
+LF equ 10 ; LF eilutes pradzia
+
+duomenys SEGMENT 
+pran DB 'Sveiki, tai as', CR, LF
+DB ' jusu kelrode zvaigzde ;DDDDDD', CR,LF
+DB 'pabaiga', '$'
+duomenys ENDS
+
+programa SEGMENT
+ASSUME CS:programa, DS:duomenys, SS:stekas
+; paruosiame duomenu segmento registra
+
+START: 	MOV AX, duomenys
+	MOV DS, AX
+;pranesimas spausdinamas
+	MOV AH, 09h
+	LEA DX, pran
+	INT 21h
+	MOV AH, 4Ch
+	INT 21h
+programa ENDS
+END START

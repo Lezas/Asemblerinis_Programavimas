@@ -1,0 +1,171 @@
+Turbo Assembler	 Version 3.2	    01/17/06 21:22:01	    Page 1
+4.asm
+
+
+
+      1
+      2	0000			     stekas segment stack
+      3	0000  0100*(??)			     db	100h dup (?)
+      4	0100			     stekas ends
+      5				     ;========================
+      6	0000			     duomenys segment
+      7	0000  0A 0D 41 6E 61 20	42+	     pran1   db	0ah,0dh,'Ana Bikevic.'
+      8	      69 6B 65 76 69 63	2E
+      9	000E  0A 0D 4D 61 7A 61	73+		     db	0ah,0dh,'Mazasias raides vercia	i didziasias.',0ah,0dh,'$'
+     10	      69 61 73 20 72 61	69+
+     11	      64 65 73 20 76 65	72+
+     12	      63 69 61 20 69 20	64+
+     13	      69 64 7A 69 61 73	69+
+     14	      61 73 2E 0A 0D 24
+     15	0037  0A 0D 49 76 65 73	6B+	     pran2   db	0ah,0dh,'Iveskite simboliu eilute:',0ah,0dh,'$'
+     16	      69 74 65 20 73 69	6D+
+     17	      62 6F 6C 69 75 20	65+
+     18	      69 6C 75 74 65 3A	0A+
+     19	      0D 24
+     20	0055  32 ?? 32*(??)		     duom    db	50,?,50	dup (?)	     ;Eilute duomenu ivedimui
+     21	0089  0A 0D 4A 75 73 20	6E+	     error1  db	0ah,0dh,'Jus neivedete eilutes$'
+     22	      65 69 76 65 64 65	74+
+     23	      65 20 65 69 6C 75	74+
+     24	      65 73 24
+     25	00A1  0A 0D 4A 65 69 20	6E+	     error2  db	0ah,0dh,'Jei norite pakartoti, spauskite [y]',0ah,0dh,'$'
+     26	      6F 72 69 74 65 20	70+
+     27	      61 6B 61 72 74 6F	74+
+     28	      69 2C 20 73 70 61	75+
+     29	      73 6B 69 74 65 20	5B+
+     30	      79 5D 0A 0D 24
+     31	00C9  0A 0D 4D 6F 64 69	66+	     pran3   db	0ah,0dh,'Modifikuota eilute:',0ah,0dh,'$'
+     32	      69 6B 75 6F 74 61	20+
+     33	      65 69 6C 75 74 65	3A+
+     34	      0A 0D 24
+     35	00E1				     duomenys ends
+     36				     ;========================
+     37	0000			     programa segment
+     38				     assume cs:programa, ds:duomenys, ss:stekas
+     39	0000			     start:
+     40	0000  B8 0000s			     mov     ax, duomenys
+     41	0003  8E D8			     mov     ds, ax	     ;Duomenu segmento prijungimas
+     42
+     43	0005  B8 0002			     mov     ax, 0002h
+     44	0008  CD 10			     int     10h	     ;Isvalomas	ekranas
+     45
+     46	000A  B4 09			     mov     ah, 09h
+     47	000C  BA 0000r			     lea     dx, pran1
+     48	000F  CD 21			     int     21h	     ;Isvedamas	pranesimas pran1
+     49
+     50	0011				     program:
+     51	0011  B4 09			     mov     ah, 09h
+     52	0013  BA 0037r			     lea     dx, pran2
+     53	0016  CD 21			     int     21h	     ;Isvedamas	pranesimas pran2
+     54
+     55	0018  B4 0A			     mov     ah, 0ah
+     56	001A  BA 0055r			     lea     dx, duom
+     57	001D  CD 21			     int     21h	     ;Nuskaitoma simboliu eilute
+Turbo Assembler	 Version 3.2	    01/17/06 21:22:01	    Page 2
+4.asm
+
+
+
+     58
+     59					     ;=====Operuojama eilute
+     60	001F  33 C9			     xor     cx, cx	     ;Isvalomi registrai
+     61	0021  8A 0E 0056r		     mov     cl, duom+1	     ;Nuskaito ivestu simboliu skaiciu
+     62	0025  80 F9 00			     cmp     cl, 0	     ;Tikrina ar jis nelygus 0
+     63	0028  74 03			     je	     klaida1	     ;=0
+     64	002A  EB 0B 90			     jmp     tiesa1	      ;nelygus 0
+     65	002D				     klaida1:
+     66	002D  B4 09			     mov     ah, 09h
+     67	002F  BA 0089r			     lea     dx, error1
+     68	0032  CD 21			     int     21h	     ;Isveda klaida error1
+     69	0034  EB 2A 90			     jmp     pabaiga	     ;Suolis, kur paklaus, ar norite testi
+     70
+     71
+     72
+     73	0037				     tiesa1:
+     74	0037  B4 09			     mov     ah, 09h
+     75	0039  BA 00C9r			     lea     dx, pran3
+     76	003C  CD 21			     int     21h	     ;Isvedamas	pranesimas pran3
+     77	003E  BE 0057r			     lea     si, duom+2	     ;Isimenamas duomenu eilutes pirmasis adresas
+     78
+     79
+     80
+     81
+     82	0041				     ciklas:
+     83	0041  8A 14			     mov     dl, [si]	     ;Isikeliamas eilutes simbolis
+     84	0043  80 FA 61			     cmp     dl, 61h	     ;Ar ne mazoji raide (<61h)
+     85	0046  7C 0B			     jl	     cikl_tiesa	     ;Ne mazhoji -> paprastas spausdinimas
+     86	0048  80 FA 7B			     cmp     dl, 7bh	     ;Ar mazoji	raide [61h-7Ah]
+     87	004B  7C 03			     jl	     didziosios	     ;"Taip" ->	padidinimas ir spausdinimas
+     88	004D  EB 04 90			     jmp     cikl_tiesa	     ;Ne raide -> paprastas spausdinimas
+     89	0050				     didziosios:
+     90	0050  80 EA 20			     sub     dl, 20h	     ;Postumis per 20h atgal, kad butu didzioji	raide
+     91	0053				     cikl_tiesa:
+     92	0053  B4 02			     mov     ah, 02h	     ;vieno simbolio atspausdinimas
+     93	0055  CD 21			     int     21h
+     94	0057  46			     inc     si		     ;padidinamas duomenu elemento adresas (sekantis simbolis)
+     95					     ;=========Tarpu cikliukas
+     96	0058  51			     push    cx		     ;Issaugojamas tarpu skaitliukas
+     97
+     98	0059  E2 E6			     loop    ciklas
+     99	005B  EB 03 90			     jmp     pabaiga	     ;Shuolis link pabaigos
+    100
+    101	005E				     pradzion:
+    102	005E  EB B1			     jmp     program
+    103
+    104	0060				     pabaiga:			     ;Ar dar dirbsit?
+    105	0060  B4 09			     mov     ah, 09h
+    106	0062  BA 00A1r			     lea     dx, error2
+    107	0065  CD 21			     int     21h	     ;Isvedamas	pranesimas error2
+    108
+    109	0067  B4 08			     mov     ah, 08h	     ;Nuskaitomas viena	simboli
+    110	0069  CD 21			     int     21h
+    111	006B  3C 79			     cmp     al, 'y'	     ;Tikrinama, ar neivesta 'y'
+    112	006D  74 EF			     je	     pradzion
+    113
+    114					     ;==========pabaiga===============
+Turbo Assembler	 Version 3.2	    01/17/06 21:22:01	    Page 3
+4.asm
+
+
+
+    115	006F  B4 4C			     mov     ah, 4ch
+    116	0071  CD 21			     int     21h	     ;Isejimas i DOS'a
+    117	0073			     programa ends
+    118				     end start
+Turbo Assembler	 Version 3.2	    01/17/06 21:22:01	    Page 4
+Symbol Table
+
+
+
+
+Symbol Name			  Type	 Value
+
+??DATE				  Text	 "01/17/06"
+??FILENAME			  Text	 "4	  "
+??TIME				  Text	 "21:22:01"
+??VERSION			  Number 0314
+@CPU				  Text	 0101H
+@CURSEG				  Text	 PROGRAMA
+@FILENAME			  Text	 4
+@WORDSIZE			  Text	 2
+CIKLAS				  Near	 PROGRAMA:0041
+CIKL_TIESA			  Near	 PROGRAMA:0053
+DIDZIOSIOS			  Near	 PROGRAMA:0050
+DUOM				  Byte	 DUOMENYS:0055
+ERROR1				  Byte	 DUOMENYS:0089
+ERROR2				  Byte	 DUOMENYS:00A1
+KLAIDA1				  Near	 PROGRAMA:002D
+PABAIGA				  Near	 PROGRAMA:0060
+PRADZION			  Near	 PROGRAMA:005E
+PRAN1				  Byte	 DUOMENYS:0000
+PRAN2				  Byte	 DUOMENYS:0037
+PRAN3				  Byte	 DUOMENYS:00C9
+PROGRAM				  Near	 PROGRAMA:0011
+START				  Near	 PROGRAMA:0000
+TIESA1				  Near	 PROGRAMA:0037
+
+Groups & Segments		  Bit Size Align  Combine Class
+
+DUOMENYS			  16  00E1 Para	  none
+PROGRAMA			  16  0073 Para	  none
+STEKAS				  16  0100 Para	  Stack
+

@@ -1,0 +1,89 @@
+Turbo Assembler	 Version 3.2	    14/12/03 00:09:02	    Page 1
+3.ASM
+
+
+
+      1	0000			     stekas segment stack
+      2	0000  0100*(??)			    db 256 dup (?)
+      3	0100			     stekas ends
+      4
+      5	0000			     Duomenys segment
+      6	0000  04			    a db 4
+      7	0001  03			    b db 3
+      8	0002  02			    c db 2
+      9	0003  44 69 6D 69 74 72	69+	    smsme db 'Dimitrianas Kondrasovas II - 1/3',13,10,'$'
+     10	      61 6E 61 73 20 4B	6F+
+     11	      6E 64 72 61 73 6F	76+
+     12	      61 73 20 49 49 20	2D+
+     13	      20 31 2F 33 0D 0A	24
+     14	0026  78 20 3D 20 28 61	5E+	    smsuzd db 'x = (a^2	+ 3*b*c)/c',13,10, 'Atsakymas ALe $'
+     15	      32 20 2B 20 33 2A	62+
+     16	      2A 63 29 2F 63 0D	0A+
+     17	      41 74 73 61 6B 79	6D+
+     18	      61 73 20 41 4C 65	20+
+     19	      24
+     20	004A			     Duomenys ends
+     21
+     22	0000			     Programa segment
+     23				     assume cs:programa, ds:duomenys, ss:stekas
+     24	0000			     start:
+     25	0000  B8 0000s			   mov ax, duomenys
+     26	0003  8E D8			   mov ds, ax
+     27
+     28	0005  B8 0002			   mov ax, 0002h
+     29	0008  CD 10			   int 10h
+     30	000A  B4 09			   mov ah, 09h
+     31	000C  BA 0003r			   lea dx,smsme
+     32	000F  CD 21			   int 21h
+     33	0011  B4 09			   mov ah, 09h
+     34	0013  BA 0026r			   lea dx, smsuzd
+     35	0016  CD 21			   int 21h
+     36
+     37	0018			     skaiciuoju:
+     38	0018  B8 0000			   mov ax,0
+     39	001B  A0 0000r			   mov al,a
+     40	001E  F6 26 0000r		   mul a
+     41	0022  8B D8			   mov bx,ax
+     42	0024  B8 0003			   mov ax,3
+     43	0027  F6 26 0001r		   mul b
+     44	002B  F6 26 0002r		   mul c
+     45	002F  03 C3			   add ax,bx
+     46	0031  F6 36 0002r		   div c
+     47	0035			       exit:
+     48	0035  B4 07			  mov ah, 07h
+     49	0037  CD 21			  int 21h
+     50	0039  B4 4C			  mov ah, 4ch
+     51	003B  CD 21			  int 21h
+     52	003D			     programa ends
+     53				     end start
+Turbo Assembler	 Version 3.2	    14/12/03 00:09:02	    Page 2
+Symbol Table
+
+
+
+
+Symbol Name			  Type	 Value
+
+??DATE				  Text	 "14/12/03"
+??FILENAME			  Text	 "3	  "
+??TIME				  Text	 "00:09:02"
+??VERSION			  Number 0314
+@CPU				  Text	 0101H
+@CURSEG				  Text	 PROGRAMA
+@FILENAME			  Text	 3
+@WORDSIZE			  Text	 2
+A				  Byte	 DUOMENYS:0000
+B				  Byte	 DUOMENYS:0001
+C				  Byte	 DUOMENYS:0002
+EXIT				  Near	 PROGRAMA:0035
+SKAICIUOJU			  Near	 PROGRAMA:0018
+SMSME				  Byte	 DUOMENYS:0003
+SMSUZD				  Byte	 DUOMENYS:0026
+START				  Near	 PROGRAMA:0000
+
+Groups & Segments		  Bit Size Align  Combine Class
+
+DUOMENYS			  16  004A Para	  none
+PROGRAMA			  16  003D Para	  none
+STEKAS				  16  0100 Para	  Stack
+

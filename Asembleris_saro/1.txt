@@ -1,0 +1,20 @@
+Stekas SEGMENT STACK
+	DB 256 DUP(?)
+Stekas ENDS
+Duom SEGMENT
+PRAN->	DB 'SVEIKAS TAI AS',10,13
+	DB 'MANO PIRMAS DARBAS','$'
+Duom ENDS
+Prog SEGMENT
+	ASSUME DS:Duom, CS:Prog, SS: stekas
+START: MOV AX,Duom
+	MOV DS,AX
+	;pasiruosimas
+	MOV AX,09h
+	LEA DX,PRAN
+	INT 21h
+	;grizimas is programos i musu sistema
+	MOV AH,4Ch
+	INT 21h
+Prog ENDS
+END START

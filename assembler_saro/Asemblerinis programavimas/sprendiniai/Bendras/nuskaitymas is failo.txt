@@ -1,0 +1,395 @@
+.model small                                                                 
+.386                                                                         
+.387                                                                         
+                                                                             
+stekas segment stack use16                                                   
+        db 256 dup (?)                                                       
+stekas ends                                                                  
+                                
+                                                                            
+duomenys segment use16                                                       
+                                                                             
+;Tekstas, kuris bus isvedamas paleidus programa                              
+pagr_pran      db 'Nerijaus Giniuno II-04/3 kursinis darbas',10,13           
+               db '',10,13
+               db 'Programa skaito matrica is failo', 10, 13
+	       db 'C:\tasm\temp\duom.txt, suskaiciuoja' ,10, 13
+	       db 'pagrindines istrizaines elementu suma, randa', 10, 13
+	       db 'tos istrizaines maksimalu elementa ', 10, 13
+	       db 'ir padalina ji is istrizaines sumos', 10, 13, '$'
+
+ ar_testi?     db '',10,13 
+               db 'Ar norite dirbti toliau su sia programa? (T/N)', 10, 13, '$'	
+blogai_ivesta  db 'Blogai ivedete, pakartokite ivedima', 10, 13, '$'       
+pran_istr_suma  db 'Pagr istrizaines suma lygi ', 10, 13, '$'                
+pran_max_elem db 10,13, 'Didziausias pagr istrizaines elementas ', 10, 13, '$'                                               
+rez_pran       db 10, 13, 'Rezultatas: $ '                                         
+;Tekstas, kuris bus isvedamas, vartotojui nutraukus programa                 
+exit_pran      db 'Programa stabdoma',10,13
+               db 'Dekui kad naudojates mano programa',10,13
+               db 'Linksmu svenciu :)',10,13
+               db '(iseiti spauskite ENTER)',10,13
+               db '(atgal B)',10,13,'$'
+                                                                                    
+;Ivedimo tekstai                                                             
+       
+                                                                             
+;Klaidu tekstai                                                                                                                                  
+
+file_open_err  db 'Klaida atidarant faila C:\tasm\temp\duom.txt', 10, 13, '$'
+file_read_err  db 'Klaida nuskaitant faila C:\tasm\temp\duom.txt', 10, 13, '$'
+dalyba_is_nul  db 'Dalyba is nulio', 10, 13, '$'
+failas         db 'C:\tasm\temp\duom.txt', 0                                               
+                                                                             
+;Kintamuju apibrezimas                                                       
+KLAV           dw 2, ?, 2 dup (?), '$'                                        
+tiksl          dd 100, '$'                                                    
+handle         dw ?, '$'                                                      
+failo_duom     db 256 dup (0), '$'                                                                                         
+mas            db 256 dup (0), '$' 
+max_elem       dd ?, '$'
+desimt         dw 10, '$'  
+des 	       dw 10, '$'                                                                                     
+n              dw 4 , '$'
+m              dw 4, '$'
+k              dw 16, '$'                                                                                                   
+istr_suma      dd 9 dup (0), '$'
+rez_istr_suma  db 8 dup (0), '$'  
+rez_max_elem   db 8 dup (0)                                     
+ats            db 8 dup (0), '$'                                                     
+rez            dd 0.0, '$'                                                                                                                                                                             
+duomenys ends                                                                
+                                                                             
+programa segment use16                                                       
+assume ss:stekas, ds:duomenys, cs:programa                                   
+                                                                             
+start:                                                                                                                                                                                                                   
+        mov ax, duomenys      ;I steka ikeliami visi duomenys                
+        mov ds, ax            ;Is steko duomenys talpinami ds registre                               
+        call ekr_val          ;Ekrano valymas
+                                                                                                                                                                
+        lea dx, pagr_pran     ;Prad teksto adreso ikelimas i dx registra     
+        call i_ekr            ;Pradinio teksto isvedimas i ekrana        
+        lea dx, ar_testi?     ;Klausimas ar norim testi
+        call i_ekr           ;Teksto isvedimas i ekrana                         
+error:                          
+        call duom_is_klav     ;Duomenu ivedimas is klaviaturos  
+        cmp al, 'T'           ;Tikrinama ar ivesta T raide                                
+        je toliau             ;Jei taip einama i zyme "toliau"                            
+        cmp al, 'N'           ;Tikrinama ar ivesta raide N                                
+        je stop               ;Jei taip einama i zyme "stop"
+        lea dx, blogai_ivesta ;Jei neivesta nei T nei N, isvedmas                      
+        call i_ekr            ;klaidos tekstas                   
+        jmp error             ;grizta prie ivedimo is klaviaturos
+        
+             
+            ;Programos stabdymo paprograme  
+      stop:
+  call exit
+toliau:                                                         
+        call open_file        ;Failo atidarymas                                                                
+        call read_file        ;Failo nuskaitymas                                               
+        call close_file       ;Failo uzdarymas                                             
+        call sk_ikel_i_mas    ;Faile esanciu skaiciu ikelimas i kint "matrica"
+                                    
+                                                                                                                                                                                                                                                            
+        call pagr_istr_suma    ;Sumuojami pagr istrizaines elementai
+        mov byte ptr istr_suma, al ;I kint "eil_suma" ikeliamas al turinys                                           
+                                                                                                                                                                                                                                                                                                                                                                                                                        
+        call max_istr_elem       ;Randamas maximalus matricos elementas
+        cmp al, 0             ;al lyginamas su 0
+        je dalyb_is_nul       ;Jei al = 0, tei einama i zyme "dalyb_is_nul"                  
+        jmp toliau1           ;Jei al != 0 programa vykdoma toliau                                             
+                                                                  
+dalyb_is_nul:                       
+        lea dx, dalyba_is_nul ;Tekstas, pranesantis apie dalyba is nulio
+        call ekr_val          ;Ekrano valymas                                          
+        call i_ekr            ;Teksto isvedimas i ekrana               
+        call exit             ;Programa nutraukiama                          
+                                                   
+toliau1:                              
+        mov byte ptr max_elem, al ;I kintamaji "max_elem" ikeliamas al turinys
+                                                    
+                                      
+	mov ax, word ptr istr_suma  ;I ax ikeliama eilutes elementu suma    
+        lea  bx, [rez_istr_suma+3]  ;I bx ikeliamas kint "rez_eil_suma" 4 elemento adresas                                    
+        call form_sk               ;Skaiciaus formatavimas              
+        lea dx, pran_istr_suma      ;Pranesimas apie min eilutes suma                       
+        call ekr_val               ;Ekrano valymas                             
+        call i_ekr                 ;Isvedimas i ekrana               
+        lea dx, rez_istr_suma       ;Skaiciaus isvedimas i ekrana                   
+        call i_ekr                                        
+                                                      
+                                    
+	mov ax, word ptr max_elem ;I ax ikeliama visu elementu suma     
+        lea bx, [rez_max_elem+3]  ;I bx ikeliamas kint "rez_max_suma" 4 elemento adresas                                 
+        call form_sk              ;Skaiciaus formatavimas
+        lea dx, pran_max_elem     ;Pranesimas apie max eilutes suma                       
+        call i_ekr                ;Isvedimas i ekrana                          
+        lea dx, rez_max_elem      ;Skaiciaus isvedimas i ekrana                   
+        call i_ekr                                                                     
+                                                                
+                                                                                                                                                                                                                                                     
+;Skaiciuojama min_suma/max_suma                                              
+                                                
+        fild istr_suma         ;I ST(0) ikelima istrizaines suma
+        fidiv max_elem        ;ST(0) dalinamas is max eilutes elem
+        fimul tiksl           ;Dalybos rezultatas dauginamas is tikslumo                                  
+        fistp rez             ;ST(0) turinys sukeliamas i kint "rez" 
+        call float            ;Paprograme skirta skaiciaus su  
+                              ;Plaukiojanciu kableliu sutvarkymui
+        lea dx, rez_pran      ;Pranesimas apie rezultata                          
+        call i_ekr            ;Isvedimas i ekrana                  
+        lea dx, ats           ;Rezultato isvedimas                   
+        call i_ekr            ;Rezultato isvedimas i ekrana                    
+        call ekr_uzlaik       ;Ekrano uzlaikymas                             
+                                                                                           
+pabaiga:                                                                                                                         
+        mov ax, 4c00h         ;Programos pabaiga
+        int 21h               ;Pertraukimas i DOS 
+                                        
+                                                                                                  
+; Paprogrames                                      
+                                                   
+
+                                                   
+;Paprograme skirta duomenu isvedimui i ekrana                                                        
+i_ekr proc                                   
+        mov ah, 09h           ;Nurodoma, kad tekstas bus isvedamas i ekrana                    
+        int 21h               ;Pertraukimas i DOS                                             
+        ret                   ;Valymo grazinimas kviecianciai programai                   
+endp i_ekr                                                          
+                                                 
+;Ekrano uzlaikymo paprograme        
+ekr_uzlaik proc                     
+        mov ah, 07h           ;Nurodoma, kad laukiamas klaviso paspaudimas                    
+        int 21h               ;Pertraukimas i DOS                                           
+        ret                   ;Valdymo grazinimas kviecianciai programai                   
+endp ekr_uzlaik                                                   
+                                                   
+;Paprograme skirta ekrano valymui                                           
+ekr_val proc                        
+        mov ax, 02h           ;Nurodoma, kad bus valomas ekranas                    
+        int 10h               ;Pertraukimas i BIOS                                  
+        mov ax, 0             ;ax apnulinimas
+        ret                   ;Valdymo grazinimas kviecianciai programai 
+endp ekr_val                                                     
+                                                   
+;Is klaviaturos ivedamu duomenu apdorojimas
+duom_is_klav proc                   
+        lea dx, KLAV          ;KLAV adreso ikelimas i dx                 
+        mov ah, 0ah           ;Duomenys skaitomi is klaviaturos                    
+        int 21h               ;Pertraukimas i DOS       
+        mov ax, 0             ;ax apnulinimas
+        mov ax, KLAV+2        ;Ivesti duomenys talpinami i registra ax                                         
+        ret                   ;Valdymo grazinimas kviecianciai programai 
+endp duom_is_klav                                               
+                                                                         
+                                    
+                                                 
+open_file proc                                
+                                                 
+        lea dx, failas        ;I dx ikeliamas failo pavadinimo adresas
+        mov ah, 3dh           ;Nurodoma, kad yra atidaromas failas                                 
+        int 21h               ;Pertraukimas i DOS                                    
+        jc f_open_err         ;Jei negalima failo atidaryti, valdymas perduodamas ?
+        mov handle, ax        ;Deskriptoriaus reiksme issaugoma kint "handle"
+        jmp no_open_err       ;Jei nera klaidu einama i paprogr pabaiga                 
+                                                                       
+f_open_err:                                                                   
+                                                 
+        lea dx, file_open_err ;Klaido tekstas
+        call ekr_val          ;Ekrano valymas                   
+        call i_ekr            ;Teksto isvedimas i ekrana                   
+        call exit             ;Programos stabdymas                   
+                                                 
+no_open_err:                        
+                                                 
+        ret                   ;Valdymas grazinamas kviecianciai programai                   
+                                                 
+endp open_file                                
+                                                 
+read_file proc                                  
+                                                 
+        mov cx, 256           ;cx = 256
+        mov bx, handle        ;I bx ikeliama deskriptoriaus reiksme                          
+        lea dx, failo_duom    ;Failo turinys ikeliamas i "failo_duom" kint
+        mov ah, 3fh           ;Nurodoma, kad duomenys bus nuskaitomi is failo 
+        int 21h               ;Pertraukimas i DOS                                   
+        jc f_read_err         ;Jei negalima is failo nuskaityti valdymas perduodamas zymei "f_nusk_kld"    
+        jmp no_read_err       ;Valdymas i zyme, jei nera klaidos nuskaitant   
+                                       
+f_read_err:                         
+                                    
+        lea dx, file_read_err ;Pranesimas, apie klaida nuskaitant faila               
+        call ekr_val          ;Ekrano valymas                          
+        call i_ekr            ;Teksto isvedimas i ekrana                    
+        call exit             ;Programos stabdymas                                       
+                                                                     
+no_read_err:                        
+                                    
+        ret                   ;Valdymas grazinamas kviecianciai programai  
+                                    
+endp read_file                      
+                                    
+close_file proc                     
+                                    
+        mov bx, handle        ;I bx ikeliama deskriptoriaus reiksme           
+        mov ah, 3eh           ;Nurodoma, kad failas bus uzdaromas                                     
+        int 21h               ;Pertraukimas i DOS
+        ret                   ;Valdymas grazinamas kviecianciai programai
+                                    
+endp close_file                                                                                          
+                                                                                  
+                                    
+sk_ikel_i_mas proc                  
+                                    
+        xor ax, ax            ;Apnulinamas ax                                 
+        xor si, si            ;Apnulinamas si
+        mov cx, 256           ;cx = 256       
+        mov di, 65535         ;di = FFFF => di = FFFF + 1 = 0 
+                                       
+ciklas: 
+        push cx                      ;Ciklo zyme                                     
+        dec cx                ;cx = cx - 1                                                
+        inc di                ;di = di + 1                                                
+        cmp cx, 0             ;cx lyginimas su nuliu                                                
+        je pab                ;Salyga jei cx = 0                                                
+        mov ah, failo_duom[di];I ah ikeliamas "failo_duom" di-tasis elementas           
+        cmp ah, '0'           ;ah lyginamas su 0                                                
+        jl ciklas             ;Jei ah < 0, griztama i ciklo pradzia                                                
+        cmp ah, '9'           ;ah lyginamas su 9                                                 
+        jg ciklas             ;Jei ah > 9, griztama i ciklo pradzia                                                                        
+        sub ah, 30h           ;ah = ah - 30h                    
+        mov mas[si], ah       ;ah turinys ikeliamas "mas" si-taji elementa
+        inc si                ;si = si + 1
+        cmp si, k             ;Tikrinama ar si = matricos elementu sk
+        je pab                ;Jei si = matr elem sk ciklas nutraukiamas
+        jmp ciklas
+        pop cx            ;Jei si != k, griztama i ciklo pradzia                                 
+pab:                                
+        ret                   ;Valdymas grazinamas kviecianciajai programai3                          
+endp sk_ikel_i_mas                  
+                                                              
+                                    
+                                    
+pagr_istr_suma proc                 
+        mov bx, 0             ;bx apnulinimas
+	mov ah, 0             ;ah apnulinimas               
+        mov si, 0             ;si apnulinimas               
+        mov cx, n             ;cx = eiluciu skaiciui, ciklo skaitiklis
+                                    
+;ciklas skirtas skaiciuoti istrizaines elementu suma                              
+ciklas_istr:                        
+        add al, mas[bx+si]    ;prie al istrizaines elementa
+        inc si                ;si = si + 1                            
+        add bx, m             ;bx = bx + m            
+        loop ciklas_istr      ;Grizta i ciklo pradzia, jei cx nelygus 0  
+                                                    
+        ret                   ;Valdymo grazinimas kviecianciai programai
+endp pagr_istr_suma                 
+                                    
+                                    
+                                    
+;Sioje paprogrameje ieskau max elemento, darom prielaida kad jis pirmas istr
+;elementas ir lyginamas su kitais istrizaines elementais, jei randamas 
+;didesnis jis tampa didziausiu ir yra lyginamas su kitais istr elementais
+max_istr_elem proc                  
+        mov bx, m            ;bx = m
+        mov ax, 0            ;ax apnulinimas       
+        mov si, 1            ;si = 1 
+        mov al, mas[0]       ;al prilyginamas 1-as istr elementas
+                             ;daroma prielaida, kad jis diddziausias
+        mov cx, n            ;Ciklo skaitiklis
+                                    
+;Ciklas skirtas ieskoti max istr elemento                                              
+ciklas2:                                 
+        cmp mas[bx+si], al   ;Ieskoma ar nera didesnio sk
+        jg max               ;Jei yra einama i zyme "max"                            
+        jmp cycle_max        ;Jei - ne i zyme "cyccle_max"                            
+max:                                                      
+        mov al, mas[bx+si]   ;I al ikeliamas didesnis elementas 
+cycle_max:                                                  
+        inc si               ;si = si + 1
+        add bx, m            ;bx = bx + m            
+        loop ciklas2         ;I ciklo pradzia jei cx ne 0                                                                
+                                                                                                        
+        ret                  ;Griztama i pagr programa    
+endp max_istr_elem                                                                                         
+                                    
+                                             
+                                                                                                                                                                                                              
+;Paprograme, skirta suformatuoti eilutes ir visos matricos sumas, taip, kad
+;galima butu isvesti i ekrana vartotojui
+form_sk proc                        
+                                                                    
+        mov cx, 4             ;cx = 4             
+                                                  
+sk_ciklas:                    ;Ciklo pradzia      
+        xor dx, dx            ;dx apnulinimas              
+        div des               ;ax'e esantis skaicius dalinamas is 10
+        add dl, 30h           ;Gauta liekana suformatuojama pagal ASCII
+        mov [bx], dl          ;I atminties lastele ikeliama dl reiksme                                        
+        dec bx                ;bx = bx - 1                                        
+        loop sk_ciklas        ;Nuorodo grizti i ciklo pradzia, jei cx != 0            
+                                                                          
+        ret                   ;Valdymas grazinamas kviecianciai programai
+endp form_sk                        
+                                     
+                                     
+                                     
+                                     
+;Paprograme skirta skaiciaus su plaukiojanciu kableliu isvedimui i
+;ekrana su 0.01 tikslumu             
+float proc                          
+                                                
+        mov eax, rez          ;eax = rez       
+        mov di, 10            ;di = 10          
+                                          
+desimtaine1:                                                                  
+                                     
+        mov dx, 0             ;dx = 0             
+        div desimt            ;eax / 10       
+        add dl, 30h           ;Liekana sutvarkoma pagal ASCII
+        mov ats[di], dl       ;ats[di] = dl                              
+        mov dx, 0            ;dx = 0
+        cmp di, 7             ;di lyginamas su 7      
+        je plauk_kabl_pab     ;Jei di = 7 einama i paprogrames pabaiga                  
+        dec di                ;di = di - 1                                        
+        cmp di, 8             ;di lyginamas su 8             
+        je kablelis1          ;Jei di = 8, einama i zyme "kablelis1"
+        jmp desimtaine1       ;Jei di != 8, einama i ciklop pradzia                                      
+                                     
+kablelis1:                           
+                                     
+        mov ats[di], ','      ;ats[8] = ','       
+        dec di                ;di = di - 1       
+        jmp desimtaine1       ;I ciklo pradzia            
+                                          
+plauk_kabl_pab:                      
+        ret                                                                   
+endp float                                
+                                    
+;Paprograme nutraukianti programos vykdyma
+exit proc
+                          ;Paprogrames pradzia
+        call ekr_val          ;Paprograme ekrano isvalymui
+        lea dx, exit_pran
+        call i_ekr
+        call duom_is_klav
+        cmp al, 'B'
+        je start
+                   ;Tekstas, pranesantis apie programos nutraukima                                  
+              
+        call ekr_uzlaik       ;Paprograme skirta ekrano uzlaikymui                                      
+        mov ah, 4ch           ;Programos uzbaigimas                                   
+        int 21h               ;Pertraukimas i DOS                  
+endp exit                           
+                                                         
+programa ends                       
+end start                     ;Programos pabaiga                           
+                                                   
+                                                   
+                                                   
+                                                   
+             

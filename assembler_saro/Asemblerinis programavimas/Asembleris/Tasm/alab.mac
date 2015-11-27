@@ -1,0 +1,146 @@
+;-------------------------------------------------------------------------
+;      MACRO FILE FOR ASSEMBLER LABORATORY (C) KURT INGE GR0NBECH
+;-------------------------------------------------------------------------
+;              You can have a maximum of 50 macros!
+;
+;                            Valid keys
+;อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+;
+;ÝkbXXXX Alt-Letter Key CodesÞ
+;
+; Constant    บ Constant
+;อออออออออออออฮอออออออออออ
+; kbAltA      บ kbAltN
+; kbAltB      บ kbAltO
+; kbAltC      บ kbAltP
+; kbAltD      บ kbAltQ
+; kbAltE      บ kbAltR
+; kbAltF      บ kbAltS
+; kbAltG      บ kbAltT
+; kbAltH      บ kbAltU
+; kbAltI      บ kbAltV
+; kbAltJ      บ kbAltW
+; kbAltK      บ kbAltX
+; kbAltL      บ kbAltY
+; kbAltM      บ kbAltZ
+;
+;
+;ÝkbXXXX Special Key CodesÞ
+;
+; Constant    บ Constant
+;อออออออออออออฮอออออออออออ
+; kbAltEqual  บkbEnd
+; kbAltMinus  บkbEnter
+; kbAltSpace  บkbEsc
+; kbBack      บkbGrayMinus
+; kbCtrlBack  บkbHome
+; kbCtrlDel   บkbIns
+; kbCtrlEnd   บkbLeft
+; kbCtrlEnter บkbNoKey
+; kbCtrlHome  บkbPgDn
+; kbCtrlIns   บkbPgUp
+; kbCtrlLeft  บkbGrayPlus
+; kbCtrlPgDn  บkbRight
+; kbCtrlPgUp  บkbShiftDel
+; kbCtrlPrtSc บkbShiftIns
+; kbCtrlRight บkbShiftTab
+; kbDel       บkbTab
+; kbDown      บkbUp
+; kbAltBack   บ
+;
+;ÝkbXXXX Alt-Number Key CodesÞ
+;
+; Constant    บ Constant
+;อออออออออออออฮอออออออออออ
+; kbAlt1      บ kbAlt6
+; kbAlt2      บ kbAlt7
+; kbAlt3      บ kbAlt8
+; kbAlt4      บ kbAlt9
+; kbAlt5      บ kbAlt0
+;
+;ÝkbXXXX Function Key CodesÞ
+;
+; Constant    บ Constant
+;อออออออออออออฮอออออออออออ
+; kbF1        บ kbF6
+; kbF2        บ kbF7
+; kbF3        บ kbF8
+; kbF4        บ kbF9
+; kbF5        บ kbF10
+;
+;ÝkbXXXX Shift-Function Key CodesÞ
+;
+; Constant    บ Constant
+;อออออออออออออฮอออออออออออ
+; kbShiftF1   บ kbShiftF6
+; kbShiftF2   บ kbShiftF7
+; kbShiftF3   บ kbShiftF8
+; kbShiftF4   บ kbShiftF9
+; kbShiftF5   บ kbShiftF10
+;
+;ÝkbXXXX Ctrl-Function Key CodesÞ
+;
+; Constant    บ Constant
+;อออออออออออออฮอออออออออออ
+; kbCtrlF1    บ kbCtrlF6
+; kbCtrlF2    บ kbCtrlF7
+; kbCtrlF3    บ kbCtrlF8
+; kbCtrlF4    บ kbCtrlF9
+; kbCtrlF5    บ kbCtrlF10
+;
+;ÝkbXXXX Alt-Function Key CodesÞ
+;
+; Constant    บ Constant
+;อออออออออออออฮอออออออออออ
+; kbAltF1     บ kbAltF6
+; kbAltF2     บ kbAltF7
+; kbAltF3     บ kbAltF8
+; kbAltF4     บ kbAltF9
+; kbAltF5     บ kbAltF10
+;
+; MACRO BLOCK SYNTAX :
+;
+; [MAC]          Starts a macro, anything else on line can be comment
+; kbxxxxxx       ; keyboard constant, comment on this line not allowed
+; ...
+; ...
+; lines
+; ...
+; ...
+; [END]          Ends macro block, comment here not allowed!
+;
+;
+; Example macro blocks
+
+[MAC]  Displays a line whenever Alt-Y is pressed
+kbAltY
+ฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤ
+[END]
+
+[MAC]  Displays program body whenever Alt-B is pressed
+kbAltB
+.model small
+.stack
+.data
+.code
+start:
+        mov     ax, @data
+        mov     ds, ax
+
+        mov     ax, 4c00h
+        int     21h
+        end     start
+[END]
+
+[MAC]  Procedure body
+kbAltV
+PROC
+        ret
+ENDP
+[END]
+
+[MAC]
+kbAltL
+;ฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐ
+;ฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐฐ
+[END]

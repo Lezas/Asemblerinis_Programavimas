@@ -1,0 +1,321 @@
+subj.
+
+Vietoj nuskaitymo is klaviaturos (ten komentarai yra) bandyk rasyt sita:
+
+mov ax, 08h
+int 21h
+
+turetu veikt (netikrinau). Geriau ivertins jei sitas veiks, nors nzn ;].
+
+
+stekas segment stack
+db 256 dup (?)
+stekas ends
+
+duomenys segment
+bilietas db 'Bilietas Nr. 20','$'
+uzduotis db 'Sudeti desimt vienzenkliu ivedamu is klaviaturos skaiciu',10,13
+        db 'ir rezultata atspausdinti ekrane.',10,13,'$'
+klausti1 db 'Iveskite skaiciu:',10,13,'$'
+spausdinti db 'Atsakymas','$'
+ivedimas db 20,?,20 dup (0),13,10,'$'
+       a db 0,13,10,'$'
+       b db 0,13,10,'$'
+       c db 0,13,10,'$'
+       d db 0,13,10,'$'
+       e db 0,13,10,'$'
+       f db 0,13,10,'$'
+       g db 0,13,10,'$'
+       h db 0,13,10,'$'
+       i db 0,13,10,'$'
+       j db 0,13,10,'$'
+       rezultatas db 0,13,10,'$'
+       des db 10
+       des1 dw 10
+       count dw 0
+duomenys ends
+
+programa segment
+assume cs:programa, ds:duomenys, ss:stekas
+start:
+       mov ax,duomenys
+       mov ds,ax
+;ekrano valymas
+       mov ax,02h
+       int 10h
+;uzduoties spausdinimas
+       mov ah,09h
+       lea dx,bilietas
+       int 21h
+       lea dx,uzduotis
+       int 21h
+       lea dx,spausdinti
+       int 21h
+
+;kursoriaus pozicionavimas
+       mov ah,02
+       mov bh,00
+       mov dh,5
+       mov dl,2
+       int 10h
+;uzklausos isvedimas
+       mov ah,09h
+       lea dx,klausti1
+       int 21h
+
+;kursoriaus pozicionavimas
+       mov ah,02
+       mov bh,02
+       mov dh,6
+       mov dl,2
+       int 10h
+;pirmojo skaiciaus ivedimas
+       lea dx,ivedimas
+       mov ah,0ah
+       int 21h
+       add dx,2
+       mov bx,dx    ;adreso naudojimui per registra
+       mov dl,[bx]
+       sub dl,30h
+       mov a,dl  ;pirmas skaicius
+       mov cl,ivedimas+1
+       dec cl
+       mov ch,0
+
+;kursoriaus pozicionavimas
+       mov ah,02
+       mov bh,00
+       mov dh,7
+       mov dl,2
+       int 10h
+       mov ah,09h
+       lea dx,klausti1
+       int 21h
+;antrojo skaiciaus ivedimas
+       lea dx,ivedimas
+       mov ah,0ah
+       int 21h
+       add dx,2
+       mov bx,dx    ;adreso naudojimui per registra
+       mov dl,[bx]
+       sub dl,30h
+       mov b,dl  ;antras skaicius
+       mov cl,ivedimas+1
+       dec cl
+       mov ch,0
+
+
+;kursoriaus pozicionavimas
+       mov ah,02
+       mov bh,00
+       mov dh,8
+       mov dl,2
+       int 10h
+       mov ah,09h
+       lea dx,klausti1
+       int 21h
+;treciojo skaiciaus ivedimas
+       lea dx,ivedimas
+       mov ah,0ah
+       int 21h
+       add dx,2
+       mov bx,dx    ;adreso naudojimui per registra
+       mov dl,[bx]
+       sub dl,30h
+       mov c,dl  ;trecias skaicius
+       mov cl,ivedimas+1
+       dec cl
+       mov ch,0
+
+;kursoriaus pozicionavimas
+       mov ah,02
+       mov bh,00
+       mov dh,9
+       mov dl,2
+       int 10h
+       mov ah,09h
+       lea dx,klausti1
+       int 21h
+       mov ah,09h
+       lea dx,klausti1
+       int 21h
+;ketvirtojo skaiciaus ivedimas
+       lea dx,ivedimas
+       mov ah,0ah
+       int 21h
+       add dx,2
+       mov bx,dx    ;adreso naudojimui per registra
+       mov dl,[bx]
+       sub dl,30h
+       mov d,dl  ;ketvirtas skaicius
+       mov cl,ivedimas+1
+       dec cl
+       mov ch,0
+
+;kursoriaus pozicionavimas
+       mov ah,02
+       mov bh,00
+       mov dh,10
+       mov dl,2
+       int 10h
+       mov ah,09h
+       lea dx,klausti1
+       int 21h
+       mov ah,09h
+       lea dx,klausti1
+       int 21h
+       mov ah,09h
+       lea dx,klausti1
+       int 21h
+;penktojo skaiciaus ivedimas
+       lea dx,ivedimas
+       mov ah,0ah
+       int 21h
+       add dx,2
+       mov bx,dx    ;adreso naudojimui per registra
+       mov dl,[bx]
+       sub dl,30h
+       mov e,dl  ;penktas skaicius
+       mov cl,ivedimas+1
+       dec cl
+       mov ch,0
+
+;kursoriaus pozicionavimas
+       mov ah,02
+       mov bh,00
+       mov dh,11
+       mov dl,2
+       int 10h
+       mov ah,09h
+       lea dx,klausti1
+       int 21h
+;sestojo skaiciaus ivedimas
+       lea dx,ivedimas
+       mov ah,0ah
+       int 21h
+       add dx,2
+       mov bx,dx    ;adreso naudojimui per registra
+       mov dl,[bx]
+       sub dl,30h
+       mov f,dl  ;sestas skaicius
+       mov cl,ivedimas+1
+       dec cl
+       mov ch,0
+
+;kursoriaus pozicionavimas
+       mov ah,02
+       mov bh,00
+       mov dh,12
+       mov dl,2
+       int 10h
+       mov ah,09h
+       lea dx,klausti1
+       int 21h
+;septintojo skaiciaus ivedimas
+       lea dx,ivedimas
+       mov ah,0ah
+       int 21h
+       add dx,2
+       mov bx,dx    ;adreso naudojimui per registra
+       mov dl,[bx]
+       sub dl,30h
+       mov g,dl  ;sept. skaicius
+       mov cl,ivedimas+1
+       dec cl
+       mov ch,0
+
+;kursoriaus pozicionavimas
+       mov ah,02
+       mov bh,00
+       mov dh,13
+       mov dl,2
+       int 10h
+       mov ah,09h
+       lea dx,klausti1
+       int 21h
+;astuntojo skaiciaus ivedimas
+       lea dx,ivedimas
+       mov ah,0ah
+       int 21h
+       add dx,2
+       mov bx,dx    ;adreso naudojimui per registra
+       mov dl,[bx]
+       sub dl,30h
+       mov h,dl  ;8 skaicius
+       mov cl,ivedimas+1
+       dec cl
+       mov ch,0
+
+;kursoriaus pozicionavimas
+       mov ah,02
+       mov bh,00
+       mov dh,14
+       mov dl,2
+       int 10h
+       mov ah,09h
+       lea dx,klausti1
+       int 21h
+;devintojo skaiciaus ivedimas
+       lea dx,ivedimas
+       mov ah,0ah
+       int 21h
+       add dx,2
+       mov bx,dx    ;adreso naudojimui per registra
+       mov dl,[bx]
+       sub dl,30h
+       mov i,dl  ;9 skaicius
+       mov cl,ivedimas+1
+       dec cl
+       mov ch,0
+
+;kursoriaus pozicionavimas
+       mov ah,02
+       mov bh,00
+       mov dh,15
+       mov dl,2
+       int 10h
+       mov ah,09h
+       lea dx,klausti1
+       int 21h
+;desimtojo skaiciaus ivedimas
+       lea dx,ivedimas
+       mov ah,0ah
+       int 21h
+       add dx,2
+       mov bx,dx    ;adreso naudojimui per registra
+       mov dl,[bx]
+       sub dl,30h
+       mov j,dl  ;10 skaicius
+       mov cl,ivedimas+1
+       dec cl
+       mov ch,0
+
+
+;skaiciavimas
+mov bl,a
+add bl,b
+add bl,c
+add bl,d
+add bl,e
+add bl,f
+add bl,g
+add bl,h
+add bl,i
+add bl,j
+mov rezultatas,bl
+
+
+;atsakymo isvedimas
+add rezultatas,30h
+mov ah,09h
+lea dx,rezultatas
+int 21h
+
+;ekrano uzlaikymas
+mov ah, 07h
+int 21h
+mov ah, 4ch
+int 21h
+
+programa ends
+end start

@@ -1,0 +1,87 @@
+Turbo Assembler	 Version 3.2	    01/17/06 20:02:27	    Page 1
+failas.asm
+
+
+
+      1	0000			     stekas segment stack
+      2	0000  0100*(??)		       db 256 dup(?)
+      3	0100			     stekas ends
+      4
+      5	0000			     duomenys segment
+      6	0000  41 6E 61 20 42 69	6B+	  duom db 'Ana Bikevic II-3/3'
+      7	      65 76 69 63 20 49	49+
+      8	      2D 33 2F 33
+      9	0012  63 3A 5C 6B 75 72	73+	  path db 'c:\kursinis.txt'
+     10	      69 6E 69 73 2E 74	78+
+     11	      74
+     12	0021  0000			     h dw 0
+     13	0023			     duomenys ends
+     14
+     15	0000			     programa segment
+     16					     assume cs:programa,ds:duomenys,ss:stekas
+     17	0000			     start:
+     18	0000  B8 0000s			      mov ax,duomenys
+     19	0003  8E D8			      mov ds,ax
+     20
+     21					      ;create file
+     22	0005  B4 3C			      mov ah,3ch
+     23	0007  B9 0000			      mov cx,0	     ;cx=0 normal file
+     24	000A  BA 0012r			      lea dx,path
+     25	000D  CD 21			      int 21h
+     26
+     27					      ;open file
+     28	000F  B4 3D			      mov ah,3dh
+     29	0011  B0 02			      mov al,2	     ;al=2 for reading - writing
+     30	0013  BA 0012r			      lea dx,path
+     31	0016  CD 21			      int 21h
+     32
+     33	0018  A3 0021r			      mov h,ax	     ;copy file	handle
+     34
+     35					      ;write file
+     36	001B  B4 40			      mov ah,40h
+     37	001D  8B 1E 0021r		      mov bx,h	     ;file handle
+     38	0021  BA 0000r			      lea dx,duom    ;write to file
+     39	0024  B9 0012			      mov cx,18	     ;bytes to write
+     40	0027  CD 21			      int 21h
+     41
+     42					      ;close file
+     43	0029  B4 3E			      mov ah,3eh
+     44	002B  8B 1E 0021r		      mov bx,h
+     45	002F  CD 21			      int 21h
+     46
+     47
+     48
+     49	0031  B4 07			      mov ah,07h
+     50	0033  CD 21			      int 21h
+     51
+     52	0035  B4 4C			      mov ah,4ch
+     53	0037  CD 21			      int 21h
+     54	0039			     programa ends
+     55				      end start
+Turbo Assembler	 Version 3.2	    01/17/06 20:02:27	    Page 2
+Symbol Table
+
+
+
+
+Symbol Name			  Type	 Value
+
+??DATE				  Text	 "01/17/06"
+??FILENAME			  Text	 "failas  "
+??TIME				  Text	 "20:02:27"
+??VERSION			  Number 0314
+@CPU				  Text	 0101H
+@CURSEG				  Text	 PROGRAMA
+@FILENAME			  Text	 FAILAS
+@WORDSIZE			  Text	 2
+DUOM				  Byte	 DUOMENYS:0000
+H				  Word	 DUOMENYS:0021
+PATH				  Byte	 DUOMENYS:0012
+START				  Near	 PROGRAMA:0000
+
+Groups & Segments		  Bit Size Align  Combine Class
+
+DUOMENYS			  16  0023 Para	  none
+PROGRAMA			  16  0039 Para	  none
+STEKAS				  16  0100 Para	  Stack
+

@@ -1,0 +1,9 @@
+
+ Start  Stop   Length Name               Class
+
+ 00000H 000FFH 00100H STEKAS             
+ 00100H 002FAH 001FBH DUOMENYS           
+ 00300H 00450H 00151H PROGRAMA           
+
+Program entry point at 0030:0000
+

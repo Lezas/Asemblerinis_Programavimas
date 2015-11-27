@@ -1,0 +1,44 @@
+Stekas SEGMENT STACK
+	DB 256 DUP(?)
+Stekas ENDS
+Duom SEGMENT
+	des DB 10
+	a DB 9
+	b DB 127
+	c DB 143
+	x DB 0
+	p DB 'Petkevicius',10,13
+	rez DB 4 DUP(' '),'$'
+Duom ENDS
+Prog SEGMENT
+	ASSUME DS:Duom, CS:Prog, SS: stekas
+START: MOV AX,Duom
+	MOV DS,AX
+	MOV AX,0
+	MOV AL, a
+	ADD AL,b
+	SUB AL,c
+	MOV x, AL
+	
+	CMP x,0
+	JL minusas
+prad: MOV AX,0
+	MOV AL,x
+	LEA BX, REZ+3
+	MOV CX,3
+ciklas: MOV AH,0
+	DIV des
+	ADD AH,30h
+	MOV [BX],AH
+	DEC BX
+	LOOP ciklas
+	MOV AH,09h
+	LEA DX,p
+	INT 21h
+	MOV AH,4Ch
+	INT 21h  
+minusas: NEG x
+	MOV rez, 2Dh
+	JMP prad 
+Prog ENDS
+END START

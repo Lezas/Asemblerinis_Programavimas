@@ -1,0 +1,9 @@
+1. Logines schemos,kompiuterio loginiai elementai
+2. semantinis matas,jo savybes
+3. Standziuju disku informacijos saugojimas. Failai ir ju sistemos
+4. informacines visuomenes bruozai
+5. kazkoks uzdavinys
+6. irgi kazkoks loginis uzdavinys
+7. Klausimas is exelio
+8. kuo skiriasi duomenis ir informacija
+9. kas yra vienaskiltis sumatorius

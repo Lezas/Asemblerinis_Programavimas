@@ -1,0 +1,675 @@
+Turbo Assembler	 Version 2.0	    01/26/09 04:39:06	    Page 1
+KST_KURS.ASM
+
+      1				     ;
+      2				     ; Kestutis	Stankevicius, II-06/3
+      3				     ;
+      4				     ; Asemblerinis programavimas, Kursinis darbas.
+      5				     ;
+      6				     ; 2009
+      7				     ;
+      8				     ; Kasos aparatas, filmu bilietams pirkti.
+      9				     ;
+     10
+     11				     ; Steko segmentas
+     12	0000			     stekas SEGMENT STACK
+     13	0000  0100*(00)		      DB 256 DUP(0) ; isskiriame atmintyje 256 baitus
+     14	0100			     stekas ENDS
+     15
+     16				     ; konstantos
+     17	      =	000D		     CR	EQU 13
+     18	      =	000A		     LF	EQU 10
+     19
+     20				     ; Duomenu segmentas
+     21	0000			     duomenys SEGMENT
+     22				      ;	aprasome kintamuosius
+     23	0000  02 ?? 02*(??)	      ivestis1	 DB 2, ?, 2 DUP(?)
+     24	0004  03 ?? 03*(??)	      ivestis2	 DB 3, ?, 3 DUP(?)
+     25
+     26	0009  0D 0A 20 41 53 4D	20+   titulinis	 DB CR,	LF, ' ASM Kursinis darbas - Filmu bilietu pirkimas ', CR, LF
+     27	      4B 75 72 73 69 6E	69+
+     28	      73 20 64 61 72 62	61+
+     29	      73 20 2D 20 46 69	6C+
+     30	      6D 75 20 62 69 6C	69+
+     31	      65 74 75 20 70 69	72+
+     32	      6B 69 6D 61 73 20	0D+
+     33	      0A
+     34	003B  0D 0A 20 44 61 72	62+		 DB CR,	LF, ' Darba atliko: Kestutis Stankevicius, II-06/3', CR, LF
+     35	      61 20 61 74 6C 69	6B+
+     36	      6F 3A 20 4B 65 73	74+
+     37	      75 74 69 73 20 53	74+
+     38	      61 6E 6B 65 76 69	63+
+     39	      69 75 73 2C 20 49	49+
+     40	      2D 30 36 2F 33 0D	0A
+     41	006C  0D 0A 20 31 29 20	4A+		 DB CR,	LF, ' 1) Jis sako "TAIP!" (Komedija) | 10 LT'
+     42	      69 73 20 73 61 6B	6F+
+     43	      20 22 54 41 49 50	21+
+     44	      22 20 28 4B 6F 6D	65+
+     45	      64 69 6A 61 29 20	7C+
+     46	      20 31 30 20 4C 54
+     47	0095  0D 0A 20 32 29 20	4D+		 DB CR,	LF, ' 2) Madagaskaras 2	(Komedija) | 12	LT'
+     48	      61 64 61 67 61 73	6B+
+     49	      61 72 61 73 20 32	20+
+     50	      28 4B 6F 6D 65 64	69+
+     51	      6A 61 29 20 7C 20	31+
+     52	      32 20 4C 54
+     53	00BC  0D 0A 20 33 29 20	44+		 DB CR,	LF, ' 3) Despero nuotykiai (Komedija) |	8 LT'
+     54	      65 73 70 65 72 6F	20+
+     55	      6E 75 6F 74 79 6B	69+
+     56	      61 69 20 28 4B 6F	6D+
+     57	      65 64 69 6A 61 29	20+
+     58	      7C 20 38 20 4C 54
+     59	00E5  0D 0A 20 34 29 20	41+		 DB CR,	LF, ' 4) Australija (Drama) | 14 LT'
+     60	      75 73 74 72 61 6C	69+
+     61	      6A 61 20 28 44 72	61+
+     62	      6D 61 29 20 7C 20	31+
+     63	      34 20 4C 54
+     64	0105  0D 0A 20 35 29 20	56+		 DB CR,	LF, ' 5) Vakaro	pasakojimai (Fantastika) 20 LT'
+     65	      61 6B 61 72 6F 20	70+
+     66	      61 73 61 6B 6F 6A	69+
+     67	      6D 61 69 20 28 46	61+
+     68	      6E 74 61 73 74 69	6B+
+     69	      61 29 20 32 30 20	4C+
+     70	      54
+     71	0130  0D 0A 20 36 29 20	52+		 DB CR,	LF, ' 6) Rokenrola (Veiksmas) |	16 LT'
+     72	      6F 6B 65 6E 72 6F	6C+
+     73	      61 20 28 56 65 69	6B+
+     74	      73 6D 61 73 29 20	7C+
+     75	      20 31 36 20 4C 54
+     76	0152  0D 0A 20 37 29 20	4C+		 DB CR,	LF, ' 7) Laumes	vaikas (Drama) | 6 LT'
+     77	      61 75 6D 65 73 20	76+
+     78	      61 69 6B 61 73 20	28+
+     79	      44 72 61 6D 61 29	20+
+     80	      7C 20 36 20 4C 54
+     81	0174  0D 0A 20 38 29 20	4E+		 DB CR,	LF, ' 8) Nuotaku karai (Romantika) | 11	LT', CR, LF
+     82	      75 6F 74 61 6B 75	20+
+     83	      6B 61 72 61 69 20	28+
+     84	      52 6F 6D 61 6E 74	69+
+     85	      6B 61 29 20 7C 20	31+
+     86	      31 20 4C 54 0D 0A
+     87	019D  0D 0A 20 28 50 61	73+		 DB CR,	LF, ' (Pasirinkite filma pagal nurodyta	numeri !!!)', CR, LF, '$'
+     88	      69 72 69 6E 6B 69	74+
+     89	      65 20 66 69 6C 6D	61+
+     90	      20 70 61 67 61 6C	20+
+     91	      6E 75 72 6F 64 79	74+
+     92	      61 20 6E 75 6D 65	72+
+     93	      69 20 21 21 21 29	0D+
+     94	      0A 24
+     95
+     96	01D0  0D 0A 20 50 61 73	69+   pra1	 DB CR,	LF, ' Pasirinkite filma	is saraso [1,2,3,4,5,6,7,8] : ', '$'
+     97	      72 69 6E 6B 69 74	65+
+     98	      20 66 69 6C 6D 61	20+
+     99	      69 73 20 73 61 72	61+
+    100	      73 6F 20 5B 31 2C	32+
+    101	      2C 33 2C 34 2C 35	2C+
+    102	      36 2C 37 2C 38 5D	20+
+    103	      3A 20 24
+    104	0204  0D 0A 20 50 61 72	61+   pra2	 DB CR,	LF, ' Parasykite kiek biletu norite pirkti? [MAX 9] : ', '$'
+    105	      73 79 6B 69 74 65	20+
+    106	      6B 69 65 6B 20 62	69+
+    107	      6C 65 74 75 20 6E	6F+
+    108	      72 69 74 65 20 70	69+
+    109	      72 6B 74 69 3F 20	5B+
+    110	      4D 41 58 20 39 5D	20+
+    111	      3A 20 24
+    112	0238  0D 0A 0D 0A 20 EA	20+   pra3	 DB CR,	LF, CR,	LF, ' ê	Uz bilietus/bilieta prasom sumokekite: ', '$'
+    113	      55 7A 20 62 69 6C	69+
+    114	      65 74 75 73 2F 62	69+
+    115	      6C 69 65 74 61 20	70+
+    116	      72 61 73 6F 6D 20	73+
+    117	      75 6D 6F 6B 65 6B	69+
+    118	      74 65 3A 20 24
+    119	0267  20 4C 54 0D 0A 24	      pra4	 DB		    ' LT', CR, LF, '$'
+    120
+    121	026D  0D 0A 0D 0A 20 20	28+   kld1	 DB CR,	LF, CR,	LF, '  ( KLAIDA: Pasirinkite filma nurodydami numeri is	saraso!	    +
+    122	      20 4B 4C 41 49 44	41+  [1;8] )', '$'
+    123	      3A 20 50 61 73 69	72+
+    124	      69 6E 6B 69 74 65	20+
+    125	      66 69 6C 6D 61 20	6E+
+    126	      75 72 6F 64 79 64	61+
+    127	      6D 69 20 6E 75 6D	65+
+    128	      72 69 20 69 73 20	73+
+    129	      61 72 61 73 6F 21	20+
+    130	      5B 31 3B 38 5D 20	29+
+    131	      24
+    132	02B4  0D 0A 0D 0A 20 20	28+   kld2	 DB CR,	LF, CR,	LF, '  ( KLAIDA: Bilietu kiekis	turi buti sudarytas tik	is	    +
+    133	      20 4B 4C 41 49 44	41+  skaitmenu!	)', '$'
+    134	      3A 20 42 69 6C 69	65+
+    135	      74 75 20 6B 69 65	6B+
+    136	      69 73 20 74 75 72	69+
+    137	      20 62 75 74 69 20	73+
+    138	      75 64 61 72 79 74	61+
+    139	      73 20 74 69 6B 20	69+
+    140	      73 20 73 6B 61 69	74+
+    141	      6D 65 6E 75 21 20	29+
+    142	      24
+    143	02FB  0D 0A 0D 0A 20 20	28+   kld3	 DB CR,	LF, CR,	LF, '  ( KLAIDA: Negalima vienu	kartu uzsakyti daugiau nei 9	    +
+    144	      20 4B 4C 41 49 44	41+  bilietus! )', '$'
+    145	      3A 20 4E 65 67 61	6C+
+    146	      69 6D 61 20 76 69	65+
+    147	      6E 75 20 6B 61 72	74+
+    148	      75 20 75 7A 73 61	6B+
+    149	      79 74 69 20 64 61	75+
+    150	      67 69 61 75 20 6E	65+
+    151	      69 20 39 20 62 69	6C+
+    152	      69 65 74 75 73 21	20+
+    153	      29 24
+    154
+    155	0343  0D 0A 20 41 63 69	75+   pra5	 DB CR,	LF, ' Aciu, kad	perkate	musu bilietu kasoje, jusu sumoketas uzsakymas: ',   +
+    156	      2C 20 6B 61 64 20	70+  CR, LF
+    157	      65 72 6B 61 74 65	20+
+    158	      6D 75 73 75 20 62	69+
+    159	      6C 69 65 74 75 20	6B+
+    160	      61 73 6F 6A 65 2C	20+
+    161	      6A 75 73 75 20 73	75+
+    162	      6D 6F 6B 65 74 61	73+
+    163	      20 75 7A 73 61 6B	79+
+    164	      6D 61 73 3A 20 0D	0A
+    165	0389  0D 0A 20 20 46 69	6C+		 DB CR,	LF, '  Filmo pavadinimas : ', '$'
+    166	      6D 6F 20 70 61 76	61+
+    167	      64 69 6E 69 6D 61	73+
+    168	      20 3A 20 24
+    169	03A2  0D 0A 20 20 53 65	61+   pra6	 DB CR,	LF, '  Seanso kaina	 : ', '$'
+    170	      6E 73 6F 20 6B 61	69+
+    171	      6E 61 20 20 20 20	20+
+    172	      20 3A 20 24
+    173	03BB  20 20 42 69 6C 69	65+   pra7	 DB	    '  Bilietu kiekis	 : ', '$'
+    174	      74 75 20 6B 69 65	6B+
+    175	      69 73 20 20 20 20	3A+
+    176	      20 24
+    177	03D2  0D 0A 20 20 47 61	6C+   pra8	 DB CR,	LF, '  Galutine	kaina	 : ', '$'
+    178	      75 74 69 6E 65 20	6B+
+    179	      61 69 6E 61 20 20	20+
+    180	      20 3A 20 24
+    181
+    182	03EB  4A 69 73 20 73 61	6B+   film1	 DB 'Jis sako "TAIP!"',	'$'
+    183	      6F 20 22 54 41 49	50+
+    184	      21 22 24
+    185	03FC  4D 61 64 61 67 61	73+   film2	 DB 'Madagaskaras 2', '$'
+    186	      6B 61 72 61 73 20	32+
+    187	      24
+    188	040B  44 65 73 70 65 72	6F+   film3	 DB 'Despero nuotykiai', '$'
+    189	      20 6E 75 6F 74 79	6B+
+    190	      69 61 69 24
+    191	041D  41 75 73 74 72 61	6C+   film4	 DB 'Australija', '$'
+    192	      69 6A 61 24
+    193	0428  56 61 6B 61 72 6F	20+   film5	 DB 'Vakaro pasakojimai', '$'
+    194	      70 61 73 61 6B 6F	6A+
+    195	      69 6D 61 69 24
+    196	043B  52 6F 6B 65 6E 72	6F+   film6	 DB 'Rokenrola', '$'
+    197	      6C 61 24
+    198	0445  4C 61 75 6D 65 73	20+   film7	 DB 'Laumes vaikas', '$'
+    199	      76 61 69 6B 61 73	24
+    200	0453  4E 75 6F 74 61 6B	75+   film8	 DB 'Nuotaku karai', '$'
+    201	      20 6B 61 72 61 69	24
+    202
+    203	0461  0A 0C 08 0E	      kainos	 DB 10,12,8,14
+    204	0465  14 10 06 0B			 DB 20,16,6,11
+    205
+    206	0469  02*(??) 24	      kaina	 DB 2 DUP(?), '$'
+    207
+    208	046C  00 24		      bilietu_sk DB 0, '$'
+    209	046E  00 24		      filmo_nr	 DB 0, '$'
+    210
+    211	0470  03*(20) 24	      suma	 DB 3 DUP(' '),	'$'
+    212
+    213	0474  0A		      desimt	 DB 10
+    214
+    215	0475			     duomenys ENDS
+    216
+    217				     ; Programos segmentas
+    218	0000			     programa SEGMENT
+    219				      ASSUME CS:programa, DS:duomenys, SS:stekas
+    220
+    221	0000			     START:
+    222
+    223				     ; pradzia
+    224	0000  B8 0000s		     MOV AX, duomenys
+    225	0003  8E D8		     MOV DS, AX
+    226
+    227				     ; titulinis pranesimas
+    228	0005  E8 0254		     CALL Pagrindinis
+    229
+    230	0008			     PRAN1:
+    231				      ;	pranesimas1
+    232	0008  B4 09		      MOV AH, 09h
+    233	000A  BA 01D0r		      LEA DX, pra1
+    234	000D  CD 21		      INT 21h
+    235
+    236				       ; ivedimas
+    237	000F  BA 0000r		       LEA DX, ivestis1
+    238	0012  B4 0A		       MOV AH, 0Ah
+    239	0014  CD 21		       INT 21h
+    240
+    241	0016  B9 0000		       MOV CX, 0
+    242
+    243				       ; reikalingas ciklu skaicius
+    244	0019  8A 0E 0002r	       MOV CL, ivestis1+2
+    245
+    246				       ; galima	ivesti tik skaiciu intervale [1;8]
+    247	001D  80 F9 31		       CMP CL, 31h
+    248	0020  7C 5E		       JL Klaida1_2
+    249	0022  80 F9 38		       CMP CL, 38h
+    250	0025  7F 59		       JG Klaida1_2
+    251
+    252	0027  80 E9 30		       SUB CL, 30h
+    253
+    254	002A  BE 0002r		       LEA SI, ivestis1+2
+    255
+    256	002D  BB 0000		       MOV BX,0
+    257	0030  BB 0461r		       LEA BX, kainos
+    258				       ; ieskom	filmo kainos
+    259	0033			       CIKLAS1:
+    260	0033  43			 INC BX
+    261	0034  E2 FD		       LOOP CIKLAS1
+    262
+    263	0036  4B		       DEC BX
+    264	0037  BA 0000		       MOV DX,0
+    265	003A  8A 17		       MOV DL, [BX]
+    266				       ; irasom	filmo kaina
+    267	003C  88 16 0469r	       MOV kaina, DL
+    268				       ; irasom	filmo numeri
+    269	0040  8A 14		       MOV DL, [SI]
+    270	0042  88 16 046Er	       MOV filmo_nr, DL
+    271
+    272
+    273	0046			     PRAN2:
+    274				      ;	pranesimas2
+    275	0046  B4 09		      MOV AH, 09h
+    276	0048  BA 0204r		      LEA DX, pra2
+    277	004B  CD 21		      INT 21h
+    278
+    279				       ; ivedimas
+    280	004D  BA 0004r		       LEA DX, ivestis2
+    281	0050  B4 0A		       MOV AH, 0Ah
+    282	0052  CD 21		       INT 21h
+    283				       ; ciklu skaicius
+    284	0054  8A 0E 0005r	       MOV CL, ivestis2+1
+    285	0058  B5 00		       MOV CH, 0
+    286	005A  B4 00		       MOV AH, 0
+    287	005C  BE 0006r		       LEA SI, ivestis2+2
+    288	005F  8A 3C		       MOV BH, [SI]
+    289				       ; tikrinam ar skaicius ivestas
+    290	0061  E8 01EA		       CALL Ar_Skaicius
+    291
+    292	0064  8A C7		       MOV AL, BH
+    293	0066  FE C9		       DEC CL
+    294	0068  80 F9 00		       CMP CL, 0
+    295	006B  74 19		       JE TOLIAU
+    296
+    297	006D  46		       CIKLAS2:	INC SI
+    298	006E  8A 3C			       MOV BH, [SI]
+    299					       ; tikrinam ar skaicius ivestas
+    300	0070  E8 01DB			       CALL Ar_Skaicius
+    301
+    302	0073  F6 26 0474r		       MUL desimt
+    303	0077  02 C7			       ADD AL, BH
+    304	0079  70 08			       JO Klaida2_2
+    305	007B  E2 F0			  LOOP CIKLAS2
+    306
+    307	007D  EB 07 90		     JMP TOLIAU
+    308
+    309	0080  EB 7D 90		     KLAIDA1_2:	JMP KLAIDA1_1
+    310	0083  EB 77 90		     KLAIDA2_2:	JMP KLAIDA2_1
+    311
+    312	0086			     TOLIAU:
+    313				     ; tikrinam	ar neivesta per	9 bilietu vienetus
+    314	0086  3C 09		     CMP AL, 09h
+    315	0088  7F 6F		     JG	KLAIDA3_1
+    316				     ; skaiciavimai: kaina*bilietu_sk=galutine_kaina
+    317	008A  A2 046Cr		     MOV bilietu_sk, AL
+    318	008D  F6 26 0469r	     MUL kaina
+    319	0091  A2 0470r		     MOV suma, AL
+    320
+    321				     ; konvertuojam
+    322	0094			     DESIMTAINE:
+    323	0094  B4 00		      MOV AH, 0
+    324				      ;	sveika dalis
+    325	0096  F6 36 0474r	      DIV desimt
+    326	009A  88 26 0472r	      MOV suma+2,AH
+    327	009E  80 06 0472r 30	      ADD suma+2,30h
+    328	00A3  B4 00		      MOV AH, 0
+    329
+    330	00A5  F6 36 0474r	      DIV desimt
+    331	00A9  88 26 0471r	      MOV suma+1,AH
+    332	00AD  80 06 0471r 30	      ADD suma+1,30h
+    333	00B2  B4 00		      MOV AH, 0
+    334
+    335	00B4  F6 36 0474r	      DIV desimt
+    336	00B8  88 26 0470r	      MOV suma,AH
+    337	00BC  80 06 0470r 30	      ADD suma,30h
+    338
+    339	00C1  A0 0469r		      MOV AL, kaina
+    340	00C4  B4 00		      MOV AH, 0
+    341
+    342	00C6  F6 36 0474r	      DIV desimt
+    343	00CA  88 26 046Ar	      MOV kaina+1,AH
+    344	00CE  80 06 046Ar 30	      ADD kaina+1,30h
+    345	00D3  B4 00		      MOV AH, 0
+    346
+    347	00D5  F6 36 0474r	      DIV desimt
+    348	00D9  88 26 0469r	      MOV kaina,AH
+    349	00DD  80 06 0469r 30	      ADD kaina,30h
+    350
+    351	00E2  80 06 046Cr 30	      ADD bilietu_sk,30h
+    352				     ; pasalinti nereikalinga 0
+    353	00E7  80 3E 0469r 30	      CMP kaina, 30h
+    354	00EC  74 03		      JE NULIS1
+    355	00EE  EB 12 90		      JMP NULIAI
+    356	00F1			     NULIS1:
+    357	00F1  C6 06 0469r 07	       MOV kaina, 07h
+    358	00F6  EB 0A 90		       JMP NULIAI
+    359
+    360	00F9  E9 0121		     KLAIDA3_1:	JMP KLAIDA3
+    361	00FC  E9 0114		     KLAIDA2_1:	JMP KLAIDA2
+    362	00FF  E9 0107		     KLAIDA1_1:	JMP KLAIDA1
+    363
+    364	0102			     NULIAI:
+    365				     ; pasalinti nereikalingus 0
+    366	0102  80 3E 0470r 30	      CMP suma,	30h
+    367	0107  74 03		      JE NULIS2
+    368	0109  EB 18 90		      JMP REZULTATAS
+    369	010C			     NULIS2:
+    370	010C  C6 06 0470r 07	      MOV suma,	07h
+    371
+    372	0111  80 3E 0471r 30	      CMP suma+1, 30h
+    373	0116  74 03		      JE NULIS3
+    374	0118  EB 09 90		      JMP REZULTATAS
+    375	011B			     NULIS3:
+    376	011B  C6 06 0471r 07	      MOV suma+1, 07h
+    377
+    378	0120  EB 01 90		     JMP REZULTATAS
+    379
+    380				     ; atvaizduojam viska
+    381	0123			     REZULTATAS:
+    382				      ;	sumokekite
+    383	0123  B4 09		      MOV AH, 09h
+    384	0125  BA 0238r		      LEA DX, pra3
+    385	0128  CD 21		      INT 21h
+    386
+    387	012A  B4 09		       MOV AH, 09h
+    388	012C  BA 0470r		       LEA DX, suma
+    389	012F  CD 21		       INT 21h
+    390
+    391	0131  B4 09		       MOV AH, 09h
+    392	0133  BA 0267r		       LEA DX, pra4
+    393	0136  CD 21		       INT 21h
+    394
+    395				      ;	paspausti bet koki klavisa
+    396	0138  B4 07		      MOV AH, 07h
+    397	013A  CD 21		      INT 21h
+    398
+    399				      ;	filmo pavadinimas
+    400	013C  B4 09		       MOV AH, 09h
+    401	013E  BA 0343r		       LEA DX, pra5
+    402	0141  CD 21		       INT 21h
+    403				      ;	nustatyti pavadinima
+    404	0143  80 3E 046Er 31	      CMP filmo_nr, 31h
+    405	0148  74 31		      JE FILMAS1
+    406	014A  80 3E 046Er 32	      CMP filmo_nr, 32h
+    407	014F  74 34		      JE FILMAS2
+    408	0151  80 3E 046Er 33	      CMP filmo_nr, 33h
+    409	0156  74 37		      JE FILMAS3
+    410	0158  80 3E 046Er 34	      CMP filmo_nr, 34h
+    411	015D  74 3A		      JE FILMAS4
+    412	015F  80 3E 046Er 35	      CMP filmo_nr, 35h
+    413	0164  74 3D		      JE FILMAS5
+    414	0166  80 3E 046Er 36	      CMP filmo_nr, 36h
+    415	016B  74 40		      JE FILMAS6
+    416	016D  80 3E 046Er 37	      CMP filmo_nr, 37h
+    417	0172  74 43		      JE FILMAS7
+    418	0174  80 3E 046Er 38	      CMP filmo_nr, 38h
+    419	0179  74 46		      JE FILMAS8
+    420
+    421	017B			     FILMAS1:
+    422	017B  B4 09		      MOV AH, 09h
+    423	017D  BA 03EBr		      LEA DX, film1
+    424	0180  CD 21		      INT 21h
+    425	0182  EB 47 90		     JMP SEANSAS
+    426	0185			     FILMAS2:
+    427	0185  B4 09		      MOV AH, 09h
+    428	0187  BA 03FCr		      LEA DX, film2
+    429	018A  CD 21		      INT 21h
+    430	018C  EB 3D 90		     JMP SEANSAS
+    431	018F			     FILMAS3:
+    432	018F  B4 09		      MOV AH, 09h
+    433	0191  BA 040Br		      LEA DX, film3
+    434	0194  CD 21		      INT 21h
+    435	0196  EB 33 90		     JMP SEANSAS
+    436	0199			     FILMAS4:
+    437	0199  B4 09		      MOV AH, 09h
+    438	019B  BA 041Dr		      LEA DX, film4
+    439	019E  CD 21		      INT 21h
+    440	01A0  EB 29 90		     JMP SEANSAS
+    441	01A3			     FILMAS5:
+    442	01A3  B4 09		      MOV AH, 09h
+    443	01A5  BA 0428r		      LEA DX, film5
+    444	01A8  CD 21		      INT 21h
+    445	01AA  EB 1F 90		     JMP SEANSAS
+    446	01AD			     FILMAS6:
+    447	01AD  B4 09		      MOV AH, 09h
+    448	01AF  BA 043Br		      LEA DX, film6
+    449	01B2  CD 21		      INT 21h
+    450	01B4  EB 15 90		     JMP SEANSAS
+    451	01B7			     FILMAS7:
+    452	01B7  B4 09		      MOV AH, 09h
+    453	01B9  BA 0445r		      LEA DX, film7
+    454	01BC  CD 21		      INT 21h
+    455	01BE  EB 0B 90		     JMP SEANSAS
+    456	01C1			     FILMAS8:
+    457	01C1  B4 09		      MOV AH, 09h
+    458	01C3  BA 0453r		      LEA DX, film8
+    459	01C6  CD 21		      INT 21h
+    460	01C8  EB 01 90		     JMP SEANSAS
+    461
+    462	01CB			     SEANSAS:
+    463				      ;	seanso kaina
+    464	01CB  B4 09		      MOV AH, 09h
+    465	01CD  BA 03A2r		      LEA DX, pra6
+    466	01D0  CD 21		      INT 21h
+    467
+    468	01D2  B4 09		      MOV AH, 09h
+    469	01D4  BA 0469r		      LEA DX, kaina
+    470	01D7  CD 21		      INT 21h
+    471
+    472	01D9  B4 09		      MOV AH, 09h
+    473	01DB  BA 0267r		      LEA DX, pra4
+    474	01DE  CD 21		      INT 21h
+    475
+    476				      ;	bilietu	kiekis
+    477	01E0  B4 09		      MOV AH, 09h
+    478	01E2  BA 03BBr		      LEA DX, pra7
+    479	01E5  CD 21		      INT 21h
+    480
+    481	01E7  B4 09		      MOV AH, 09h
+    482	01E9  BA 046Cr		      LEA DX, bilietu_sk
+    483	01EC  CD 21		      INT 21h
+    484
+    485				      ;	galutine kaina
+    486	01EE  B4 09		      MOV AH, 09h
+    487	01F0  BA 03D2r		      LEA DX, pra8
+    488	01F3  CD 21		      INT 21h
+    489
+    490	01F5  B4 09		      MOV AH, 09h
+    491	01F7  BA 0470r		      LEA DX, suma
+    492	01FA  CD 21		      INT 21h
+    493
+    494	01FC  B4 09		      MOV AH, 09h
+    495	01FE  BA 0267r		      LEA DX, pra4
+    496	0201  CD 21		      INT 21h
+    497
+    498				     ; Baigti
+    499	0203  EB 41 90		     JMP PABAIGA
+    500
+    501	0206  E9 FDFF		     PRAN1_1: JMP PRAN1
+    502
+    503	0209			     KLAIDA1:
+    504				     ; klaidos pranesimas
+    505	0209  B4 09		     MOV AH, 09h
+    506	020B  BA 026Dr		     LEA DX, kld1
+    507	020E  CD 21		     INT 21h
+    508
+    509	0210  EB 15 90		     JMP KLAIDA
+    510
+    511	0213			     KLAIDA2:
+    512				     ; klaidos pranesimas
+    513	0213  B4 09		     MOV AH, 09h
+    514	0215  BA 02B4r		     LEA DX, kld2
+    515	0218  CD 21		     INT 21h
+    516
+    517	021A  EB 0B 90		     JMP KLAIDA
+    518
+    519	021D			     KLAIDA3:
+    520				     ; klaidos pranesimas
+    521	021D  B4 09		     MOV AH, 09h
+    522	021F  BA 02FBr		     LEA DX, kld3
+    523	0222  CD 21		     INT 21h
+    524
+    525	0224  EB 01 90		     JMP KLAIDA
+    526
+    527	0227			     KLAIDA:
+    528
+    529				     ; paspausti bet koki klavisa
+    530	0227  B4 07		     MOV AH, 07h
+    531	0229  CD 21		     INT 21h
+    532
+    533	022B  E8 002E		     CALL PAGRINDINIS
+    534				     ; tikrinam	ar jau ivesta pirma valiuta
+    535	022E  80 3E 046Er 00	     CMP filmo_nr, 0h
+    536	0233  74 D1		     JE	PRAN1_1
+    537
+    538				      ;	pranesimas1
+    539	0235  B4 09		      MOV AH, 09h
+    540	0237  BA 01D0r		      LEA DX, pra1
+    541	023A  CD 21		      INT 21h
+    542
+    543	023C  B4 09		      MOV AH, 09h
+    544	023E  BA 046Er		      LEA DX, filmo_nr
+    545	0241  CD 21		      INT 21h
+    546
+    547	0243  E9 FE00		     JMP PRAN2
+    548
+    549	0246			     PABAIGA:
+    550				     ; paspausti bet koki klavisa
+    551	0246  B4 07		     MOV AH, 07h
+    552	0248  CD 21		     INT 21h
+    553
+    554				     ; iseiti is programos
+    555	024A  B4 4C		     MOV AH, 4ch
+    556	024C  CD 21		     INT 21h
+    557
+    558				     ; Procedura AR_SKAICIUS
+    559	024E			     Ar_Skaicius PROC
+    560
+    561	024E  80 FF 30		       CMP BH, 30h
+    562	0251  7C C0		       JL Klaida2
+    563	0253  80 FF 39		       CMP BH, 39h
+    564	0256  7F BB		       JG Klaida2
+    565	0258  80 EF 30		       SUB BH, 30h
+    566	025B  C3		      RET
+    567	025C			     Ar_Skaicius ENDP
+    568
+    569				     ; Procedura PAGRINDINIS
+    570	025C			     Pagrindinis PROC
+    571				       ; isvalyti ekrana
+    572	025C  B8 0002		       MOV AX, 0002h
+    573	025F  CD 10		       INT 10h
+    574
+    575				       ; pagrindinis pranesimas
+    576	0261  B4 09		       MOV AH, 09h
+    577	0263  BA 0009r		       LEA DX, titulinis
+    578	0266  CD 21		       INT 21h
+    579	0268  C3		      RET
+    580	0269			     Pagrindinis ENDP
+    581
+    582	0269			     programa ENDS
+    583
+    584				     END START
+
+Symbol Table
+
+
+Symbol Name			  Type	 Value
+
+??DATE				  Text	 "01/26/09"
+??FILENAME			  Text	 "KST_KURS"
+??TIME				  Text	 "04:39:06"
+??VERSION			  Number 0200
+@CPU				  Text	 0101H
+@CURSEG				  Text	 PROGRAMA
+@FILENAME			  Text	 KST_KURS
+@WORDSIZE			  Text	 2
+AR_SKAICIUS			  Near	 PROGRAMA:024E
+BILIETU_SK			  Byte	 DUOMENYS:046C
+CIKLAS1				  Near	 PROGRAMA:0033
+CIKLAS2				  Near	 PROGRAMA:006D
+CR				  Number 000D
+DESIMT				  Byte	 DUOMENYS:0474
+DESIMTAINE			  Near	 PROGRAMA:0094
+FILM1				  Byte	 DUOMENYS:03EB
+FILM2				  Byte	 DUOMENYS:03FC
+FILM3				  Byte	 DUOMENYS:040B
+FILM4				  Byte	 DUOMENYS:041D
+FILM5				  Byte	 DUOMENYS:0428
+FILM6				  Byte	 DUOMENYS:043B
+FILM7				  Byte	 DUOMENYS:0445
+FILM8				  Byte	 DUOMENYS:0453
+FILMAS1				  Near	 PROGRAMA:017B
+FILMAS2				  Near	 PROGRAMA:0185
+FILMAS3				  Near	 PROGRAMA:018F
+FILMAS4				  Near	 PROGRAMA:0199
+FILMAS5				  Near	 PROGRAMA:01A3
+FILMAS6				  Near	 PROGRAMA:01AD
+FILMAS7				  Near	 PROGRAMA:01B7
+FILMAS8				  Near	 PROGRAMA:01C1
+FILMO_NR			  Byte	 DUOMENYS:046E
+IVESTIS1			  Byte	 DUOMENYS:0000
+IVESTIS2			  Byte	 DUOMENYS:0004
+KAINA				  Byte	 DUOMENYS:0469
+KAINOS				  Byte	 DUOMENYS:0461
+KLAIDA				  Near	 PROGRAMA:0227
+KLAIDA1				  Near	 PROGRAMA:0209
+KLAIDA1_1			  Near	 PROGRAMA:00FF
+KLAIDA1_2			  Near	 PROGRAMA:0080
+KLAIDA2				  Near	 PROGRAMA:0213
+KLAIDA2_1			  Near	 PROGRAMA:00FC
+KLAIDA2_2			  Near	 PROGRAMA:0083
+KLAIDA3				  Near	 PROGRAMA:021D
+KLAIDA3_1			  Near	 PROGRAMA:00F9
+KLD1				  Byte	 DUOMENYS:026D
+KLD2				  Byte	 DUOMENYS:02B4
+KLD3				  Byte	 DUOMENYS:02FB
+LF				  Number 000A
+NULIAI				  Near	 PROGRAMA:0102
+NULIS1				  Near	 PROGRAMA:00F1
+NULIS2				  Near	 PROGRAMA:010C
+NULIS3				  Near	 PROGRAMA:011B
+PABAIGA				  Near	 PROGRAMA:0246
+
+Symbol Table
+
+
+PAGRINDINIS			  Near	 PROGRAMA:025C
+PRA1				  Byte	 DUOMENYS:01D0
+PRA2				  Byte	 DUOMENYS:0204
+PRA3				  Byte	 DUOMENYS:0238
+PRA4				  Byte	 DUOMENYS:0267
+PRA5				  Byte	 DUOMENYS:0343
+PRA6				  Byte	 DUOMENYS:03A2
+PRA7				  Byte	 DUOMENYS:03BB
+PRA8				  Byte	 DUOMENYS:03D2
+PRAN1				  Near	 PROGRAMA:0008
+PRAN1_1				  Near	 PROGRAMA:0206
+PRAN2				  Near	 PROGRAMA:0046
+REZULTATAS			  Near	 PROGRAMA:0123
+SEANSAS				  Near	 PROGRAMA:01CB
+START				  Near	 PROGRAMA:0000
+SUMA				  Byte	 DUOMENYS:0470
+TITULINIS			  Byte	 DUOMENYS:0009
+TOLIAU				  Near	 PROGRAMA:0086
+
+Groups & Segments		  Bit Size Align  Combine Class
+
+DUOMENYS			  16  0475 Para	  none
+PROGRAMA			  16  0269 Para	  none
+STEKAS				  16  0100 Para	  Stack

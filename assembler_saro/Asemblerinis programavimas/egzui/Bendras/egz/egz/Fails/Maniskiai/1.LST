@@ -1,0 +1,134 @@
+Turbo Assembler	 Version 3.2	    01/17/06 21:21:24	    Page 1
+1.asm
+
+
+
+      1
+      2	0000			     stekas segment stack
+      3	0000  0100*(00)		       db 256 dup(0)
+      4	0100			     stekas ends
+      5
+      6
+      7	0000			     duomenys segment
+      8	0000  02		      a	db 2
+      9	0001  03		      b	db 3
+     10	0002  04		      c	db 4
+     11	0003  02		      du db 2
+     12	0004  0A		      des db 10
+     13	0005  03*(00)		      rez db 3 dup(0)
+     14	0008  24		      db '$'
+     15	0009  55 7A 64 75 6F 74	69+   ekranas  db 'Uzduoti atliko: Ana Bikevic,	II-3/3',13,10
+     16	      20 61 74 6C 69 6B	6F+
+     17	      3A 20 41 6E 61 20	42+
+     18	      69 6B 65 76 69 63	2C+
+     19	      20 49 49 2D 33 2F	33+
+     20	      0D 0A
+     21	002E  55 7A 64 75 6F 74	69+	       db 'Uzduotis: Formules skaiciavimas: X=2a+b*c',13,10
+     22	      73 3A 20 46 6F 72	6D+
+     23	      75 6C 65 73 20 73	6B+
+     24	      61 69 63 69 61 76	69+
+     25	      6D 61 73 3A 20 58	3D+
+     26	      32 61 2B 62 2A 63	0D+
+     27	      0A
+     28	0059  53 70 61 75 73 6B	69+	       db 'Spauskite bet koki klavisa',13,10, '$'
+     29	      74 65 20 62 65 74	20+
+     30	      6B 6F 6B 69 20 6B	6C+
+     31	      61 76 69 73 61 0D	0A+
+     32	      24
+     33	0076  52 65 7A 75 6C 74	61+  rezult db 'Rezultatas X=2a+b*c=','$'
+     34	      74 61 73 20 58 3D	32+
+     35	      61 2B 62 2A 63 3D	24
+     36	008B			     duomenys ends
+     37
+     38	0000			     programa segment
+     39				       assume ds:duomenys, ss:stekas, cs:programa
+     40	0000			     start:
+     41	0000  B8 0000s			mov ax,duomenys
+     42	0003  8E D8			mov ds,ax
+     43					;isvalome ekrana
+     44	0005  B8 0002			mov ax,0002h
+     45	0008  CD 10			int 10h
+     46					;rodome	pranesima
+     47	000A  B4 09			mov ah,09h
+     48	000C  BA 0009r			lea dx,ekranas
+     49	000F  CD 21			int 21h
+     50
+     51					;laukia	klaviso	paspaudimo
+     52	0011  B4 07			mov ah,	07h
+     53	0013  CD 21			int 21h
+     54
+     55	0015  B4 00			mov ah,0
+     56	0017  A0 0000r			mov al,a
+     57	001A  F6 26 0003r		mul du
+Turbo Assembler	 Version 3.2	    01/17/06 21:21:24	    Page 2
+1.asm
+
+
+
+     58	001E  8A D8			mov bl,	al
+     59	0020  A0 0001r			mov al,	b
+     60	0023  F6 26 0002r		mul c
+     61	0027  02 C3			add al,	bl
+     62
+     63	0029  BA 0000			mov dx,0
+     64	002C  F6 36 0004r		div  des
+     65	0030  88 26 0007r		mov rez+2,ah
+     66	0034  80 06 0007r 30		add rez+2,30h
+     67	0039  B4 00			mov ah,0
+     68	003B  BA 0000			mov dx,0
+     69	003E  F6 36 0004r		div des
+     70	0042  88 26 0006r		mov rez+1,ah
+     71	0046  80 06 0006r 30		add rez+1,30h
+     72	004B  B4 00			mov ah,0
+     73	004D  BA 0000			mov dx,0
+     74	0050  F6 36 0004r		div des
+     75	0054  88 26 0005r		mov rez,ah
+     76	0058  80 06 0005r 30		add rez,30h
+     77
+     78	005D  B4 09			mov ah,09h
+     79	005F  BA 0076r			lea dx,rezult
+     80	0062  CD 21			int 21h
+     81
+     82	0064  B4 09			mov ah,09h
+     83	0066  BA 0005r			lea dx,rez
+     84	0069  CD 21			int 21h
+     85
+     86	006B  B4 07			mov ah,07h
+     87	006D  CD 21			int 21h
+     88
+     89	006F  B8 4C00			mov ax,4C00h
+     90	0072  CD 21			int 21h
+     91	0074			     programa ends
+     92				     end start
+Turbo Assembler	 Version 3.2	    01/17/06 21:21:24	    Page 3
+Symbol Table
+
+
+
+
+Symbol Name			  Type	 Value
+
+??DATE				  Text	 "01/17/06"
+??FILENAME			  Text	 "1	  "
+??TIME				  Text	 "21:21:24"
+??VERSION			  Number 0314
+@CPU				  Text	 0101H
+@CURSEG				  Text	 PROGRAMA
+@FILENAME			  Text	 1
+@WORDSIZE			  Text	 2
+A				  Byte	 DUOMENYS:0000
+B				  Byte	 DUOMENYS:0001
+C				  Byte	 DUOMENYS:0002
+DES				  Byte	 DUOMENYS:0004
+DU				  Byte	 DUOMENYS:0003
+EKRANAS				  Byte	 DUOMENYS:0009
+REZ				  Byte	 DUOMENYS:0005
+REZULT				  Byte	 DUOMENYS:0076
+START				  Near	 PROGRAMA:0000
+
+Groups & Segments		  Bit Size Align  Combine Class
+
+DUOMENYS			  16  008B Para	  none
+PROGRAMA			  16  0074 Para	  none
+STEKAS				  16  0100 Para	  Stack
+

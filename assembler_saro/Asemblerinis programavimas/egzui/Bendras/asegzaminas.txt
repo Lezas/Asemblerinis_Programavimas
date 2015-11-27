@@ -1,0 +1,132 @@
+;0.model small
+.386
+.387
+
+stekas segment stack use16
+db 256 dup (?)
+stekas ends
+
+duomenys segment use16                
+;tekstas kuris bus isvedamas          
+                                      
+pran  db 'programa', 10, 13, '$'
+failas         db 'C:\tasm\temp\duom.txt', 0                       
+exit_pran      db 'Programa stabdoma$'
+                                  
+                                  
+;kintamuju apib                   
+                                  
+mas            db 256 dup (?), '$'
+handle         dw ?, '$'          
+failo_duom     db 256 dup (?), '$'   
+                                  
+                                  
+                                  
+duomenys ends                     
+programa segment use16            
+assume ss:stekas, ds:duomenys, cs:programa
+                                  
+start:                            
+                                  
+start:                                                                                                                                                                                                                   
+        mov ax, duomenys      ;I steka ikeliami visi duomenys                
+        mov ds, ax            ;Is steko duomenys talpinami ds registre                               
+        call ekr_val          ;Ekrano valymas
+                                                                                                                                                                
+        lea dx, pran          ;Prad teksto adreso ikelimas i dx registra     
+        call i_ekr            ;Pradinio teksto isvedimas i ekrana                       
+        call ekr_uzlaik       ;Ekrano uzlaikymas                             
+                                                               
+                                         
+        call ekr_val          ;Ekrano valymas                                
+        
+
+
+
+        call open_file        ;Failo atidarymas                                                                
+        call read_file        ;Failo nuskaitymas                                               
+        call close_file       ;Failo uzdarymas                                             
+        
+                 
+        mov dx, 0
+	lea dx, failo_duom    ;Prad teksto adreso ikelimas i dx registra 
+	call i_ekr            ;Pradinio teksto isvedimas i ekrana                       
+        call ekr_uzlaik       ;Ekrano uzlaikymas      
+
+
+
+;Paprograme skirta duomenu isvedimui i ekrana                                                        
+i_ekr proc                                   
+        mov ah, 09h           ;Nurodoma, kad tekstas bus isvedamas i ekrana                    
+        int 21h               ;Pertraukimas i DOS                                             
+        ret                   ;Valymo grazinimas kviecianciai programai                   
+endp i_ekr                                                          
+                                                 
+;Ekrano uzlaikymo paprograme
+ekr_uzlaik proc                  
+        mov ah, 07h           ;Nurodoma, kad laukiamas klaviso paspaudimas                    
+        int 21h               ;Pertraukimas i DOS                                           
+        ret                   ;Valdymo grazinimas kviecianciai programai                   
+endp ekr_uzlaik                                                   
+                                                   
+;Paprograme skirta ekrano valymui                                           
+ekr_val proc                    
+        mov ax, 02h           ;Nurodoma, kad bus valomas ekranas                    
+        int 10h               ;Pertraukimas i BIOS                                  
+        mov ax, 0             ;ax apnulinimas
+        ret                   ;Valdymo grazinimas kviecianciai programai 
+endp ekr_val              
+
+
+open_file proc                                
+                                                 
+        lea dx, failas        ;I dx ikeliamas failo pavadinimo adresas
+        mov ah, 3dh           ;Nurodoma, kad yra atidaromas failas                                 
+        int 21h               ;Pertraukimas i DOS                                    
+        jc f_open_err         ;Jei negalima failo atidaryti, valdymas perduodamas ?
+        mov handle, ax        ;Deskriptoriaus reiksme issaugoma kint "handle"
+        jmp no_open_err       ;Jei nera klaidu einama i paprogr pabaiga                 
+                                                                                                                                         
+                                                 
+endp open_file                                
+                                                 
+read_file proc                                  
+                                                 
+        mov cx, 256           ;cx = 256
+        mov bx, handle        ;I bx ikeliama deskriptoriaus reiksme                          
+        lea dx, failo_duom    ;Failo turinys ikeliamas i "failo_duom" kint
+        mov ah, 3fh           ;Nurodoma, kad duomenys bus nuskaitomi is failo 
+        int 21h               ;Pertraukimas i DOS                                   
+        jc f_read_err         ;Jei negalima is failo nuskaityti valdymas perduodamas zymei "f_nusk_kld"    
+        jmp no_read_err       ;Valdymas i zyme, jei nera klaidos nuskaitant   
+                                                                               
+                                
+endp read_file                 
+                                
+close_file proc                 
+                                
+        mov bx, handle        ;I bx ikeliama deskriptoriaus reiksme           
+        mov ah, 3eh           ;Nurodoma, kad failas bus uzdaromas                                     
+        int 21h               ;Pertraukimas i DOS
+        ret                   ;Valdymas grazinamas kviecianciai programai
+                               
+endp close_file                                                                                          
+                                                                                  
+                               
+
+
+;Paprograme nutraukianti programos vykdyma
+exit proc                     ;Paprogrames pradzia            
+        lea dx, exit_pran     ;Tekstas, pranesantis apie programos nutraukima                                 
+        call i_ekr            ;Paprograme skirta teksto isvedimui i ekrana                                               
+        call ekr_uzlaik       ;Paprograme skirta ekrano uzlaikymui                                      
+        mov ah, 4ch           ;Programos uzbaigimas                                   
+        int 21h               ;Pertraukimas i DOS                  
+endp exit     
+
+
+
+
+
+programa ends                   
+end start                     ;Programos pabaiga   

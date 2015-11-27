@@ -1,0 +1,46 @@
+        Before printing this agreement, type your name under the
+        signature line. After printing, sign it and write current date
+        in format DD/MM/YYYY (25/4/1995 for example) after your
+        signature.
+
+
+
+
+
+
+              ALAB LICENSE AGREEMENT AND COPYRIGHT NOTICE
+
+
+        Assembler Laboratory (hereafter ALAB) is protected by Norway's
+        and international copyright laws. Making any copies of it is
+        considered a copyright violation with one exception. You may
+        take copies for archival purposes to protect your investment
+        from loss. You may not sell or give away this product.
+
+        This license guarantees you the right to use ALAB both for
+        development of non-commercial and commercial programs, and for
+        educational purposes.
+
+        With respect to the physical diskette author
+        (Kurt Inge Groenbech) warrants the same to be free of defects in
+        materials for a period of 30 days from the date of purchase. If
+        the material is found defective during that period, author will
+        replace the material for a nominal fee (postal charges).
+
+        ALAB is provided as is and author disclaims all other warranties
+        including but not limited to implied warranties of fitness for a
+        particular purpose.
+
+        In no event shall the author be liable for any loss of profit or
+        any other commercial damage, including but not limited to
+        special, incidental, consequential or other damages.
+
+
+        With my signature I acknowledge that I have understood the above
+        and that I will act according to the license agreement:
+
+
+
+        ______________________________________________________________
+             (your name goes here)              Date
+

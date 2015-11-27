@@ -1,0 +1,34 @@
+;steko segmentas
+stekas SEGMENT STACK
+DB 256 DUP (?)
+stekas ENDS
+
+duomenys SEGMENT 
+A DW 240       
+B DW 13
+C DW 10
+D DW 0
+duomenys ENDS
+
+programa SEGMENT
+ASSUME CS:programa, DS:duomenys, SS:stekas
+; paruosiame duomenu segmento registra
+
+START:	MOV AX,duomenys
+	MOV DS,AX  
+	 	
+
+;persiusti A i AX
+	MOV AX,A; AX=240(turesime F0)
+	;persiusti B i BX
+	MOV BX,B; BX=13 (turime D)
+	MOV CX,C; CX=10 (turime A)
+	;sudedam skaicius     turim gaut FD
+	ADD AX,BX                          
+	;atimam turim gaut F3   
+	SUB AX,CX
+	MOV D,AX
+	MOV AH, 4Ch
+	INT 21h
+programa ENDS
+END START

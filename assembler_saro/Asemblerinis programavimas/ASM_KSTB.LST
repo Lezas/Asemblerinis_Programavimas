@@ -1,0 +1,109 @@
+Turbo Assembler	 Version 2.0	    12/15/08 02:00:16	    Page 1
+ASM_KSTB.ASM
+
+      1	0000			     stekas SEGMENT STACK
+      2	0000  0100*(??)			DB 256 DUP (?)
+      3	0100			     stekas ENDS
+      4
+      5	0000			     duomenys SEGMENT
+      6	0000  FF ?? FF*(20)		ivsr	     DB	255,?,255 DUP('	')
+      7	0101  49 76 65 73 6B 69	74+	pran	     DB	'Iveskite Pavarde: ','$'
+      8	      65 20 50 61 76 61	72+
+      9	      64 65 3A 20 24
+     10	0114  43 3A 5C 41 53 4D	5C+	failas	     DB	'C:\ASM\TASM\Temp\text.FIL',00h
+     11	      54 41 53 4D 5C 54	65+
+     12	      6D 70 5C 74 65 78	74+
+     13	      2E 46 49 4C 00
+     14	012E  ????			DESKRIPTOR   DW	 ?  ;failo deskriptorius
+     15	0130  20 4B 6C 61 69 64	61+	Klaidpr	     DB	' Klaida!', '$'
+     16	      21 24
+     17	0139			     duomenys ENDS
+     18
+     19	0000			     programa SEGMENT
+     20					ASSUME CS:programa, DS:duomenys, SS:stekas
+     21
+     22	0000			     START:
+     23				     ; pradzia
+     24	0000  B8 0000s			MOV AX,	duomenys
+     25	0003  8E D8			MOV DS,	AX
+     26				     ; isvalome	ekrana
+     27	0005  B8 0600			MOV AX,0600h  ;operacijos kodas- ekrano	valymas
+     28	0008  B7 07			MOV BH,07
+     29	000A  B9 0000			MOV CX,0000    ;eilute ir stulpelis
+     30	000D  BA 184F			MOV DX,184Fh  ;eilute ir stulpelis
+     31	0010  CD 10			INT 10h
+     32				     ; pranesimas
+     33	0012  B4 09			MOV AH,	09h
+     34	0014  BA 0101r			LEA DX,	pran
+     35	0017  CD 21			INT 21H
+     36				     ; ivedimas
+     37	0019  B4 0A			MOV AH,	0Ah
+     38	001B  BA 0000r			LEA DX,	ivsr
+     39	001E  CD 21			INT 21h
+     40				     ; failo sukurimas
+     41	0020  B4 3C			MOV AH,3CH ; paprašyti sukurti faila
+     42	0022  B9 0000			MOV CX,00  ;nenaudojame	atributu
+     43	0025  BA 0114r			LEA DX,	failas ;kelio eilutes adresas
+     44	0028  CD 21			INT 21h	  ; pertraukimas operacijai ivykdyti
+     45	002A  72 25			JC KLAIDA ; jei	ivyko klaida
+     46	002C  A3 012Er			MOV DESKRIPTOR,AX ;isiminti failo deskriptoriu
+     47				     ; rasymas i faila
+     48	002F  B4 40			MOV AH,	40H    ; paprašyti užrašyti duomenis i faila
+     49	0031  8B 1E 012Er		MOV BX,	DESKRIPTOR  ;Irašyti failo deskriptoriu
+     50	0035  B9 0100			MOV CX,100h	;patalpinti irašomo fragmento ilgi
+     51	0038  BA 0002r			LEA DX,IVSR+2  ;patalpinti išvedimo srities adresa
+     52	003B  CD 21			INT 21h	  ;ivykdyti pertaukimo operacija duomenu rašymui
+     53	003D  72 12			JC  KLAIDA  ;	  Jei buvo irašymo klaida
+     54	003F  3D 0100			CMP  AX,100h	; Ar visi baitai irašyti
+     55	0042  75 0D			JNE  KLAIDA	;Jei ne	visi baitai irašyti, eiti i klaidos apdorojima.
+     56				     ; failo uzdarymas
+     57	0044  B4 3E			MOV  AH,3EH    ;Paprašyti uždaryti faila
+     58	0046  8B 1E 012Er		MOV  BX,DESKRIPTOR   ;Užrašyti failo deskriptoriu
+     59	004A  CD 21			INT 21h	  ;Ivykdyti pertraukima
+     60	004C  72 03			JC KLAIDA   ;perduoti valdyma klaidos apdorojimui.
+     61				     ; baigiam darba
+     62	004E  EB 08 90			JMP PABAIGA
+     63	0051			     KLAIDA:
+     64	0051  BA 0130r			LEA DX,	Klaidpr
+     65	0054  B4 09			MOV AH,	09h
+     66	0056  CD 21			INT 21h
+     67
+     68	0058			     PABAIGA:
+     69				     ; paspausti bet koki klavisa
+     70	0058  B4 07		     MOV AH, 07h
+     71	005A  CD 21		     INT 21h
+     72
+     73				     ; iseiti is programos
+     74	005C  B4 4C		     MOV AH, 4ch
+     75	005E  CD 21		     INT 21h
+     76
+     77	0060			     programa ENDS
+     78
+     79				     END START
+
+Symbol Table
+
+Symbol Name			  Type	 Value
+
+??DATE				  Text	 "12/15/08"
+??FILENAME			  Text	 "ASM_KSTB"
+??TIME				  Text	 "02:00:16"
+??VERSION			  Number 0200
+@CPU				  Text	 0101H
+@CURSEG				  Text	 PROGRAMA
+@FILENAME			  Text	 ASM_KSTB
+@WORDSIZE			  Text	 2
+DESKRIPTOR			  Word	 DUOMENYS:012E
+FAILAS				  Byte	 DUOMENYS:0114
+IVSR				  Byte	 DUOMENYS:0000
+KLAIDA				  Near	 PROGRAMA:0051
+KLAIDPR				  Byte	 DUOMENYS:0130
+PABAIGA				  Near	 PROGRAMA:0058
+PRAN				  Byte	 DUOMENYS:0101
+START				  Near	 PROGRAMA:0000
+
+Groups & Segments		  Bit Size Align  Combine Class
+
+DUOMENYS			  16  0139 Para	  none
+PROGRAMA			  16  0060 Para	  none
+STEKAS				  16  0100 Para	  Stack

@@ -1,0 +1,221 @@
+Turbo Assembler	 Version 2.0	    12/15/08 00:20:36	    Page 1
+ASM_KST8.ASM
+
+      1				     ;
+      2				     ; Kestutis	Stankevicius, II-06/3
+      3				     ; Asemblerinis programavimas
+      4				     ;
+      5				     ; 8 Auditorijos darbas:
+      6				     ;
+      7				     ; x=a+b kur a,b ivedami skaiciai, reikia naudoti proceduras
+      8				     ;
+      9	0000			     stekas SEGMENT STACK
+     10	0000  0100*(??)		      DB 256 DUP (?) ; isskiriame atmintyje 256	baitus
+     11	0100			     stekas ENDS
+     12
+     13	      =	000D		     CR	EQU 13
+     14	      =	000A		     LF	EQU 10
+     15
+     16	0000			     duomenys SEGMENT
+     17				     ; aprasome	kintamuosius
+     18	0000  04 ?? 04*(??)	      ivsr     DB 4, ?,	4 DUP(?)
+     19	0006  0D 0A 49 76 65 73	6B+   pra1     DB CR, LF, 'Iveskite skaiciu a: ','$'
+     20	      69 74 65 20 73 6B	61+
+     21	      69 63 69 75 20 61	3A+
+     22	      20 24
+     23	001D  0D 0A 49 76 65 73	6B+   pra2     DB CR, LF, 'Iveskite skaiciu b: ','$'
+     24	      69 74 65 20 73 6B	61+
+     25	      69 63 69 75 20 62	3A+
+     26	      20 24
+     27	0034  0D 0A 20		      pra3     DB CR, LF, ' '
+     28	0037  0D 0A 20 20 52 65	7A+	       DB CR, LF, '  Rezultatas: a+b=','$'
+     29	      75 6C 74 61 74 61	73+
+     30	      3A 20 61 2B 62 3D	24
+     31
+     32	004C  0D 0A 4B 6C 61 69	64+   klaidpr  DB CR, LF, 'Klaida!'
+     33	      61 21
+     34
+     35	0055  00		      a	       DB 0
+     36	0056  00		      b	       DB 0
+     37
+     38	0057  03*(20) 24	      x	       DB 3 DUP	(' '), '$'
+     39
+     40	005B  0A		      desimt   DB 10
+     41
+     42	005C			     duomenys ENDS
+     43
+     44	0000			     programa SEGMENT
+     45				      ASSUME CS:programa, DS:duomenys, SS:stekas
+     46
+     47				     ; Procedura IVEDIMAS
+     48	0000			     Ivedimas PROC
+     49	0000  BA 0000r		       LEA DX, ivsr
+     50	0003  B4 0A		       MOV AH, 0Ah
+     51	0005  CD 21		       INT 21h
+     52	0007  C3		      RET
+     53	0008			     Ivedimas ENDP
+     54
+     55				     ; Procedura KONVERTUOTI
+     56	0008			     Konvertuoti PROC
+     57
+     58	0008  8A 0E 0001r	       MOV CL, ivsr+1 ;	ciklu skaicius
+     59	000C  B5 00		       MOV CH, 0
+     60	000E  B4 00		       MOV AH, 0
+     61	0010  BE 0002r		       LEA SI, ivsr+2
+     62	0013  8A 3C		       MOV BH, [SI]
+     63				       ;
+     64	0015  E8 001A		       CALL Tikrinimas
+     65
+     66	0018  8A C7		       MOV AL, BH
+     67	001A  FE C9		       DEC CL
+     68	001C  80 F9 00		       CMP CL, 0
+     69	001F  74 10		       JE Return
+     70
+     71	0021  46		       ciklas: INC SI
+     72	0022  8A 3C			       MOV BH, [SI]
+     73					       ;
+     74	0024  E8 000B			       CALL Tikrinimas
+     75
+     76	0027  F6 26 005Br		       MUL desimt
+     77	002B  02 C7			       ADD AL, BH
+     78	002D  70 11			       JO Klaida1
+     79	002F  E2 F0			  LOOP ciklas
+     80	0031			     Return:
+     81	0031  C3		      RET
+     82	0032			     Konvertuoti ENDP
+     83
+     84				     ; Pocedura	TIKRINIMAS
+     85	0032			     Tikrinimas	PROC
+     86
+     87	0032  80 FF 30		       CMP BH, 30h
+     88	0035  7C 09		       JL Klaida1
+     89	0037  80 FF 39		       CMP BH, 39h
+     90	003A  7F 04		       JG Klaida1
+     91	003C  80 EF 30		       SUB BH, 30h
+     92	003F  C3		      RET
+     93	0040			     Tikrinimas	ENDP
+     94
+     95				     ; I Klaida
+     96	0040  EB 73 90		     Klaida1: JMP Klaida
+     97
+     98	0043			     START:
+     99				     ; pradzia
+    100	0043  B8 0000s		     MOV AX, duomenys
+    101	0046  8E D8		     MOV DS, AX
+    102
+    103				     ; isvalyti	ekrana
+    104	0048  B8 0002		     MOV AX, 0002h
+    105	004B  CD 10		     INT 10h
+    106
+    107				     ; pranesimas1
+    108	004D  B4 09		     MOV AH, 09h
+    109	004F  BA 0006r		     LEA DX, pra1
+    110	0052  CD 21		     INT 21H
+    111
+    112				     ; Ivedimas	a
+    113	0054  E8 FFA9		     CALL Ivedimas
+    114	0057  E8 FFAE		     CALL Konvertuoti
+    115	005A  A2 0055r		     MOV a, AL
+    116
+    117				     ; pranesimas2
+    118	005D  B4 09		     MOV AH, 09h
+    119	005F  BA 001Dr		     LEA DX, pra2
+    120	0062  CD 21		     INT 21H
+    121
+    122				     ; Ivedimas	b
+    123	0064  E8 FF99		     CALL Ivedimas
+    124	0067  E8 FF9E		     CALL Konvertuoti
+    125	006A  A2 0056r		     MOV b, AL
+    126
+    127				     ; a+b
+    128	006D  02 06 0055r	     ADD AL, a ; a+b
+    129	0071  70 42		     JO	Klaida
+    130
+    131				     ; kuriam rezultata
+    132	0073  88 26 0057r	     MOV x, AH
+    133	0077  B4 00		     MOV AH, 0
+    134				     ; sveika dalis
+    135	0079  F6 36 005Br	     DIV desimt
+    136	007D  88 26 0059r	     MOV x+2,AH
+    137	0081  80 06 0059r 30	     ADD x+2,30h
+    138	0086  B4 00		     MOV AH, 0
+    139
+    140	0088  F6 36 005Br	     DIV desimt
+    141	008C  88 26 0058r	     MOV x+1,AH
+    142	0090  80 06 0058r 30	     ADD x+1,30h
+    143	0095  B4 00		     MOV AH, 0
+    144
+    145	0097  F6 36 005Br	     DIV desimt
+    146	009B  88 26 0057r	     MOV x,AH
+    147	009F  80 06 0057r 30	     ADD x,30h
+    148
+    149				     ; pranesimas3
+    150	00A4  B4 09		     MOV AH, 09h
+    151	00A6  BA 0034r		     LEA DX, pra3
+    152	00A9  CD 21		     INT 21H
+    153
+    154				     ; spausdinimas
+    155	00AB  B4 09		     MOV AH, 09h
+    156	00AD  BA 0057r		     LEA DX, x
+    157	00B0  CD 21		     INT 21h
+    158
+    159				     ; sokam i Pabaiga
+    160	00B2  EB 08 90		     JMP Pabaiga
+    161
+    162	00B5			     Klaida:
+    163
+    164	00B5  B4 09		     MOV AH, 09h
+    165	00B7  BA 004Cr		     LEA DX, klaidpr
+    166	00BA  CD 21		     INT 21h
+    167
+    168	00BC			     Pabaiga:
+    169				     ; paspausti bet koki klavisa
+    170	00BC  B4 07		     MOV AH, 07h
+    171	00BE  CD 21		     INT 21h
+    172
+    173				     ; iseiti is programos
+    174	00C0  B4 4C		     MOV AH, 4ch
+    175	00C2  CD 21		     INT 21h
+    176
+    177	00C4			     programa ENDS
+    178
+    179				     END START
+
+Symbol Table
+
+Symbol Name			  Type	 Value
+
+??DATE				  Text	 "12/15/08"
+??FILENAME			  Text	 "ASM_KST8"
+??TIME				  Text	 "00:20:36"
+??VERSION			  Number 0200
+@CPU				  Text	 0101H
+@CURSEG				  Text	 PROGRAMA
+@FILENAME			  Text	 ASM_KST8
+@WORDSIZE			  Text	 2
+A				  Byte	 DUOMENYS:0055
+B				  Byte	 DUOMENYS:0056
+CIKLAS				  Near	 PROGRAMA:0021
+CR				  Number 000D
+DESIMT				  Byte	 DUOMENYS:005B
+IVEDIMAS			  Near	 PROGRAMA:0000
+IVSR				  Byte	 DUOMENYS:0000
+KLAIDA				  Near	 PROGRAMA:00B5
+KLAIDA1				  Near	 PROGRAMA:0040
+KLAIDPR				  Byte	 DUOMENYS:004C
+KONVERTUOTI			  Near	 PROGRAMA:0008
+LF				  Number 000A
+PABAIGA				  Near	 PROGRAMA:00BC
+PRA1				  Byte	 DUOMENYS:0006
+PRA2				  Byte	 DUOMENYS:001D
+PRA3				  Byte	 DUOMENYS:0034
+RETURN				  Near	 PROGRAMA:0031
+START				  Near	 PROGRAMA:0043
+TIKRINIMAS			  Near	 PROGRAMA:0032
+X				  Byte	 DUOMENYS:0057
+
+Groups & Segments		  Bit Size Align  Combine Class
+
+DUOMENYS			  16  005C Para	  none
+PROGRAMA			  16  00C4 Para	  none
+STEKAS				  16  0100 Para	  Stack

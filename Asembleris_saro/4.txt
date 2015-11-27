@@ -1,0 +1,52 @@
+Stekas SEGMENT STACK
+	DB 256 DUP(' ')
+Stekas ENDS
+Duom SEGMENT
+	sritis DB 50, 50 DUP(' ')
+	dol DB '$'
+	du DB 2 
+	eilute DB 12
+Duom ENDS
+Prog SEGMENT
+	ASSUME DS:Duom, CS:Prog, SS: stekas
+START:  MOV AX,Duom
+	MOV DS,AX
+
+	MOV AH,0Ah
+	LEA DX,sritis
+	INT 21h
+	
+	MOV BH,07h
+	MOV AX,0600h
+	MOV CX,0000
+	MOV DX,184Fh
+	INT 10h
+
+	MOV AX,0
+	MOV AL,80
+	SUB AL,sritis+1
+	DIV du
+	MOV DL,AL
+	MOV DH, eilute
+	MOV BH,0
+	MOV AH,02
+	INT 10h
+	
+	
+	MOV AX,0	
+	MOV AL, sritis+1
+	LEA BX, sritis+2
+	ADD BX,AX
+	MOV AH, dol
+	MOV[BX], AH
+
+
+	MOV AH,09h
+	LEA DX,sritis+2
+	INT 21h
+	MOV Ah, 4Ch
+	INT 21h
+
+	
+Prog ENDS
+END START

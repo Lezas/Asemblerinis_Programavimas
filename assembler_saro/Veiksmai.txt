@@ -1,0 +1,81 @@
+stekas SEGMENT STACK  
+DB 256 DUP (?)         
+stekas ENDS            
+                       
+duomenys SEGMENT       
+svd DB 10,13,'SVEIKOJI DALIS:'
+spes DB 3 DUP (0), '$'
+liek DB 10,13,'LIEKANA:'
+spel DB 3 DUP (0), '$'
+ten DB 10              
+two DB 2               
+three DB 3             
+a DB 15                
+b DB 13                
+c DB 5                 
+                       
+duomenys ENDS          
+                       
+programa SEGMENT       
+ASSUME CS: programa, DS: duomenys, SS: stekas
+                               
+START:                         
+         MOV AX, duomenys      
+         MOV DS, AX            
+                               
+         ;sudetis              
+         MOV AL, a             
+         MOV BL, b             
+         ADD AL, BL            
+                               
+         ;atimtis              
+         MOV BL, c             
+         SUB AL, BL            
+                               
+         ;daugyba              
+         MOV BL, two           
+         MUL BL                
+                               
+         ;dalyba               
+         MOV BL, three         
+         DIV BL                
+                               
+         ;formavimas           
+         MOV DX, AX            
+         ;sveikoji             
+         LEA BX, spes+2        
+         MOV CX, 3             
+         CIKLS:                
+         MOV AH, 0             
+         DIV ten               
+         ADD AH, 30h           
+         MOV [BX], AH          
+         DEC BX                
+         LOOP CIKLS            
+                      
+         ;liekana                      
+         MOV AL, DH   
+         MOV CX, 3                       
+         LEA BX, spel+2        
+         CIKLL:                
+         MOV AH, 0             
+         DIV ten               
+         ADD AH, 30h           
+         MOV [BX], AH          
+         DEC BX                
+         LOOP CIKLL            
+                               
+         ;spausdinimas         
+         MOV AH, 09h           
+         LEA DX, svd       
+         INT 21h               
+         MOV AH, 09h   
+                     
+         LEA DX, liek     
+         INT 21h                       
+         MOV AH, 4ch           
+         INT 21h               
+                               
+programa ENDS                  
+END START
+

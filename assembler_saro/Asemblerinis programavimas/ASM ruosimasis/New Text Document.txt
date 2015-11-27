@@ -1,0 +1,19 @@
+rezultatas proc                      
+        mov cx, 0                    
+push_sk:                             
+        mov dx, 0                    
+        div dydis                     
+        add dx, 30h                  
+        push dx                      
+        inc cx                       
+        cmp ax, 0                    
+        jne push_sk                  
+pop_sk:                              
+        mov ah, 09h                  
+        pop dx                       
+        mov tarpinis, dl                 
+        lea dx, tarpinis                 
+        int 21h                      
+        loop pop_sk                  
+        ret                          
+rezultatas endp

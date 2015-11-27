@@ -1,0 +1,125 @@
+Turbo Assembler	 Version 2.0	    12/14/08 23:40:36	    Page 1
+ASM_KST6.ASM
+
+      1				     ;
+      2				     ; Kestutis	Stankevicius, II-06/3
+      3				     ; Asemblerinis programavimas
+      4				     ;
+      5				     ; 6 Auditorijos darbas:
+      6				     ;
+      7				     ; Ivedamas ir atvaizduojamas tekstas per viduri atvirksciai
+      8				     ;
+      9	0000			     stekas SEGMENT STACK
+     10	0000  0100*(??)		      DB 256 DUP (?) ; isskiriame atmintyje 256	baitus
+     11	0100			     stekas ENDS
+     12
+     13	0000			     duomenys SEGMENT
+     14				     ; aprasome	kintamuosius
+     15	0000  19 00 19*(20)	      ivsr	 DB 25,	0, 25 DUP(' ')
+     16	001B  19*(20)		      spsr	 DB 25 DUP(' ')
+     17	0034  02		      du	 DB 2
+     18	0035  49 76 65 73 6B 69	74+   pranesimas DB 'Iveskite pavarde: ','$'
+     19	      65 20 70 61 76 61	72+
+     20	      64 65 3A 20 24
+     21
+     22	0048			     duomenys ENDS
+     23
+     24	0000			     programa SEGMENT
+     25				      ASSUME CS:programa, DS:duomenys, SS:stekas
+     26
+     27	0000			     START:
+     28				     ; pradzia
+     29	0000  B8 0000s		     MOV AX, duomenys
+     30	0003  8E D8		     MOV DS, AX
+     31
+     32				     ; isvalyti	ekrana
+     33	0005  B8 0002		     MOV AX, 0002h
+     34	0008  CD 10		     INT 10h
+     35
+     36				     ; pranesimas
+     37	000A  B4 09		     MOV AH, 09h
+     38	000C  BA 0035r		     LEA DX, pranesimas
+     39	000F  CD 21		     INT 21h
+     40
+     41				     ; ivedimas
+     42	0011  B4 0A		     MOV AH, 0Ah
+     43	0013  BA 0000r		     LEA DX, ivsr
+     44	0016  CD 21		     INT 21h
+     45
+     46				     ; $ gale ivesto teksto
+     47	0018  BF 001Br		     LEA DI, spsr
+     48	001B  BE 0002r		     LEA SI, ivsr+2
+     49	001E  8A 1E 0001r	     MOV BL, ivsr+1
+     50	0022  B7 00		     MOV BH, 0
+     51	0024  03 F3		     ADD SI,BX ; adresas kur siusime $ zenkla
+     52
+     53	0026  4E		     DEC SI ; sumazinam	SI -1
+     54
+     55				     ; raidziu apkeitimas
+     56	0027  8A 0E 0001r	     MOV CL, ivsr+1
+     57	002B  B5 00		     MOV CH, 0
+     58
+     59	002D			     ciklas:
+     60	002D  8A 3C			     MOV BH, [SI]
+     61	002F  88 3D			     MOV [DI], BH
+     62	0031  4E			     DEC SI ; sumazinam	SI -1
+     63	0032  47			     INC DI ; padidinam	DI +1
+     64	0033  E2 F8		     LOOP ciklas
+     65
+     66	0035  B7 24		     MOV BH, '$'
+     67	0037  88 3D		     MOV [DI], BH ; spausdinimo	pabaiga
+     68
+     69				     ; skaiciuojam kur spausdinti
+     70	0039  B0 50		     MOV AL, 80
+     71	003B  B4 00		     MOV AH, 0
+     72	003D  2A C3		     SUB AL, BL	; atimtis
+     73	003F  F6 36 0034r	     DIV du
+     74	0043  8A D0		     MOV DL, AL	; randam kur pradeti spausdinti
+     75	0045  B6 0C		     MOV DH, 12
+     76	0047  B4 02		     MOV AH, 02	; 12 eilute
+     77	0049  B7 00		     MOV BH, 00	; puslapio numeris
+     78	004B  CD 10		     INT 10h  ;	i paskaiciuota vieta pastatom zymekli spausdinimui
+     79
+     80				     ; spausdinimas
+     81	004D  B4 09		     MOV AH, 09h
+     82	004F  BA 001Br		     LEA DX, spsr
+     83	0052  CD 21		     INT 21h
+     84
+     85				     ; paspausti bet koki klavisa
+     86	0054  B4 07		     MOV AH, 07h
+     87	0056  CD 21		     INT 21h
+     88
+     89				     ; iseiti is programos
+     90	0058  B4 4C		     MOV AH, 4ch
+     91	005A  CD 21		     INT 21h
+     92
+     93	005C			     programa ENDS
+     94
+     95				     END START
+
+Symbol Table
+
+
+Symbol Name			  Type	 Value
+
+??DATE				  Text	 "12/14/08"
+??FILENAME			  Text	 "ASM_KST6"
+??TIME				  Text	 "23:40:36"
+??VERSION			  Number 0200
+@CPU				  Text	 0101H
+@CURSEG				  Text	 PROGRAMA
+@FILENAME			  Text	 ASM_KST6
+@WORDSIZE			  Text	 2
+CIKLAS				  Near	 PROGRAMA:002D
+DU				  Byte	 DUOMENYS:0034
+IVSR				  Byte	 DUOMENYS:0000
+PRANESIMAS			  Byte	 DUOMENYS:0035
+SPSR				  Byte	 DUOMENYS:001B
+START				  Near	 PROGRAMA:0000
+
+Groups & Segments		  Bit Size Align  Combine Class
+
+DUOMENYS			  16  0048 Para	  none
+PROGRAMA			  16  005C Para	  none
+STEKAS				  16  0100 Para	  Stack
+

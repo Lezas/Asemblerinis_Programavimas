@@ -1,0 +1,213 @@
+Turbo Assembler	 Version 2.0	    12/14/08 23:51:23	    Page 1
+ASM_KST7.ASM
+
+      1				     ;
+      2				     ; Kestutis	Stankevicius, II-06/3
+      3				     ; Asemblerinis programavimas
+      4				     ;
+      5				     ; 7 Auditorijos darbas:
+      6				     ;
+      7				     ; Mini kontrolinis	darbas:	x = (2ab+c) / (c-b)
+      8				     ;
+      9	0000			     stekas SEGMENT STACK
+     10	0000  0100*(??)		      DB 256 DUP (?) ; isskiriame atmintyje 256	baitus
+     11	0100			     stekas ENDS
+     12
+     13	      =	000D		     CR	EQU 13
+     14	      =	000A		     LF	EQU 10
+     15
+     16	0000			     duomenys SEGMENT
+     17				     ; aprasome	kintamuosius
+     18	0000  19 00 19*(20)	      ivsr     DB 25, 0, 25 DUP(' ')
+     19	001B  50 72 6F 67 72 61	6D+   pra1     DB 'Programos Autorius: ','$'
+     20	      6F 73 20 41 75 74	6F+
+     21	      72 69 75 73 3A 20	24
+     22	0030  0D 0A		      pra2     DB '', CR, LF
+     23	0032  20 2D 2D 2D 2D 2D	2D+	       DB ' ----------', CR, LF
+     24	      2D 2D 2D 2D 0D 0A
+     25	003F  20 52 65 7A 75 6C	74+	       DB ' Rezultatas:	x = (2ab+c) / (c-b)', CR, LF, '	', CR, LF
+     26	      61 74 61 73 3A 20	78+
+     27	      20 3D 20 28 32 61	62+
+     28	      2B 63 29 20 2F 20	28+
+     29	      63 2D 62 29 0D 0A	20+
+     30	      0D 0A
+     31	0064  20 20 53 76 65 69	6B+	       DB '  Sveikoji dalis: ',	'$'
+     32	      6F 6A 69 20 64 61	6C+
+     33	      69 73 3A 20 24
+     34	0077  0D 0A 20 0D 0A	      pra3     DB '', CR, LF, '	', CR, LF
+     35	007C  20 20 20 20 20 20	20+	       DB '	    Liekana: ',	'$'
+     36	      20 20 4C 69 65 6B	61+
+     37	      6E 61 3A 20 24
+     38
+     39	008F  00		      vard     DB 0 ; vardiklis
+     40
+     41	0090  03*(20) 24	      rez_sv   DB 3 DUP	(' '), '$'  ; sveika dalis
+     42	0094  03*(20) 24	      rez_li   DB 3 DUP	(' '), '$'  ; liekana
+     43
+     44	0098  04		      dalyba   DB 4
+     45	0099  02		      a	       DB 2
+     46	009A  03		      b	       DB 3
+     47	009B  05		      c	       DB 5
+     48
+     49	009C  02		      du       DB 2
+     50	009D  0A		      desimt   DB 10
+     51
+     52	009E			     duomenys ENDS
+     53
+     54	0000			     programa SEGMENT
+     55				      ASSUME CS:programa, DS:duomenys, SS:stekas
+     56
+     57	0000			     START:
+     58				     ; pradzia
+     59	0000  B8 0000s		     MOV AX, duomenys
+     60	0003  8E D8		     MOV DS, AX
+     61
+     62				     ; isvalyti	ekrana
+     63	0005  B8 0002		     MOV AX, 0002h
+     64	0008  CD 10		     INT 10h
+     65
+     66				     ; pranesimas1
+     67	000A  B4 09		     MOV AH, 09h
+     68	000C  BA 001Br		     LEA DX, pra1
+     69	000F  CD 21		     INT 21H
+     70
+     71				     ; ivedimas
+     72	0011  B4 0A		     MOV AH, 0Ah
+     73	0013  BA 0000r		     LEA DX, ivsr
+     74	0016  CD 21		     INT 21h
+     75
+     76				     ; $ gale ivesto teksto
+     77	0018  BF 0002r		     LEA DI, ivsr+2
+     78	001B  8A 1E 0001r	     MOV BL, ivsr+1
+     79	001F  B7 00		     MOV BH, 0
+     80	0021  03 FB		     ADD DI,BX ; adresas kur siusime $ zenkla
+     81	0023  B7 24		     MOV BH, '$'
+     82	0025  88 3D		     MOV [DI], BH ; spausdinimo	pabaiga
+     83
+     84				     ; skaiciuojam kur spausdinti
+     85	0027  B0 50		     MOV AL, 80
+     86	0029  B4 00		     MOV AH, 0
+     87	002B  2A C3		     SUB AL, BL	; atimtis
+     88	002D  F6 36 0098r	     DIV dalyba
+     89	0031  8A D0		     MOV DL, AL	; randam kur pradeti spausdinti
+     90	0033  B6 02		     MOV DH, 2
+     91	0035  B4 02		     MOV AH, 02	; 2 eilute
+     92	0037  B7 00		     MOV BH, 00	; puslapio numeris
+     93	0039  CD 10		     INT 10h  ;	i paskaiciuota vieta pastatom zymekli spausdinimui
+     94
+     95				     ; skaiciavimai
+     96				     ; skaiciuojam vardikli vard=c-b
+     97	003B  A0 009Br		     MOV AL, c
+     98	003E  B4 00		     MOV AH, 0
+     99	0040  2A 06 009Ar	     SUB AL, b
+    100	0044  A2 008Fr		     MOV vard, AL
+    101				     ; skaiciuojam skaitikli 2ab+c / vard=c-b
+    102	0047  A0 009Cr		     MOV AL, du
+    103	004A  B4 00		     MOV AH, 0
+    104	004C  F6 26 0099r	     MUL a
+    105	0050  F6 26 009Ar	     MUL b
+    106	0054  02 06 009Br	     ADD AL, c
+    107	0058  F6 36 008Fr	     DIV vard
+    108				     ; kuriam rezultata
+    109				     ; issaugojam liekana
+    110	005C  88 26 0094r	     MOV rez_li, AH
+    111	0060  B4 00		     MOV AH, 0
+    112				     ; sveika dalis
+    113	0062  F6 36 009Dr	     DIV desimt
+    114	0066  88 26 0092r	     MOV rez_sv+2,AH
+    115	006A  80 06 0092r 30	     ADD rez_sv+2,30h
+    116	006F  B4 00		     MOV AH, 0
+    117
+    118	0071  F6 36 009Dr	     DIV desimt
+    119	0075  88 26 0091r	     MOV rez_sv+1,AH
+    120	0079  80 06 0091r 30	     ADD rez_sv+1,30h
+    121	007E  B4 00		     MOV AH, 0
+    122
+    123	0080  F6 36 009Dr	     DIV desimt
+    124	0084  88 26 0090r	     MOV rez_sv,AH
+    125	0088  80 06 0090r 30	     ADD rez_sv,30h
+    126
+    127				     ; liekana
+    128	008D  A0 0094r		     MOV AL, rez_li
+    129	0090  B4 00		     MOV AH, 0
+    130
+    131	0092  F6 36 009Dr	     DIV desimt
+    132	0096  88 26 0096r	     MOV rez_li+2,AH
+    133	009A  80 06 0096r 30	     ADD rez_li+2,30h
+    134	009F  B4 00		     MOV AH, 0
+    135
+    136	00A1  F6 36 009Dr	     DIV desimt
+    137	00A5  88 26 0095r	     MOV rez_li+1,AH
+    138	00A9  80 06 0095r 30	     ADD rez_li+1,30h
+    139	00AE  B4 00		     MOV AH, 0
+    140
+    141	00B0  F6 36 009Dr	     DIV desimt
+    142	00B4  88 26 0094r	     MOV rez_li,AH
+    143	00B8  80 06 0094r 30	     ADD rez_li,30h
+    144
+    145				     ; spausdinimas
+    146	00BD  B4 09		     MOV AH, 09h
+    147	00BF  BA 0002r		     LEA DX, ivsr+2
+    148	00C2  CD 21		     INT 21h
+    149
+    150	00C4  B4 09		     MOV AH, 09h
+    151	00C6  BA 0030r		     LEA DX, pra2
+    152	00C9  CD 21		     INT 21h
+    153
+    154	00CB  B4 09		     MOV AH, 09h
+    155	00CD  BA 0090r		     LEA DX, rez_sv
+    156	00D0  CD 21		     INT 21h
+    157
+    158	00D2  B4 09		     MOV AH, 09h
+    159	00D4  BA 0077r		     LEA DX, pra3
+    160	00D7  CD 21		     INT 21h
+    161
+    162	00D9  B4 09		     MOV AH, 09h
+    163	00DB  BA 0094r		     LEA DX, rez_li
+    164	00DE  CD 21		     INT 21h
+    165
+    166				     ; paspausti bet koki klavisa
+    167	00E0  B4 07		     MOV AH, 07h
+    168	00E2  CD 21		     INT 21h
+    169
+    170				     ; iseiti is programos
+    171	00E4  B4 4C		     MOV AH, 4ch
+    172	00E6  CD 21		     INT 21h
+    173
+    174	00E8			     programa ENDS
+    175
+    176				     END START
+Symbol Table
+
+Symbol Name			  Type	 Value
+
+??DATE				  Text	 "12/14/08"
+??FILENAME			  Text	 "ASM_KST7"
+??TIME				  Text	 "23:51:23"
+??VERSION			  Number 0200
+@CPU				  Text	 0101H
+@CURSEG				  Text	 PROGRAMA
+@FILENAME			  Text	 ASM_KST7
+@WORDSIZE			  Text	 2
+A				  Byte	 DUOMENYS:0099
+B				  Byte	 DUOMENYS:009A
+C				  Byte	 DUOMENYS:009B
+CR				  Number 000D
+DALYBA				  Byte	 DUOMENYS:0098
+DESIMT				  Byte	 DUOMENYS:009D
+DU				  Byte	 DUOMENYS:009C
+IVSR				  Byte	 DUOMENYS:0000
+LF				  Number 000A
+PRA1				  Byte	 DUOMENYS:001B
+PRA2				  Byte	 DUOMENYS:0030
+PRA3				  Byte	 DUOMENYS:0077
+REZ_LI				  Byte	 DUOMENYS:0094
+REZ_SV				  Byte	 DUOMENYS:0090
+START				  Near	 PROGRAMA:0000
+VARD				  Byte	 DUOMENYS:008F
+
+Groups & Segments		  Bit Size Align  Combine Class
+
+DUOMENYS			  16  009E Para	  none
+PROGRAMA			  16  00E8 Para	  none
+STEKAS				  16  0100 Para	  Stack

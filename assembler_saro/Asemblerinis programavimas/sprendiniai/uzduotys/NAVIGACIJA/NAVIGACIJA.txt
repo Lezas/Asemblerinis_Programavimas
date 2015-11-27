@@ -1,0 +1,103 @@
+Uþduotis 1 
+Sudauginti du vieno baito ilgio skaièius A ir B, ávedamus ið klaviatûros ir rezultatà atspausdinti ekrane.
+
+Tai yra vieno baito ilgio skaièiai. Programoje reikia atlikti skaièiø transformacijà á maðininá formatà.
+
+Uþduotis 2
+Rasti deðimt kas antro baito reikðmiø vidurká ( OA masyvo pavidalu) ir rezultatà atspausdinti ekrane. Vidurkis pateikiamas ekrane vieno þenklo po kablelio tikslumu. Duomenys apraðyti duomenø segmente.
+
+Uþduotis 3
+Ávesti ið klaviatûros deðimt simboliø, ir persiûsi juos atvirkðtine tvarka á OA vietà, kurios adresas uþraðytas registre DI. 
+Suformuotà rezultatà atspausdinti ekrane. 
+
+Uþduotis 4
+Á OA ávesti ið klaviatûros informacijà ir ávestø simboliø skaièiø áraðyti á registrà AL. Registro turiná atspausdinti ekrane. 
+Ávestø simboliø skaièius virðija 10.
+
+Uþduotis 5
+Sudaryti programà, kuri suskaièiuoja kiek yra apraðytame duomenø masyve teigiamø skaièiø, kiek yra neigiamø skaièiø ir rezultatà atspausdinti ekrane.
+
+Uþduotis 6
+Ávesti deðimt masyvo elementø á OA, sudëti juos ir rezultatà atspausdinti ekrane.
+
+Uþduotis 7
+Patikrinti AL registro reikðmæ. 
+Jei AL reikðmë teigiama, atspausdinti praneðimà "pran1" ir registro reikðmæ
+Jei AL reikðmë neigiama ar lygi nuliui, atspausdinti praneðimà "pran2" ir registro reikðmæ.
+
+Uþduotis 8
+Ávesti deðimt masyvo elementø á OA, paskaièiuoti vidurká iki vieno skaièiaus po kablelio ir rezultatà atspausdinti ekrane.
+
+Uþduotis 9
+Ávesti deðimt masyvo elementø á OA, paskaièiuoti kiek ið jø yra lyginiø ir kiek nelyginiø skaièiø .Rezultatà atspausdinti ekrane.
+
+Uþduotis 10
+Paraðyti programà, kuri ávestø studento gimimo metus ið klaviatûros ir suskaièiuotø jo amþiø. Rezultatà pateikti ekrane.
+
+Uþduotis 11
+Ávesti darbuotojo atlyginimà ið klaviatûros ir paskaièiuoti kiek jis virðija minimalià mënesinæ algà (600 litø.)Rezultatà pateikti ekrane.
+
+Uþduotis 12
+Dviþenklø skaièiø A,B ir C ávedimas ið klaviatûros. Paskaièiuoti formulæ X=(A+B)C rezultatà pateikti ekrane. 
+
+Uþduotis 13
+Rasti penkiø sveikø skaièiø be þenklo vidurká iki 2 pozicijø po kablelio. Skaièiai ávedami ið klaviatûros. Rezultatà pateikti ekrane.
+
+Uþduotis 14
+Rasti masyve maþiausià skaièiø (be þenklo). Rezultatà pateikti ekrane. Masyvà ávesti ið klaviatûros.
+
+Uþduotis 15
+Ávesti masyvà ið klaviatûros. Suskaièiuoti bendrà masyvo elementø sumà ir rezultatà atspausdinti per ekrano vidurá.
+
+
+Uþduotis 16
+Ávesti masyvà ið klaviatûros. Suskaièiuoti kiek yra jame skaièiø ir kiek yra kitokiø simboliø. Rezultatà iðvesti ekrane.
+
+Uþduotis 17
+Turime apraðytà masyvà (3*5), apraðytà duomenø segmente. Suskaièiuoti kiekvieno stulpelio sumà ir pateikti ekrane stulpelio apaèioje.
+
+
+Uþduotis 18
+Turime apraðytà masyvà (3*5). Suskaièiuoti kiekvienos eilutës sumà ir pateikti ekrane eilutës gale.
+
+
+Uþduotis 19
+Turime apraðytà masyvà (3*5). Suskaièiuoti kiekvienos eilutës vidurká ir sveikàjà dalá pateikti ekrane eilutës gale.
+
+
+Uþduotis 20
+Sudëti deðimt vienaþenkliø ávedamø ið klaviatûros skaièiø ir rezultatà atspausdinti ekrane.
+
+
+Uþduotis 21
+Dviþenkliø skaièiø ávedimas ið klaviatûros. Paskaièiuoti formulæ X=A+B rezultatà pateikti ekrane. A ir B ávesti ið klaviatûros. 
+
+
+22
+Á OA ávesti savo pavardæ ir patikrinti ar pavardëje pasikartoja pirma pavardës raidë. Apie rezultatà iðvesti ekrane atatinkamà praneðimà.
+
+
+
+Uþduotis 23
+Iðvalyti ekrane vietà nuo 1 eilutës iki 15 eilutës Ir ten atspausdinti Ávestà ið klaviatûros tekstà.
+
+Uþduotis 24
+Deðimt baitø ið OA lasteliø, kuriø adresas uþraðytas registre SI persiûsti á OA vietà, kurios adresas uþraðytas registre DI.
+
+
+
+Uþduotis 25
+Sudauginti du vieno baito ilgio skaièius A ir B ávestus ið klaviatûros á OA ir rezultatà patalpinti lastelëje C ir taip pat já pateikti krane.
+
+
+Uþduotis 26
+Ávesti pavardæ ið klaviatûros ir jà patalpinti tekstiniame faile dike. 
+
+
+Uþduotis 27
+Nuskaityti tekstiná failànuo disko ir já atspausdinti ekrane.
+
+Uþduotis 28
+Turime apraðytà masyvà (5*5). Suskaièiuoti kiekvienos eilutës vidurká ir sveikàjà dalá pateikti ekrane.
+
+

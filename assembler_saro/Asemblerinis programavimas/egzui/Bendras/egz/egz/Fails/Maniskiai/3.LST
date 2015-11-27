@@ -1,0 +1,406 @@
+Turbo Assembler	 Version 3.2	    01/17/06 23:05:18	    Page 1
+3.asm
+
+
+
+      1
+      2				       ;klaviatura
+      3	0000			      stekas segment stack
+      4	0000  0100*(??)		      db 256 dup (?)
+      5	0100			      stekas ends
+      6	0000			      duomenys segment
+      7	0000  19 ?? 0A*(00) 0A 0D +  a db 25,?,10 dup(0),10,13,'$'
+      8	      24
+      9	000F  19 ?? 0A*(00) 0A 0D +  b db 25,?,10 dup(0),10,13,'$'
+     10	      24
+     11	001E  0006 ????	05*(0000) +  c dw 6,?,5	dup(0),10,13,'$'
+     12	      000A 000D	0024
+     13	0032  07D5		     d dw 2005
+     14	0034  000A		     f dw 10
+     15	0036  00 24		     reikia db 0,'$'
+     16	0038  ????		     handle dw ?
+     17	003A  63 3A 5C 74 61 73	6D+  failas db "c:\tasm\temp\failas.txt",0
+     18	      5C 74 65 6D 70 5C	66+
+     19	      61 69 6C 61 73 2E	74+
+     20	      78 74 00
+     21				     ;fi db 100
+     22	0052  00 24		     zod1 db 0,'$'
+     23	0054  0A		     fo	db 10
+     24	0055  00 0A 0D 24	     i db 0,10,13,'$'  ;rez
+     25	0059  00 24		     q db 0,'$'	;spau
+     26	005B  00		     p db 0
+     27	005C  0000		     ats dw 0
+     28	005E  0000 0024		     m dw 0,'$'
+     29	0062  0000 000A	000D 0024    zod dw 0,10,13,'$'
+     30	006A  56 61 72 64 61 73	3A+  t1	db 'Vardas:','$'
+     31	      24
+     32	0072  0A 0D 50 61 76 61	72+  t2	db 10,13,'Pavarde:','$'
+     33	      64 65 3A 24
+     34	007D  0A 0D 47 69 6D 69	6D+  t3	db 10,13,'Gimimas:','$'
+     35	      61 73 3A 24
+     36	0088  47 69 6D 69 6D 6F	20+  t4	db 'Gimimo metai',10,10,13,'$'
+     37	      6D 65 74 61 69 0A	0A+
+     38	      0D 24
+     39	0098  20 6D 65 74 61 69	28+  t5	db ' metai(u) ','$'
+     40	      75 29 20 24
+     41	00A3  0A 0D 4B 6C 61 69	64+  t6	db 10,13,'Klaida!Nepazistu nei vieno zmogaus turincio daugiau nei 255 metus',10,13,'$'
+     42	      61 21 4E 65 70 61	7A+
+     43	      69 73 74 75 20 6E	65+
+     44	      69 20 76 69 65 6E	6F+
+     45	      20 7A 6D 6F 67 61	75+
+     46	      73 20 74 75 72 69	6E+
+     47	      63 69 6F 20 64 61	75+
+     48	      67 69 61 75 20 6E	65+
+     49	      69 20 32 35 35 20	6D+
+     50	      65 74 75 73 0A 0D	24
+     51	00E9  0A 0A 0D 52 45 5A	55+  t7	db 10,10,13,'REZULTATAI',10,10,13,'$'
+     52	      4C 54 41 54 41 49	0A+
+     53	      0A 0D 24
+     54	00FA  20 24		     tarpas db ' ','$'
+     55	00FC  0A 0A 0A 0A 0A 0D	52+  t8	db 10,10,10,10,10,13,'Rezultatu	failas patalpintas c:\tasm\temp\failas.txt',10,13,'$'
+     56	      65 7A 75 6C 74 61	74+
+     57	      75 20 66 61 69 6C	61+
+Turbo Assembler	 Version 3.2	    01/17/06 23:05:18	    Page 2
+3.asm
+
+
+
+     58	      73 20 70 61 74 61	6C+
+     59	      70 69 6E 74 61 73	20+
+     60	      63 3A 5C 74 61 73	6D+
+     61	      5C 74 65 6D 70 5C	66+
+     62	      61 69 6C 61 73 2E	74+
+     63	      78 74 0A 0D 24
+     64	0139			      duomenys ends
+     65	0000			      programa segment
+     66				      assume cs: programa, ds:duomenys,	ss:stekas
+     67	0000  B8 0000s		       start: mov ax, duomenys
+     68	0003  8E D8			      mov ds, ax
+     69					      ;tekstinio ekrano	ishvalymas
+     70	0005  B8 0002			      mov ax, 002h
+     71	0008  CD 10			      int 10h
+     72					     ; Pavadinimas
+     73	000A  B4 09			      mov ah,09h
+     74	000C  BA 0088r			      lea dx,t4
+     75	000F  CD 21			      int 21h
+     76					      ;Vardo ivedimas
+     77	0011  B4 09			    mov	ah,09h
+     78	0013  BA 006Ar			   lea dx,t1
+     79	0016  CD 21			   int 21h
+     80	0018  B4 0A			   mov ah,0Ah
+     81	001A  BA 0000r			   lea dx,a
+     82	001D  CD 21			   int 21h
+     83						  ;Pavardes ivedimas
+     84	001F  B4 09			    mov	ah,09h
+     85	0021  BA 0072r			   lea dx,t2
+     86	0024  CD 21			   int 21h
+     87	0026  B4 0A			   mov ah,0Ah
+     88	0028  BA 000Fr			   lea dx,b
+     89	002B  CD 21			   int 21h
+     90						  ;Gimimo metu	ivedimas
+     91	002D  B4 09			    mov	ah,09h
+     92	002F  BA 007Dr			   lea dx,t3
+     93	0032  CD 21			   int 21h
+     94	0034  B4 0A			   mov ah,0Ah
+     95	0036  BA 001Er			   lea dx,c
+     96	0039  CD 21			   int 21h
+     97					      ;	skaiciavimai
+     98					      ;verciame
+     99					      ;1 ivedame po 1 i	steka
+    100	003B  BB 001Fr			      lea bx,c+1
+    101	003E  C6 06 0055r 00		      mov i,0
+    102	0043				      pushinimas:
+    103	0043  83 C3 01			      add bx,1
+    104	0046  80 06 0055r 01		      add i,1
+    105	004B  8B 0F			      mov cx,[bx]
+    106	004D  B5 00			      mov ch,0
+    107	004F  51			      push cx
+    108	0050  A0 001Fr			      mov al, byte ptr c+1
+    109	0053  3A 06 0055r		      cmp al,i
+    110	0057  75 EA			      jne pushinimas
+    111	0059  B8 0000			       mov ax,0
+    112	005C  BB 0000			       mov bx,0
+    113	005F  B9 0000			       mov cx,0
+    114	0062  C6 06 0055r 00		       mov i,0
+Turbo Assembler	 Version 3.2	    01/17/06 23:05:18	    Page 3
+3.asm
+
+
+
+    115					      ;2 ishimame ish steko,atimam 30 ir sudarom 1 skaiciu is 4	skaitmenu
+    116	0067  58			      pop ax
+    117	0068  2D 0030			      sub ax,30h
+    118	006B  A3 005Cr			      mov ats,ax
+    119	006E  C6 06 0055r 00		      mov i,0
+    120	0073  C6 06 0055r 01		      mov i,1
+    121	0078				      ups:
+    122	0078  80 06 0055r 01		      add i,1
+    123	007D  58			      pop ax
+    124	007E  2D 0030			      sub ax,30h
+    125	0081  C6 06 005Br 01		      mov p,1
+    126	0086				      daug:
+    127	0086  BB 0000			      mov bx,0
+    128	0089  80 06 005Br 01		      add p,1
+    129	008E  F7 26 0034r		      mul f
+    130	0092  8A 3E 005Br		      mov bh,p
+    131	0096  38 3E 0055r		      cmp i,bh
+    132	009A  75 EA			      jne daug
+    133	009C  01 06 005Cr		      add ats,ax
+    134	00A0  8A 1E 001Fr		      mov bl,byte ptr c+1
+    135	00A4  38 1E 0055r		      cmp i,bl
+    136	00A8  75 CE			      jne ups
+    137					      ;rezultatas ax
+    138
+    139
+    140
+    141					      ;verciame	atgal
+    142	00AA  A1 005Cr			      mov ax,ats
+    143	00AD  29 06 0032r		      sub d,ax
+    144	00B1  81 3E 0032r 00FF		      cmp d,255
+    145	00B7  7C 0A			      jl upss
+    146	00B9  B4 09			      mov ah,09h
+    147	00BB  BA 00A3r			      lea dx,t6
+    148	00BE  CD 21			      int 21h
+    149	00C0  E9 013B			      jmp pabaiga
+    150					       ;skaiciuojam
+    151	00C3				       upss:
+    152
+    153
+    154						  ;failo sukurimas
+    155	00C3  B4 3C			  mov ah,3ch
+    156	00C5  BA 003Ar			  lea dx,failas
+    157	00C8  B9 0000			  mov cx,0
+    158	00CB  CD 21			  int 21h
+    159	00CD  A3 0038r			  mov handle,ax
+    160					      ;	uzhrashas REZULTATAI
+    161	00D0  B4 09			       mov ah,09h
+    162	00D2  BA 00E9r			      lea dx,t7
+    163	00D5  CD 21			      int 21h
+    164					     ; isvedame	varda,pavarde
+    165
+    166
+    167					     ;	verciame varda
+    168	00D7  BE 0000				   mov si,0
+    169	00DA  BF 0001			    mov	di,1
+    170	00DD  BE 0001r			      lea si,a+1
+    171	00E0				      jk:
+Turbo Assembler	 Version 3.2	    01/17/06 23:05:18	    Page 4
+3.asm
+
+
+
+    172	00E0  47			      inc di
+    173	00E1  83 C6 01			      add si,1
+    174	00E4  8A 0C			      mov cl,[si]
+    175	00E6  88 0E 0052r		      mov zod1,cl
+    176	00EA  B8 0000			      mov ax,0
+    177	00ED  BA 0000			      mov dx,0
+    178	00F0  B4 09			      mov ah,09h
+    179	00F2  BA 0052r			      lea dx,zod1
+    180	00F5  CD 21			      int 21h
+    181					  ;irasymas i faila
+    182	00F7  B4 40			  mov ah,40h
+    183	00F9  8B 1E 0038r		  mov bx,handle
+    184	00FD  BA 0052r			 lea dx,zod1
+    185	0100  B9 0001			 mov cx,1
+    186	0103  CD 21			 int 21h
+    187	0105  89 3E 0062r		      mov zod,di
+    188	0109  8A 0E 0062r		      mov cl,byte ptr zod
+    189	010D  3A 0E 0001r		      cmp cl,a+1
+    190	0111  7E CD			      jle jk
+    191
+    192
+    193					 ; tarpelis tarp vardo ir pavardeas
+    194	0113  B4 09			 mov ah,09h
+    195	0115  BA 00FAr			 lea dx,tarpas
+    196	0118  CD 21			 int 21h
+    197						 ;irasymas i faila
+    198	011A  B4 40			  mov ah,40h
+    199	011C  8B 1E 0038r		  mov bx,handle
+    200	0120  BA 00FAr			 lea dx,tarpas
+    201	0123  B9 0001			 mov cx,1
+    202	0126  CD 21			 int 21h
+    203
+    204
+    205
+    206					  ;verciame pavarde
+    207	0128  BE 0000				     mov si,0
+    208
+    209	012B  BF 0001				     mov di,1
+    210	012E  BE 0010r				     lea si,b+1
+    211	0131				      jk1:
+    212	0131  83 C7 01			      add di,1
+    213	0134  83 C6 01			      add si,1
+    214	0137  8A 0C			      mov cl,[si]
+    215	0139  88 0E 0052r		      mov zod1,cl
+    216
+    217	013D  B8 0000			      mov ax,0
+    218	0140  BA 0000			      mov dx,0
+    219	0143  B4 09			      mov ah,09h
+    220	0145  BA 0052r			      lea dx,zod1
+    221	0148  CD 21			      int 21h
+    222					;irasymas pavardes i faila
+    223	014A  B4 40			  mov ah,40h
+    224	014C  8B 1E 0038r		  mov bx,handle
+    225	0150  BA 0052r			 lea dx,zod1
+    226	0153  B9 0001			 mov cx,1
+    227	0156  CD 21			 int 21h
+    228	0158  B1 00			     mov cl,0
+Turbo Assembler	 Version 3.2	    01/17/06 23:05:18	    Page 5
+3.asm
+
+
+
+    229	015A  89 3E 0062r		      mov zod,di
+    230	015E  8A 0E 0062r		      mov cl,byte ptr zod
+    231	0162  3A 0E 0010r		      cmp cl,b+1
+    232	0166  7E C9			      jle jk1
+    233
+    234					      ;tarpelis
+    235	0168  B4 09				mov ah,09h
+    236	016A  BA 00FAr			 lea dx,tarpas
+    237	016D  CD 21			 int 21h
+    238	016F  B4 40				   mov ah,40h
+    239	0171  8B 1E 0038r		  mov bx,handle
+    240	0175  BA 00FAr			 lea dx,tarpas
+    241	0178  B9 0001			 mov cx,1
+    242	017B  CD 21			 int 21h
+    243
+    244					      ;	verciame metus isvedimui
+    245	017D  C6 06 0055r 00		  mov i,0
+    246	0182  B8 0000			  mov ax,0
+    247	0185  A0 0032r			  mov al,byte ptr d
+    248	0188				  verc:
+    249	0188  F6 36 0054r		  div fo
+    250	018C  A2 0059r			  mov q,al
+    251	018F  B0 00			  mov al,0
+    252	0191  80 06 0055r 01		  add i,1
+    253	0196  80 C4 30			  add ah,30h
+    254	0199  50			  push ax
+    255	019A  B8 0000			  mov ax,0
+    256	019D  A0 0059r			  mov al,q
+    257	01A0  3C 00			  cmp al,0
+    258	01A2  75 E4			  jne verc
+    259
+    260	01A4				  sppp:
+    261	01A4  8F 06 005Er		  pop m
+    262	01A8  B8 0000			  mov ax,0
+    263
+    264	01AB  80 2E 0055r 01		  sub i,1
+    265
+    266	01B0  8B 1E 0038r		  mov bx,handle
+    267	01B4  A1 005Er			 mov ax,m
+    268	01B7  88 26 0036r		 mov reikia,ah
+    269	01BB  BA 0036r			 lea dx,reikia
+    270	01BE  B9 0001			 mov cx,1
+    271	01C1  B4 40			  mov ah,40h
+    272	01C3  CD 21			 int 21h
+    273	01C5  B4 09			  mov ah,09h
+    274	01C7  BA 0036r			  lea dx,reikia
+    275	01CA  CD 21			  int 21h
+    276						 ;irasymas metu	i faila
+    277	01CC  B4 00			   mov ah,0
+    278	01CE  BB 0000			   mov bx,0
+    279	01D1  BA 0000			   mov dx,0
+    280					;  mov ah,40h
+    281					;  mov bx,handle
+    282					;  mov dx,0
+    283					; lea dx,m
+    284					; mov cx,2
+    285					; int 21h
+Turbo Assembler	 Version 3.2	    01/17/06 23:05:18	    Page 6
+3.asm
+
+
+
+    286
+    287	01D4  80 3E 0055r 00		  cmp i,0
+    288	01D9  75 C9			  jne sppp
+    289
+    290
+    291
+    292	01DB  B4 09			  mov ah,09h
+    293	01DD  BA 0098r			  lea dx,t5
+    294	01E0  CD 21			  int 21h
+    295						  ;irasymas i faila
+    296	01E2  B4 40			  mov ah,40h
+    297	01E4  8B 1E 0038r		  mov bx,handle
+    298	01E8  BA 0098r			 lea dx,t5
+    299	01EB  B9 0009			 mov cx,9
+    300	01EE  CD 21			 int 21h
+    301
+    302					  ;failo uzdarymas
+    303	01F0  B4 3E			  mov ah,3eh
+    304	01F2  BB 0000			  mov bx,0
+    305	01F5  CD 21			  int 21h
+    306	01F7  B4 09			  mov ah,09h
+    307	01F9  BA 00FCr			  lea dx,t8
+    308	01FC  CD 21			  int 21h
+    309
+    310	01FE				pabaiga:
+    311					   ;laukia klavisho paspaudimo
+    312	01FE  B4 07			  mov ah, 07h
+    313	0200  CD 21			  int 21h
+    314					  ;pabaiga
+    315	0202  B4 4C			   mov ah,4ch
+    316	0204  CD 21			   int 21h
+    317	0206				   programa ends
+    318					   end start
+Turbo Assembler	 Version 3.2	    01/17/06 23:05:18	    Page 7
+Symbol Table
+
+
+
+
+Symbol Name			  Type	 Value
+
+??DATE				  Text	 "01/17/06"
+??FILENAME			  Text	 "3	  "
+??TIME				  Text	 "23:05:18"
+??VERSION			  Number 0314
+@CPU				  Text	 0101H
+@CURSEG				  Text	 PROGRAMA
+@FILENAME			  Text	 3
+@WORDSIZE			  Text	 2
+A				  Byte	 DUOMENYS:0000
+ATS				  Word	 DUOMENYS:005C
+B				  Byte	 DUOMENYS:000F
+C				  Word	 DUOMENYS:001E
+D				  Word	 DUOMENYS:0032
+DAUG				  Near	 PROGRAMA:0086
+F				  Word	 DUOMENYS:0034
+FAILAS				  Byte	 DUOMENYS:003A
+FO				  Byte	 DUOMENYS:0054
+HANDLE				  Word	 DUOMENYS:0038
+I				  Byte	 DUOMENYS:0055
+JK				  Near	 PROGRAMA:00E0
+JK1				  Near	 PROGRAMA:0131
+M				  Word	 DUOMENYS:005E
+P				  Byte	 DUOMENYS:005B
+PABAIGA				  Near	 PROGRAMA:01FE
+PUSHINIMAS			  Near	 PROGRAMA:0043
+Q				  Byte	 DUOMENYS:0059
+REIKIA				  Byte	 DUOMENYS:0036
+SPPP				  Near	 PROGRAMA:01A4
+START				  Near	 PROGRAMA:0000
+T1				  Byte	 DUOMENYS:006A
+T2				  Byte	 DUOMENYS:0072
+T3				  Byte	 DUOMENYS:007D
+T4				  Byte	 DUOMENYS:0088
+T5				  Byte	 DUOMENYS:0098
+T6				  Byte	 DUOMENYS:00A3
+T7				  Byte	 DUOMENYS:00E9
+T8				  Byte	 DUOMENYS:00FC
+TARPAS				  Byte	 DUOMENYS:00FA
+UPS				  Near	 PROGRAMA:0078
+UPSS				  Near	 PROGRAMA:00C3
+VERC				  Near	 PROGRAMA:0188
+ZOD				  Word	 DUOMENYS:0062
+ZOD1				  Byte	 DUOMENYS:0052
+
+Groups & Segments		  Bit Size Align  Combine Class
+
+DUOMENYS			  16  0139 Para	  none
+PROGRAMA			  16  0206 Para	  none
+STEKAS				  16  0100 Para	  Stack
+

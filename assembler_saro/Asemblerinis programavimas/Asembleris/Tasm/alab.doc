@@ -1,0 +1,665 @@
+       ÖÄÄÄÄÄ¿  ÖÄ¿  ÖÄ¿ ÒÄÄ¿ ÖÄÒÄ¿ ÒÄ¿  Ò    ÒÄÄ¿ ÒÄÄ¿
+       º     ³  ÓÄ¿  ÓÄ¿ ÇÄ   º º ³ ÇÄÁ¿ º    ÇÄ   ÇÄÂÙ
+       ÇÄÄÄÄÄ´ ÓÄÄÙ ÓÄÄÙ ÐÄÄÙ Ð Ð Á ÐÄÄÙ ÐÄÄÙ ÐÄÄÙ Ð Á
+       º     ³  Ò       ÖÄÄ¿ ÒÄ¿  ÖÄÄ¿ ÒÄÄ¿ ÖÄÄ¿ ÖÄÒÄ¿ ÖÄÄ¿ ÒÄÄ¿ Ò  Â
+       Ð     Á  º       ÇÄÄ´ ÇÄÁ¿ º  ³ ÇÄÂÙ ÇÄÄ´   º   º  ³ ÇÄÂÙ ÓÄÄ´
+                º       Ð  Á ÐÄÄÙ ÓÄÄÙ Ð Á  Ð  Á   Ð   ÓÄÄÙ Ð Á  ÓÄÄÙ
+                º         (c) 1994,1995,1996 Kurt Inge Groenbech
+                ÐÄÄÄÄÄÙ     Assembler coders first choice IDE?
+
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´ Version 1.2 ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+                  R  E  F  E  R  E  N  C  E    M  A  N  U  A  L
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Table of contents:
+
+            0 - Legal
+                0.1 - Disclaimer
+                0.2 - Registration (and what you get)
+                0.3 - Upgrading (if you have registered yourself before)
+                0.4 - Distribution
+                0.5 - Acknowledgements
+            1 - Introduction
+                1.1 - About this reference manual
+                1.2 - Why starting this project
+                1.3 - New version release notes!!
+            2 - Installation
+            3 - Command line switches
+            4 - Features
+                4.1 - Procedure/macro Worksheet
+                4.2 - Heuristic Scan
+                4.3 - Block comment/uncomment
+                4.4 - Label Jumps
+                4.5 - Opcode help
+                4.6 - Tab characters
+                4.7 - Redefining shortcut keys in menus
+                4.8 - Bookmarks
+            5 - Project Manager
+                5.1 - What is it?
+                5.2 - Creating a project file
+                5.3 - Making a project
+            6 - FAQ and Known bugs
+                6.1 - Alab hangs when I open a window!
+                6.2 - How can I get Alab to work properly on a network?
+            7 - People involved
+                7.1 - Public domain software
+                7.2 - Betatesters
+            8 - The author/contacting
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+[ 0 - Legal ]
+ßßßßßßßßßßßßß
+
+0.1 - Disclaimer
+----------------
+
+Assembler Laboratory is provided "as is" and without any warranty.
+To the extent premitted under applicable law, I disclaim all warranties,
+express or implied, including but not limited to, any implied warranty
+of merchantability or fitness for a particular purpose. Specifically, I
+make no representation or warranty that the software is fit for any
+particular purpose.
+
+I shall not be liable for any damages resulting from the use of this
+software, including but not limited to, loss of profit, data or use of
+the software, or indirect, special, incidental or consequential damages
+or other similar claims, even if I has been specifically advised of the
+possibility of such damages.
+
+What it means:
+The only thing I guarantee Alab will do, is to take up space on your
+harddisk.
+
+0.2 - Registration (and what you get)
+-------------------------------------
+
+Assembler Laboratory is provided as SHAREWARE (read SHAREWRE.TXT for
+information about shareware). If you continue using Alab after a 30 day
+trial period, you MUST PURCHASE a license for it. The advantage about
+shareware, is that you can use the program for a specified number of
+days/months to see if you like it, and then pay for it if you do and
+would like to use it further.
+
+In version 1.0 I had forgot to include an educational license, and the
+need for such a license became obvious as some colleges wanted to
+purchase Alab. I heard that there had also been some problems with
+paying from forreign countries, but this and the educational license
+should be in order in this version.
+
+There are 3 different licenses which comes with Alab, each for different
+areas of use:
+
+1 : A non-commercial license. You purchase this license if you want to
+    use Alab in development of non-commercial programs. Development of
+    shareware is also included in this license.
+
+2 : A commercial license. You purchase this license if you want to use
+    Alab in development of commercial programs (should be obvious:).
+    From this version and on, a company needs to purchase 1 copy for
+    every computer Alab is going to be used on. There is a discount for
+    this license if you purchase several copies. There is more
+    information in ORDER.FRM.
+
+3 : An educational license. This license is for institutions
+    (schools/colleges...) which want to use Alab for educational
+    purposes. The institution must purchase one copy for every
+    workstation (computer) Alab is going to be used on. There is a
+    discount for this license. See ORDER.FRM for more information.
+
+The non-commercial registration fee for Alab is set to just $15 (USD).
+The commercial registration fee is set to $60 (USD).
+The educational registration fee is ($15 * number of copies) / 2 (that
+is, a discount of %50).
+
+Norwegians:
+Ikke-kommersiell registrerings pris er 100,- NKR.
+Kommersiell registrerings pris er 460,- NKR.
+Utdanning registrerings pris er 50,- NKR * antall kopier.
+
+All prices includes disk, envelope and stamp.
+
+TO REGISTER ALAB, DO THE FOLLOWING:
+
+  - Print out the order form (ORDER.FRM) and fill it out.
+  - Print out license.txt (read it ofcourse) and sign it
+  - Mail them both to HAAVARD ENGUM (the address is at the end of this
+    document, and in order.frm).
+  - The registration fee can be paid in cash, cheque or money-transfer
+    to "giro" bank or postgiro accounts:
+
+      Bank account ("giro" bank) : 82306010944
+      Post account (postgiro)    : 08250698330
+
+    Make it payable to :
+
+    Groenbech
+    Sigrid Johansens v.23
+    7025 Trondheim
+    NORWAY
+
+  NBNB!! I believe this was the problem from forreign countries..(?) If
+  this doesn't work, YOU HAVE TO SEND A CHEQUE TO HAAVARD ENGUM along
+  with order.frm and license.txt.
+
+       - MAKE SURE YOU MAKE IT PAYABLE TO: -
+
+    Kurt Inge Gr›nbech
+    Sigrid Johansens v.23
+    7025 Trondheim
+    NORWAY
+
+When Haavard then recieves order.frm and a signed license.txt (and you
+have paid the fee), he will send a registered version to you by either
+snailmail or email.
+
+WHAT YOU GET:
+
+The first thing you should notice, is that I have *not* put any delays
+or big screens with registration encouragements in there. The reason is
+simply because I especially hate such delays myself!! I have the
+opportunity to tell you right here now:) I have put *many* ours of work
+into Alab, and would like to get something in return. It _you_ find Alab
+useful, I hope you will appreciate my many hours of work on this project
+and register. If you do, you support the development of Alab, and there
+is already a better chance you will see a new version of Alab. You can
+then also be sure that all your suggestions will be given high priority.
+
+The shareware version of Alab comes with lack of 3 features.
+
+What you get by registering:
+  - A personalised disk with a registered version of Alab if you prefer
+    to get it by snailmail, or a registered version sent to you by email.
+  - Max 15 windows open (4 in the shareware version)
+  - Possibility to Save/Restore desktop when not using Project.
+  - Possibility to save bookmarks.
+
+I couldn't figure out something else ;)
+
+0.3 - Upgrading
+---------------
+
+(NB! This is from the next version and on. I will send all of you who
+have already registered yourself a registered version 1.2!)
+
+Don't delete your already received .KEY-file!!
+
+If you already have registered yourself, you can upgrade your registered
+version by paying a small upgrade fee of US $5 (30,- NKR).
+You just have to fill out UPGRADE.FRM (you don't have to print it out,
+you can send it by e-mail!) and pay the fee. I will send you Alab when
+I (or Haavard Engum) have checked that you have payed the fee. Although,
+if you must send a cheque you also can send UPGRADE.FRM along with it.
+
+WE *WILL* CHECK THAT YOU ARE ALREADY A REGISTERED USER, but even if we
+didn't you wouldn't be able to use it because it must have a .KEY-file
+which only registered users have.
+
+0.4 - Distribution
+------------------
+
+Distribution of Alab must happen under these conditions:
+
+    - Alab should be distributed in its original archive.
+      (the ZIP-file YOU recive, is the ZIP file YOU should distribute)
+      If impossible, the ZIP-file you distribute must contain all files
+      which belongs to Alab that you recieved.
+
+    - No money can be charged for it, EXCEPT a little amount for the
+      disk or similar.
+
+0.5 - Acknowledgements
+----------------------
+
+Many hours have gone into the development of this product, and I have
+got many a useful id‚a from various betatesters. Especially I would like
+to thank the following people for extensive betatesting:
+
+  - Tor-Helge Skei              (Axon/         Xenon), Main betatester
+
+(hmm.. guess there's only 1 _extensive_ betatester!)
+Actually, Axon is the main reason you've got a product named Alab on
+your computer!
+
+Other betatesters/id‚as people:
+
+Helge Helgesen,Espen Grimsgaard(Twinny/Gollum),Thomas Loevlie
+
+A complete list of betatesters comes at the end of this document.
+
+Also, I acknowledge these packages in the development of Alab:
+
+Turbo Vision for Turbo Pascal 6.0           by Borland International
+Turbo Vision for Borland Pascal 7.0         by Borland International
+Turbo Assembler                             by Borland International
+Turbo Link                                  by Borland International
+Turbo Debugger                              by Borland International
+Turbo Profiler                              by Borland International
+Microsoft Macro Assembler                   by Microsoft Corp
+Microsoft Overlay Linker                    by Microsoft Corp
+Microsoft Codeview                          by Microsoft Corp
+Extended Memory Manager for Pascal          by Jeroen W. Pluimers
+DOS32 (great package!)                      by Adam Seychell
+HelpPc v2.10                                by David Jurgens
+
+[ 1 - Introduction ]
+ßßßßßßßßßßßßßßßßßßßß
+
+1.1 - About this reference manual
+---------------------------------
+
+This documentation is inteded as a short overview of Alab and I will
+therefore not go too much into details, thus I recon most of you out
+there know how to handle an IDE (I believe most of you have already
+tried different IDE's). I will instead try to focus on the various extra
+features which you have at your disposal in Alab.
+
+2 statements before I continue...
+
+  - Please bear with my english (I'm from Norway!:)
+  - This program is called Assembler Laboratory, but in this document it
+    will be called Alab for ease.
+
+1.2 - Why starting this project
+-------------------------------
+
+For some years of assembly programming, I (as most of us) had this
+cyclus during development:
+ÚÚÄ> - Edit the source code in a regular editor
+³³   - Save the source code (an extra keypress)
+³³   - Exit the editor
+³³   - Assemble the source code from the command line
+³ÀÄ  - Go back to the editor if reported errors
+³       (you'd have to manually jump to the different error(s))
+³    - Link the .obj-file (possibly run an .bat-file or MAKE instead of
+³                         assemble/link)
+³    - Run the executable program
+³    - Boot machine if the program hangs
+ÀÄÄ  - Go back to the editor to make further modifications
+
+This is an extremely unneccesery time consuming process, and the id‚a
+popped into my mind: 'Why not make an Asm IDE (I hadn't seen anyone at
+that time) where you can do all of this things without exiting the
+IDE!' I had also seen the editors for Pascal/C which had syntax
+highlighting, and I thought that that would be a great id‚a to have in
+the Asm IDE. C also had a great error highlighting and why not also
+include that in my Asm IDE? Ok, so the id‚a was born, and now I needed a
+name for it. I for a long time had 'AsmIDE' as the name, but then
+suddenly I saw that there already was an Asm IDE out there called AsmIDE
+(hi Toby!). Ok, I had already come so far on the project so I didn't
+want to cancel it. All I had to do was to make an IDE much better than
+what is already out there. I ofcourse had to change the name. At first I
+couldn't think of anything good, but I guess suddenly 'Assembler
+Laboratory' must have just popped in (can't remember exactly). Since it
+is called 'Laboratory' I also thought I had to make a bunch of extra
+features (laboratory is a place where you have many different things at
+your disposal), and so it was!
+
+Here is a brief list of Assembler Laboratory features:
+    - [Save/]Assemble as standalone choice (one keypress)
+    - [Save/]Assemble[/Link] as standalone choice (one keypress)
+    - [Save/]Assemble/Link/Run as standalone choice (one keypress)
+    - Syntax highlighting
+    - Error highlighting
+    - Procedure worksheet (useful popup overview of procedures)
+    - Macro/data Worksheet (same as proc worksheet, but for macros/data)
+    - Heuristic scan (scans through source code for coding bugs, not
+                      fully implemented yet)
+    - Project Manager
+    - Label jumps (Ctrl+J on a jump opcode (Jxx/CALL) jumps to the
+                   destination)
+    - Keyboard macros (not very good though)
+    - Menu functions shortcut key reassignment
+    - Online opcode help. Also context sensitive. (Topic Search)
+    - Block comment/uncomment
+    - Bookmarks
+    - Ascii/scancodes table
+    - Dec/Hex/Bin calculator (inspired by Toby's AsmIDE, as many other
+                              things :)
+
+... and I have also included an 'unhang' utility ('Unhang.com') which
+can prevent your machine from hanging in many cases (that is, you can
+press the stated keycombination when your machine hangs, and Unhang will
+try to quit back to DOS.) Beware that this program can be very unstable
+I think. It will not work if you either hook int 09 or disables keyboard
+interrupt. It will probably not work if you run some module player in
+the background, because the memory will get f***** up... What it does is
+to hook int 9 and saves an exit-command at the address found on the stack
+(the point where the interrupt was called). Just 'mov ax, 4c00h -
+int 21h', but it works on most smaller programmes ! :) It is actually
+_very_ useful when coding demos under dos for example (without sound in
+the background).
+
+1.3 - New version release notes!!
+---------------------------------
+
+So, Alab v1.2 is finally out! I hope you like it...
+I had thought about calling it v2.0, but realised that I had not put
+enough new features in there, and not improved it enough to make it
+v2.0.
+
+As stated before, I am still in the army (which started 19. July 1995,
+I ended up on a fregatt). I have had the privilege to have a laptop at
+my disposal, and so I have had some time to code further on Alab. Many
+people (almost everyone) asked for NO 64Kb limit, so at first I thought
+I had to give you what you wanted. I began on the NO 64Kb limit
+implementation, but stopped after some time of coding. Instead I
+concentrated on all the little bugs which had to be fixed, and small
+features people had asked for. Now; VERY few people have registered
+themselves and I am thinking of putting Alab way back in the 'to do'
+list. I do not want to spend precious time coding something which is
+working fine for me, when the payback is very low. During coding I
+neither spent very long time optimizing and/or structuring my code.
+Once it worked I jumped on the next bug/feature (you do NOT want to see
+my sourcecode!;)
+
+Now that I have fixed most bugs and added most features people asked
+for (actually!), I release maybe the last for of Alab for a long time...
+(I will give out bug-fixed versions in the future, but if the lack of
+registrations continue you will not see any BIG new versions with lots
+of new features, only bugfixed versions with a few minor upgrades)
+
+NB! I _will_ atleast add features which registered persons ask for.
+
+Well, I really had big plans for Alab 2.0 with features:
+
+- No 64 Kb limit (that would be unique for asm-only IDE's I think!?)
+- Big speed increase (most if this is already done though)
+- Templates
+- Macros which works (not the shit you find in this version)
+- Built in menus configuration
+- Full Masm/A86/Dlink support
+- Folding lines utility
+- Major rewrite
++++ other nice features you want
+
+, but I have temporarily burried it because of lack of registrations. A
+temporary burrial which might become 'not so very temporary anymore'
+very soon, if the lack of registrations lasts...
+
+If YOU reading this register yourselves there's already a much better
+chance you'll see a new version of Alab in near future.
+
+(I expect something in return for my nearly 2 years of work...)
+
+Because I'm in the army, you will have to pass your
+messages/id‚as/suggestions to Haavard Engum (hobbes/xenon), Joakim
+Nygaard (who is the coordinator of the new main WWW), or Espen Grimsgaard
+(twinny/gollum) who is the coordinator of the old WWW (is at the end of
+this doc). The best way is to write an e-mail to Haavard Engum. His
+e-mail address comes at the end of this document.
+
+[ 2 - Installation ]
+ßßßßßßßßßßßßßßßßßßßß
+
+  - Copy all the files to the directory where you wish to have Alab
+  - Include the directory in your path if you want (also easiest to do
+    in your autoexec.bat)
+
+Now Alab is ready to go. The first thing you should do when you start
+Alab, is to go to the Options|Programs and set the path to where your
+Tasm/Masm/Dlink etc... executables are.
+
+[ 3 - Command line switches ]
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+
+file(s) : specify files to directly open in Alab.
+/K      : reload keys defined in KEYS.MAC and store them in ALAB.CFG.
+          (this is very imported to remember if you redefine keys!)
+
+[ 4 - Features ]
+ßßßßßßßßßßßßßßßß
+
+4.1 - Procedure/macro Worksheet
+-------------------------------
+
+Procedure/macro Worksheet is a completely new feature in low level
+programming IDE's. It is a popup menu with complete procedure overview.
+Here you have a nice list of all the procedures in the current
+source code, and by pressing [Space], you jump directly to the item the
+bar is on! Well, you maybe are familar with something like this.
+Borland Pascal have a browser which is quite similar to this. The reason
+why I call it 'worksheet' is because I at first had planned to implement
+procedure/macro reordering and delete... Then it would be more like a
+worksheet and not a browser.
+
+4.2 - Heuristic Scan
+--------------------
+
+I actually got this id‚a from the famous virus-scanner F-PROT. What
+Heuristic Scan does, is to scan through the sourcecode and look for
+bugs which wasn't reported by the compiler, and is likely to cause some
+problems. F.ex. it scans for missing 'ret's in procedures (which is
+likely to hang your program). This is the only thing in Heuristic Scan
+so far, but I have some more id‚as to it, and I will most probably get
+many id‚as from you out there. (F.ex. I have planned to make Heuristic
+Scan scan for places where it is possible that DS doesn't point to the
+data-segment (or the segment where the variable is) when accessing
+variables (this is also in many cases a hang-cause).
+
+4.3 - Block comment/uncomment
+-----------------------------
+
+This feature is pretty much self-explanatory. You mark a block, and
+choose Block comment from the menu or shortcut-keys, and ....! The block
+is commented. I guess uncomment is obvious at this time :)
+
+4.4 - Label Jumps
+-----------------
+
+This is a nice one! You just position the cursor on a line that holds
+a CALL or Jxx (all jump opcodes), and press Ctrl+J. The cursor then
+jumps to the procedure or label succeding the opcode.
+
+4.5 - Online Opcode Help
+------------------------
+
+Also a nice one! On the Help|Opcodes you have a very extensive online
+help on the instruction set. Just choose one and there you have it all,
+just as detailed as any TSR. There also is context sensitive help on
+this. Position the cursor on a word and press the command for Topic
+Search (Shift+F1 as default). Help for that specific opcode is
+automatically brought up.
+
+4.6 - Tab characters
+--------------------
+
+I do not use true tab characters in my source codes, and therefore I
+have not bothered to put in support for smart tabs when the 'Use tab
+characters' checkbox is checked in Options|Editor (i'm too lazy, and I
+just want to get Alab out now!) That is; smart tabs is only available
+when using spaces instead of true tab characters.
+
+Also; the tab step when using true tab characters is always 8, no
+matter what you type in the 'Tab size' box in Options|Editor.
+
+4.7 - Redefining shortcut keys in menus
+---------------------------------------
+
+Actually very easy. Just follow the instructions in KEYS.MAC. The
+reason why I mention it here, is because people seem to not notice
+that it says you have to start Alab with the '/K' switch in order to
+make the changes take effect! Remember that... Also, you must not
+reorder the function names in any way! Alab does not recognize the
+function names.
+
+4.8 - Bookmarks
+---------------
+
+This is a great new feature added to Alab. The principle is the same as
+the usual bookmarks for books. Sometimes (very often for many) you want
+to mark a position in your sourcecode, and return to that position
+later. Bookmarks makes this an easy task. Just choose Search|Place
+bookmark, or press "Ctrl+Q n" (where n is a number between 1 and 9), and
+Alab places a bookmark at the current cursor position. You can have up
+to 9 bookmarks for each window. When you want to jump to a bookmark,
+choose Search|Jump to bookmark, or press "Ctrl+Q J n" (where n is the
+bookmark-number), and Alab places the cursor on the line where the
+bookmark is. In the registered version, you will also have the
+opportunity to save the bookmarks, so you can return to the bookmarks
+after exiting from Alab.
+
+[ 5 - Project Manager ]
+ßßßßßßßßßßßßßßßßßßßßßßß
+
+First I have to say that I haven't used the Project Manager so much
+myself, and therefore it may not work 100%.
+
+5.1 - What is it?
+-----------------
+
+Project Manager lets you create and maintain a project file (extension
+.APF for Alab Project File) where you specify all the .asm, .obj and
+.lib files which are to be included in your program. If you specify an
+.asm file in your project YOU DO NOT HAVE TO specify the .obj file
+created from that .asm file! With Project Manager it gets easy to
+maintain your program, and easy to link/run it.
+
+5.2 - Creating a project file
+-----------------------------
+
+Lets say you are starting on a program with 3-4 source files, 2
+additional object files you have got from a friend with video routines
+etc., and 1 of your own library files. You then first choose Open on the
+Project menu and type in the name for the project file (the name of the
+project file will be used to create an .exe/.com file). You then get an
+open Project Manager window with no files in it. Press Insert or choose
+Add Item from the menu to insert new items. Insert the 3-4 source files,
+the 2 object files and the library file. Then you can go to one of the
+source file and press ENTER to open it (or choose Open from the File
+menu). You then write your source code in it and assembles it the usual
+way. You do this with the other .asm files also.
+
+5.3 - Making a project
+----------------------
+
+When you choose Make and you have an open project, the Project Manager
+goes through the files specified in the project file (project window),
+top to bottom, and do this: If the file is a source file (.asm) the
+Project Manager checks wether the source file is modified. If it is, the
+file is assembled and the .obj file created is added to the parameters
+which will be passed to the linker later. If the file is a .obj or a
+.lib file, the file is added to the parameters to pass to the linker.
+Then when the Project Manger has gone through all the files, the linker
+is invoked and an executable is created. The name of the executable will
+be the same as the name of the project file.
+
+[ 6 - FAQ and Known bugs ]
+ßßßßßßßßßßßßßßßßßßßßßßßßßß
+  - I don't know what the hell happended to the ascii chart!
+    The cursor movement worked during very early versions of Alab
+    (not released versions).
+  - Not actually a bug, but lots of useless code in there!
+    (and code which is never used too..)
+  - Not support for Masm in project.
+  - Calculator don't handle negativ decimal->hex+some more bugs (don't
+    use too big numbers...)
+  - Project Manager:
+      You have to specify full path to include files in the source files
+      in most cases.
+  - Dos screen doesn't work on a monochrom screen (who has that anyway?)
+
+  - Some other small bugs which I cannot remember right now.
+
+6.1 - Alab hangs when I open a window!
+--------------------------------------
+
+The cause for this is most probably that you don't have a 386+, and that
+the syntax highlighting checkbox is checked in Options|Editor. What
+happens is that syntax highlighting uses 386 code, and this will hang
+your machine. You will have to turn off syntax highlighting and clear
+the 'Highlight extensions' field in Options|Editor before you open any
+windows.
+
+6.2 - How can I get Alab to work properly on a network?
+-------------------------------------------------------
+
+If you run Alab on a network station, from a public read only directory,
+you have to specify a new ERROR.LST output directory. This is the file
+to which Alab redirects all output from the assemblers and linkers, and
+which Alab reads to get all errors. Since Alab uses the Alab directory
+as the default directory for ERROR.LST, Alab hangs when it tries to write
+to a readonly directory, and so you have to specify a local read/write
+directory to get Alab to work properly. The option for this is in
+Options|Directores.
+
+[ 7 - People Involved ]
+ßßßßßßßßßßßßßßßßßßßßßßß
+
+7.1 - Public domain software
+----------------------------
+
+  - Exec procedure with EMS swap by Thomas Wagner
+
+7.2 - Betatesters
+-----------------
+
+Here is a complete list of betatesters:
+
+  - Tor-Helge Skei              (Axon/         Xenon), Main betatester
+  - Helge Helgesen
+  - Espen Grimsgaard            (Twinny/      Gollum)
+  - Haavard Engum               (Hobbes/       Xenon)
+  - Knut Petter Svendsen        (Mephisto/     Xenon)
+  - Staale Singstad             (Cyberman/     Xenon)
+  - Michal Karpinski            (Mike X/       Xenon)
+  - Thomas Loevlie
+  - Kristian Loeseth            (Opossum/           )
+  - Joe Forster
+
+[ 8 - The author/contacting ]
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+
+I'm 20 years old and live in Trondheim, Norway.
+Currently in the army, next year hopefully student at Trondheim School
+of Engineering. A.k.a. Ghoul / Xenon Development.
+I've been programming since I was 15/16... I started late, but have
+learned *a lot* in short time.
+
+If you have suggestions/questions/problems about Alab you will have to
+write a message either to Haavard Engum (the best way) or leave a
+message on the 1st WWW page. (you can also write a message to the other
+Xenon Members).
+
+
+  NB! NEW email address to Haavard Engum!
+
+  Email    : hobbes@interlink.no (the old one was hobbes@infolink.no)
+               This is the email address to Haavard Engum, a.k.a.
+               Hobbes/Xenon Development. He will make sure I get all the
+               requests in time.
+
+
+  WWW page 1 : http://www.idb.hist.no/~joakimn/ This is the new main one!
+  WWW page 2 : http://www.nano.no/~espeng/alab/
+
+  BBS      : InfoLink BBS      +47-22571600/22571604 (10 nodes)     [MBBS]
+             Eldritch BBS      +47-72582079 (23:00-07:00)
+
+             You'll find both me and Haavard on these BBS'es.
+
+Norwegians:
+  NDC.Alab konferansen ble ingen suksess ;)
+
+You can always mail me at my home address, but it's nok likely I'll get
+your letter until 3-6 weeks.
+
+Snailmail:
+
+Author:                                 'Registration coordinator'
+  Kurt Inge Groenbech                      Haavard Engum
+  Sigrid Johansens veg 23                  Stokkanhaugen 164
+  7025 Trondheim                           7048 Trondheim
+  NORWAY                                   NORWAY
+
+NB! Please support the development of Alab by registering if you like
+    it!
+
+Last minute notes:
+I know there's a lot of bad programming in there now. I will rewrite
+most of Alab if a new _big_ version is ever to come out (again: depends
+heavy on the amounts of registrations)
+
+                                              Yrs,
+                                                Kurt Inge Groenbech
+
+
+

@@ -1,0 +1,208 @@
+Turbo Assembler	 Version 3.2	    01/17/06 21:22:14	    Page 1
+5.asm
+
+
+
+      1	0000			     Stekas SEGMENT STACK
+      2	0000  FF*(??)			     DB	255 DUP(?)
+      3	00FF			     Stekas ENDS
+      4
+      5	0000			     Duomenys SEGMENT
+      6	0000  6D 61 73 79 76 6F	20+	pran0	db 'masyvo vidurkio radimas', '$'
+      7	      76 69 64 75 72 6B	69+
+      8	      6F 20 72 61 64 69	6D+
+      9	      61 73 24
+     10	0018  0A 0D 41 74 6C 69	6B+	pran1	db 10,13,'Atliko Ana Bikevic II-3/3','$'
+     11	      6F 20 41 6E 61 20	42+
+     12	      69 6B 65 76 69 63	20+
+     13	      49 49 2D 33 2F 33	24
+     14	0034  0A 0D 52 61 73 74	69+	pran2	db 10,13,'Rasti	masyvo vidurki:','$'
+     15	      20 6D 61 73 79 76	6F+
+     16	      20 76 69 64 75 72	6B+
+     17	      69 3A 24
+     18	004C  0A 0D 39 2C 36 2C	36+	pran3	db 10,13, '9,6,6,6,6,6,6,6,6,9,2,3,6,4,6,3,9,4,7,9,8,6,6,6,5,6,3,2,6,6','$'
+     19	      2C 36 2C 36 2C 36	2C+
+     20	      36 2C 36 2C 36 2C	39+
+     21	      2C 32 2C 33 2C 36	2C+
+     22	      34 2C 36 2C 33 2C	39+
+     23	      2C 34 2C 37 2C 39	2C+
+     24	      38 2C 36 2C 36 2C	36+
+     25	      2C 35 2C 36 2C 33	2C+
+     26	      32 2C 36 2C 36 24
+     27	008A  09 06 05 06 07 06	06+	masyvas	db 9,6,5,6,7,6,6,6,6,9,2,3,6,4,6,3,9,4,7,9,8,6,6,6,5,6,3,2,6,6,'$'
+     28	      06 06 09 02 03 06	04+
+     29	      06 03 09 04 07 09	08+
+     30	      06 06 06 05 06 03	02+
+     31	      06 06 24
+     32	00A9  ?? 24			suma	db ?,'$'
+     33	00AB  ?? 24			vid	db ?,'$'
+     34	00AD  ?? 24			sk	db ?,'$'
+     35	00AF  69 76 79 6B 6F 20	70+	klaida	db 'ivyko perpildymas','$'
+     36	      65 72 70 69 6C 64	79+
+     37	      6D 61 73 24
+     38	00C1  0A 0D 4D 61 73 79	76+	vidurk	db 10, 13,'Masyvo vidurkis: ', '$'
+     39	      6F 20 76 69 64 75	72+
+     40	      6B 69 73 3A 20 24
+     41	00D5  0A			ten	db 10
+     42	00D6  00 24			tmp	db 0, '$'
+     43
+     44	00D8			     Duomenys ENDS
+     45
+     46	0000			     prg SEGMENT
+     47					     ASSUME SS:Stekas,DS:Duomenys,CS:prg
+     48	0000			     START:
+     49	0000  B8 0000s			     mov ax, Duomenys
+     50	0003  8E D8			     mov ds, ax
+     51
+     52	0005  B8 0002			     mov ax, 02h ;isvalom ekrana
+     53	0008  CD 10			     int 10h
+     54
+     55	000A  B4 09			     mov ah, 09h
+     56	000C  BA 0000r			     lea dx, pran0
+     57	000F  CD 21			     int 21h
+Turbo Assembler	 Version 3.2	    01/17/06 21:22:14	    Page 2
+5.asm
+
+
+
+     58
+     59	0011  B4 09			     mov ah, 09h
+     60	0013  BA 0018r			     lea dx, pran1
+     61	0016  CD 21			     int 21h
+     62
+     63	0018  B4 09			     mov ah, 09h
+     64	001A  BA 0034r			     lea dx, pran2
+     65	001D  CD 21			     int 21h
+     66	001F  B4 09			     mov ah, 09h
+     67	0021  BA 004Cr			     lea dx, pran3
+     68	0024  CD 21			     int 21h
+     69
+     70	0026  33 C0			     xor ax, ax
+     71	0028  33 DB			     xor bx, bx
+     72	002A  BE 008Ar			     lea si, masyvas
+     73	002D			     skaic:
+     74	002D  8A 04			     mov al,[si]     ;pasiimame	masyvo kita skaitmeni
+     75	002F  3C 24			     cmp al,'$'	     ;ar nepabaiga
+     76	0031  74 0B			     je	skaicVid
+     77
+     78	0033  02 D8			     add bl, al
+     79	0035  72 1B			     jc	perkrova     ;flagas
+     80	0037  FE 06 00ADr		     inc sk
+     81	003B  46			     inc si
+     82	003C  EB EF			     jmp skaic
+     83
+     84	003E			     skaicVid:
+     85	003E  B8 0000			     mov ax, 0
+     86	0041  88 1E 00A9r		     mov suma, bl     ;issaugome suma
+     87	0045  A0 00A9r			     mov al, suma
+     88	0048  F6 36 00ADr		     div sk	      ;daliname	ax is sk
+     89	004C  A2 00ABr			     mov vid, al      ;svieka dali kopijuojame i vid
+     90
+     91	004F  EB 08 90			     jmp Exit
+     92	0052			     perkrova:
+     93	0052  B4 09			     mov ah, 09h
+     94	0054  BA 00AFr			     lea dx, klaida
+     95	0057  CD 21			     int 21h
+     96
+     97	0059			     Exit:
+     98	0059  B4 09			     mov ah,09h	     ;spausdinimas
+     99	005B  BA 00C1r			     lea dx, vidurk
+    100	005E  CD 21			     int 21h
+    101
+    102	0060  33 DB			      xor bx, bx
+    103	0062  8A 1E 00ABr		      mov bl, vid
+    104	0066  33 C0			      xor ax, ax
+    105					     ;skaiciaus	isvedimas
+    106	0068  83 FB 64			      cmp bx, 100    ;lyginu su	100
+    107	006B  72 21			      jb desimtys
+    108	006D  B8 0000			      mov ax, 0
+    109	0070  8B C3			      mov ax, bx
+    110	0072  BB 0064			      mov bx, 100
+    111	0075  F6 36 00D5r		      div ten
+    112	0079  B7 00			      mov bh, 0
+    113	007B  88 26 00ABr		      mov vid, ah
+    114	007F  04 30			      add al, 30h
+Turbo Assembler	 Version 3.2	    01/17/06 21:22:14	    Page 3
+5.asm
+
+
+
+    115	0081  A2 00D6r			      mov tmp, al
+    116	0084  BA 00D6r			      lea dx, tmp
+    117	0087  B4 09			      mov ah,09h
+    118	0089  CD 21			      int 21h
+    119	008B  B8 000A			      mov ax, 10
+    120	008E			     desimtys:
+    121	008E  3D 000A			      cmp ax, 10
+    122	0091  74 07			      je netikr
+    123	0093  80 3E 00ABr 0A		      cmp vid, 10
+    124	0098  72 23			      jb vienetai
+    125	009A			     netikr:
+    126	009A  A0 00ABr			      mov al, vid
+    127	009D  B4 00			      mov ah, 0
+    128	009F  F6 36 00D5r		      div ten
+    129	00A3  B7 00			      mov bh, 0
+    130	00A5  C6 06 00ABr 00		      mov vid,0
+    131	00AA  88 26 00ABr		      mov vid, ah
+    132	00AE  A2 00D6r			      mov tmp, al
+    133	00B1  80 06 00D6r 30		      add tmp, 30h
+    134	00B6  B4 09			      mov ah,09h
+    135	00B8  BA 00D6r			      lea dx, tmp
+    136	00BB  CD 21			      int 21h
+    137	00BD			     vienetai:
+    138	00BD  80 06 00ABr 30		      add vid, 30h
+    139	00C2  B4 09			      mov ah,09h
+    140	00C4  BA 00ABr			      lea dx, vid
+    141	00C7  CD 21			      int 21h
+    142
+    143	00C9  B4 07			     mov ah, 07h   ;uzlaiko ekrana
+    144	00CB  CD 21			     int 21h
+    145
+    146	00CD  B4 4C			     mov ah, 4ch
+    147	00CF  CD 21			     int 21h
+    148
+    149	00D1			     prg ends
+    150				     end start
+Turbo Assembler	 Version 3.2	    01/17/06 21:22:14	    Page 4
+Symbol Table
+
+
+
+
+Symbol Name			  Type	 Value
+
+??DATE				  Text	 "01/17/06"
+??FILENAME			  Text	 "5	  "
+??TIME				  Text	 "21:22:14"
+??VERSION			  Number 0314
+@CPU				  Text	 0101H
+@CURSEG				  Text	 PRG
+@FILENAME			  Text	 5
+@WORDSIZE			  Text	 2
+DESIMTYS			  Near	 PRG:008E
+EXIT				  Near	 PRG:0059
+KLAIDA				  Byte	 DUOMENYS:00AF
+MASYVAS				  Byte	 DUOMENYS:008A
+NETIKR				  Near	 PRG:009A
+PERKROVA			  Near	 PRG:0052
+PRAN0				  Byte	 DUOMENYS:0000
+PRAN1				  Byte	 DUOMENYS:0018
+PRAN2				  Byte	 DUOMENYS:0034
+PRAN3				  Byte	 DUOMENYS:004C
+SK				  Byte	 DUOMENYS:00AD
+SKAIC				  Near	 PRG:002D
+SKAICVID			  Near	 PRG:003E
+START				  Near	 PRG:0000
+SUMA				  Byte	 DUOMENYS:00A9
+TEN				  Byte	 DUOMENYS:00D5
+TMP				  Byte	 DUOMENYS:00D6
+VID				  Byte	 DUOMENYS:00AB
+VIDURK				  Byte	 DUOMENYS:00C1
+VIENETAI			  Near	 PRG:00BD
+
+Groups & Segments		  Bit Size Align  Combine Class
+
+DUOMENYS			  16  00D8 Para	  none
+PRG				  16  00D1 Para	  none
+STEKAS				  16  00FF Para	  Stack
+

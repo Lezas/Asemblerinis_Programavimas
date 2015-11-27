@@ -1,0 +1,457 @@
+;
+;==========================================================================
+; Si programa isveda visas vartotojo nurodyto failo eilutes i faila OUT.DAT,
+; kiekvienos eilutes pradzioje prirasydama eiluteje rastu zodziu skaiciu.
+;
+; Sis trecias pavyzdys gali pasirodyti komplikuotas.
+; Remiamasi funkcijomis GETLINE ir PUTLINE, tam kad skaityti ir rasyti is/i
+; failu po eilute - rezultatas dedamas i EILZON pagal 21h 0Ah funkcija -
+; (buferizuotas ivedimas). Sios funkcijos savo ruoztu remiasi funkcijomis
+; GETCHAR ir PUTCHAR. Pastarosios nuskaito i lauka SIMB, arba SIMB uzraso i 
+; atitinkamus failus. Procedura TVARKO skaiciuoja zodzius eiluteje EILZON
+; ir, iskvietus procedura NUMOUT, suformuoja zodziu skaiciu BUF'e.
+;==========================================================================
+;
+
+segment  sseg para STACK             ; Steko segmentas  
+    db  256 dup(?)
+ends sseg
+
+segment dseg                        ; Duomenu segmentas  
+    ; ----- Pranesimai
+    eil     db  'Iveskite failo varda:$'   ; $ - eilutes pabaigos simbolis
+    err1    db  'Klaida atidarant ivedimo faila...$'
+    err2    db  'Klaida atidarant isvedimo faila...$'
+    err3    db  'Klaida skaitant ivedimo faila...$'
+    err4    db  'Klaida rasant i isvedimo faila...$'
+    
+    ; ----- apsikeitimo simbolis (kad butu aiskiau)
+    simb    db ?,'<==simb'
+    ; -----eilutes apdorojimo buferis
+    eilzon  db  80, 82 dup (?)
+    buf     db 6 dup(?)                ; skaiciaus isvedimo buferis
+    ten     dw 10
+    
+    ; ----- failu vardai ir numeriai ("handle")
+    fail1   db  81, 82 dup (?)           ; ivedimo failo vardo buferis
+    f1hand  dw ?                         ; "handle" - failo numeris
+    fail2   db  'out.dat',0              ; isvedimo failo vardas
+    f2hand  dw ?                         ; "handle" - failo numeris
+    
+    ; ----- ivedimo ir isvedimo buferiai
+    inbuf   db  4096 dup(0)             ; ivedimo buferis
+    indyd   dw  0                       ; jo dydis (tipo po nuskaitymo)
+    incnt   dw  0                       ; poslinkis buferio pradzios atzvilgiu
+    outbuf  db  4096 dup(0)            ; isvedimo buferis
+    outcnt  dw  0                      ; poslinkis buferio pradzios atzvilgiu
+ends dseg
+
+segment cseg                    ; Kodo segmentas
+main proc far                   ; Pagrindine procedura
+assume cs:cseg,ds:dseg,ss:sseg  ; transliatoriaus direktyva 
+                                ; poslinkiu isskaiciavimui
+    ;--------exe failo inicializacija---------------------------
+    mov ax,dseg             ; duomenu segmento adreso uzkrovimas
+    mov ds,ax               ; i DS segmentini registra          
+                            ; siuo atveju inicializacija susideda tik is dvieju eiluciu,
+                            ; nes grizimui i operacine sistema naudojama ne komanda ret,
+                            ; o int 21h pertraukimo funkcija 4ch.
+    ;---------------
+    lea dx, eil             ; EIL adreso uzkrovimas i DX
+    mov ah,09               ; Funcijos "eilutes isvedimas" numeris
+    int 21h                 ; 21Hex(33) - MS-DOS pertraukimas
+
+    call fvived              ; proceduros, ivedancios eilute, iskvietimas
+; ----------------------ivedimo failo atidarymas ----------    
+    lea dx,fail1
+    add dx,2                 ; DX rodo i failo vardo pirma baita
+    mov ah,3dh               ; atidarymo funkcija
+    mov al,0                 ; atidarymas skaitymui
+    int 21h
+    jnc atsidaro1
+    lea dx,err1              ; klaidos apdorojimas
+    mov ah,09h
+    int 21h
+    jmp mout
+atsidaro1:
+    mov f1hand,ax
+
+    mov ah,06h              ; simbolio isvedimo funkcija
+    mov dl,0ah              ; OAh (Line Feed)
+    int 21h
+    
+; ----------------------isvedimo failo atidarymas ----------    
+    lea dx,fail2              ; DX rodo i failo vardo pirma baita
+    mov ah,3ch                ; atidarymo funkcija
+    mov cx,0                  ; sukurimas su normaliu atributu
+    int 21h
+    jnc sukuria2
+    lea dx,err2              ; klaidos apdorojimas
+    mov ah,09h
+    int 21h
+    jmp mout
+sukuria2:
+    lea dx,fail2              ; DX rodo i failo vardo pirma baita
+    mov ah,3dh                ; atidarymo funkcija
+    mov al,1                  ; atidarymas rasymui
+    int 21h
+    jnc atidaro2
+    lea dx,err2              ; klaidos apdorojimas
+    mov ah,09h
+    int 21h
+    jmp mout
+atidaro2:
+    mov f2hand,ax
+; --------------------<<< skaitymo, apdorojimo ir isvedimo ciklas
+ciklas:
+    call getline
+    cmp si,0
+    je paskbuf                  ; baigesi failas
+    call tvarko                 ; skaiciuojame zodzius
+    call putline
+    cmp si,0
+    je uzdarymas                ; klaida uzrasant eilute
+    jmp ciklas
+; -------------------->>> skaitymo, apdorojimo ir isvedimo ciklas
+
+paskbuf:          ; ------ isvedimo buferio likucio uzrasymas i faila
+    lea dx,outbuf               ; isvedimo buferio adresas
+    mov bx,f2hand               ; BX'e failo handlas
+    mov ah,40h                  ; rasymo funkcija
+    mov cx,outcnt               ; rasomu simboliu kiekis (jis nebus nulis)
+    int 21h
+    jnc uzdarymas
+    lea dx,err3                 ; klaidos apdorojimas
+    mov ah,09h
+    int 21h
+
+;-------------- failu uzdarymas ------------------------
+uzdarymas:
+    mov bx,f1hand
+    mov ah,3eh               ; uzdarymo funkcija
+    int 21h
+    mov bx,f2hand
+    mov ah,3eh
+    int 21h
+    
+    ;---------------
+mout:
+    mov ah,4ch              ; programos pabaigimo funkcija
+    int 21h
+endp main                       ; proceduros MAIN pabaiga
+;=========================================================================
+fvived proc near                ; procedura iveda failo varda
+    push si                     ; steke issaugomos registru reiksmes
+    push ax
+    push dx                     ; -"-
+    
+    lea dx,fail1               ; buferizuoto ivedimo funkcija 0Ah
+    mov ah,10
+    int 21h
+    ; ------------- formuojamas eilutes pabaigos simbolis --------------
+    mov si,dx                   ; I SI uzkraunamas eilutes zonos adresas
+    inc si                      ; pozicionuojamas i eilutes ilgio baita
+    xor dh,dh                   ; isvalomas DH 
+    mov dl,[si]                 ; i DL siunciamas eilutes ilgis
+    inc si                      ; i pirma simboli
+    add si,dx                   ; SI rodo uz paskutinio eilutes simbolio
+    mov [si],byte ptr 0         ; ten nusiunciamas failo vardo pabaigos 
+                                ; simbolis 0
+    ; ------------- baigtas formuoti eilutes pabaigos simbolis ---------
+
+    pop dx                      ; is steko atstatomos registru reiksmes
+    pop ax
+    pop si
+    ret                         ; grizimas is funkcijos 
+endp fvived                     ; proceduros FVIVED pabaiga
+;=========================================================================
+getline proc near               ; procedura GETLINE iveda eilute is failo 1
+    push di                     ; jei eilute suformuota SI=1, jei ne - SI=0
+    push bx
+    push ax
+    push dx
+    push bp
+
+    mov ax,0                    ; AX'e bus simboliu skaicius
+    mov bx,0                    ; laikykime, kad jau sutiktas failo galas
+    mov bp,0                    ; laikykime, kad eilute tilpo visa
+
+    lea di,eilzon               ;pozicionuojames i ivedimo buferio pradzia
+    inc di                      ;pozicionuojames i ilgio baita
+    inc di                      ;pozicionuojames i pirma simboli
+
+glcik:                          ;ciklas kol ne pabaiga
+    call getchar                ;simbolio nuskaitymas
+    cmp si,0                    ; gal jau nieko nebenuskaitem
+    jne gl1                     ; nuskaitem kazka
+    jmp glviskas                ; Jei dar nieko nenuskaitem, tai BX=0
+gl1:
+    cmp simb,0Ah                ; Jei tai buvusios eilutes 0A,
+    je glcik                    ; ignoruojame si simboli, skaitome kita
+    mov bx,1                    ; Jau laikome, kad eilute yra (kad ir tuscia)
+    cmp simb,0Dh
+    je  glviskas
+    cmp ax,80                   ; Jei eilute per ilga, nukandame simbolius
+    jl gltol                    ; uz 80 pozicijos (nesiunciame i eilzon)
+    mov bp,1                    ; suformuosime pozymi, kad eilute nukasta
+    jmp glcik
+gltol:    
+    mov dl,simb                 ; Persiunciame simboli i eilutes buferi
+    mov [di],dl
+    inc di                      ; Pasislenkame buferyje
+    inc ax                      ; Padidiname eilutes simboliu skaiciu
+    jmp glcik
+
+glviskas:                       ; uzrasome eilutes ilgi
+    lea di,eilzon               ; pozicionuojames i ivedimo buferio pradzia
+    mov dx,bp                   ; eilutes sutrumpinimo pozymis
+    mov [di],dl                 ; uzrasomas  MaxIlgio baita
+    inc di                      ;pozicionuojames i ilgio baita
+    mov [di],al
+    mov si,bx                   ;BX=0 jei nieko (iskyrus 0Ah) nenuskaitem
+
+    pop bp
+    pop dx
+    pop ax
+    pop bx
+    pop di
+    ret
+endp getline                    ; proceduros GETLINE pabaiga
+;=========================================================================
+putline proc near               ; procedura PUTLINE isveda eilute i faila 2
+    push di                     ; jei isvede, suformuota SI=1, jei ne - SI=0
+    push dx
+    push cx
+
+; --------------- isvesime zodziu skaiciu    
+    lea di,buf
+    mov cx,6
+zskisv:
+    mov dl,[di]
+    mov simb,dl
+    call putchar
+    cmp si,0                    ; ivyko rasymo klaida
+    je plout                    ; "pasiplauname" is proceduros
+    inc di
+    loop zskisv
+
+; --------------- isvesime eilute
+    lea di,eilzon               ;pozicionuojames i ivedimo buferio pradzia
+    inc di                      ;pozicionuojames i ilgio baita
+    xor cx,cx
+    mov cl,[di]
+    cmp cx,0
+    je pueilpab
+    inc di                      ;pozicionuojames i eilutes pirma simboli
+zodisv:
+    mov dl,[di]
+    mov simb,dl
+    call putchar
+    cmp si,0                    ; ivyko rasymo klaida
+    je plout                    ; "pasiplauname" is proceduros
+    inc di
+    loop zodisv
+; --------------- isvesime Carriage Return 0Dh
+pueilpab:
+    mov simb,0Dh
+    call putchar
+    cmp si,0                    ; ivyko rasymo klaida
+    je plout                    ; "pasiplauname" is proceduros
+; --------------- isvesime Line Feed 0Ah
+    mov simb,0Ah
+    call putchar
+    cmp si,0                    ; ivyko rasymo klaida
+    je plout                    ; "pasiplauname" is proceduros
+; --------------- viskas isvesta gerai
+    mov si,1                    ; Nors ir taip SI=1, bet nepakenks:
+                                
+
+plout:                       
+    pop cx
+    pop dx
+    pop di
+    ret
+endp putline                    ; proceduros PUTLINE pabaiga
+;=========================================================================
+getchar proc near               ; procedura iveda simboli is failo 1
+                                ; SI=1 jei ivesta, 0 - priesingu atveju
+    push ax                     ; registru issaugojimas
+    push bx
+    push cx
+    push dx
+    
+    mov si,1                    ; SI naudojamas kaip grazinimo parametras
+; ------------------ pasitikriname ar buferyje yra duomenu
+    mov ax,incnt
+    cmp ax,indyd 
+    jge geskaito    
+    jmp gegerai
+geskaito:                       ; teks skaityti is failo
+    lea dx,inbuf                ; ivedimo buferio adresas
+    mov bx,f1hand               ; BX'e failo handlas
+    mov ah,3fh                  ; skaitymo funkcija
+    mov cx,indyd-inbuf          ; skaitomu simboliu kiekis
+    int 21h
+    jnc genuskaite
+    lea dx,err3                 ; klaidos apdorojimas
+    mov ah,09h
+    int 21h
+    mov si,0
+    jmp gout
+genuskaite:
+    cmp ax,0                    ; ar ka nors nuskaitem apskritai?
+    jne geyra
+    mov si,0                    ; jau nera ka ir beskaityti
+    jmp gout
+geyra:
+    mov indyd,ax                ; issaugom nuskaitytu baitu kieki
+    mov incnt,0                 ; rodykle i buferio pradzia
+gegerai:                        ; kai jau buferyje yra duomenu
+    lea bx,inbuf                ; ivedimo buferio adresas
+    add bx,incnt                ; pozicionuojames i eilini simboli
+    mov dl,[bx]
+    mov simb,dl
+    inc incnt
+gout:
+    pop dx                      ; registru atstatymas 
+    pop cx
+    pop bx
+    pop ax
+    ret                         ; grizimas is funkcijos 
+endp getchar                     ; proceduros GETCHAR pabaiga
+;=========================================================================
+putchar proc near                 ; procedura isveda SIMB i faila 2
+    push ax                       ; registru issaugojimas
+    push bx                     
+    push cx
+    push dx
+    mov si,1
+; ------------------ pasitikriname ar buferyje yra vietos
+    mov ax,outcnt-outbuf        ; AX'e - buferio dydis
+    cmp outcnt,ax 
+    jge puraso                  ; buferis uzpildytas iki galo
+    jmp pugerai
+puraso:                         ; teks rasyti i faila
+    lea dx,outbuf               ; isvedimo buferio adresas
+    mov bx,f2hand               ; BX'e failo handlas
+    mov ah,40h                  ; rasymo funkcija
+    mov cx,outcnt               ; rasomu simboliu kiekis (jis nebus nulis)
+    int 21h
+    jnc puuzrase
+    lea dx,err3                 ; klaidos apdorojimas
+    mov ah,09h
+    int 21h
+    mov si,0
+    jmp pout
+puuzrase:
+    mov outcnt,0                ; rodykle i buferio pradzia
+pugerai:                        ; kai buferyje yra vietos
+    mov dl,simb
+    lea bx,outbuf                ; ivedimo buferio adresas
+    add bx,outcnt                ; pozicionuojames i eilini simboli
+    mov [bx],dl
+    inc outcnt
+pout:
+    pop dx                      ; registru atstaymas 
+    pop cx
+    pop bx
+    pop ax
+    ret                         ; grizimas is funkcijos 
+endp putchar                     ; proceduros PUTCHAR pabaiga
+;=========================================================================
+tvarko proc near                ; TVARKO eiluteje skaiciuoja zodzius
+                                ; ir ju skaiciu suformuoja BUF'e
+    push si                     ; steke issaugomos registru reiksmes
+    push di                     ; -"-
+    push dx                     ; -"-
+    push cx                     ; -"-
+    push ax                     ; -"-
+    
+    ; ----------eilutes ilgio uznesimas i CX   
+    mov ax,0                    ; AX'e bus zodziu skaicius
+    lea si,eilzon               ;pozicionuojames i ivedimo buferio pradzia
+    inc si                      ;pozicionuojames i ilgio baita
+    xor ch,ch
+    mov cl,[si]                 ;eilutes ilgio uznesimas i CX
+    cmp cx,0
+    je baigiam
+    inc si                      ;pozicionuojames i pirma simboli
+
+pertarpus:
+    cmp [si],byte ptr ' '       ; einame per tarpus
+    jne zodprad                 ;
+    inc si
+    loop pertarpus
+    jmp baigiam
+
+zodprad:
+    mov di,si
+perzodi:
+    cmp [si],byte ptr ' '
+    je zodgal
+    inc si
+    loop perzodi              
+
+zodgal:                         ; --- zodzio pabaiga, DI-pradzia, SI-1 - galas
+    inc ax
+    cmp cx,0
+    jg pertarpus
+
+baigiam:
+    lea si,eilzon               ;pozicionuojames i ivedimo buferio pradzia
+    mov dl,[si]                 ; eilutes sutrumpinimo pozymis i DL
+    call numout                 ; BUF'e suformuojamas zodziu skaicius
+    pop ax                      ; is steko atstatomos registru reiksmes
+    pop cx                      
+    pop dx                      
+    pop di                      
+    pop si
+    
+    ret                         ; grizimas is funkcijos 
+endp tvarko                     ; proceduros TVARKO pabaiga
+;=========================================================================
+numout proc near                ; procedura isveda AX reiksme i ekrana
+    push si                     ; steke issaugomos registru reiksmes
+    push dx                     ; -"-
+    push cx
+
+    lea si,buf                  ; i SI siunciame pirmo buferio simbolio adresa
+    mov cx,6
+zvaigz:                         ; uzpildome buferi zvaigzdutemis
+    mov [si], byte ptr '*'
+    inc si
+    loop zvaigz
+    
+    lea si,buf                  ; i SI siunciame pirmo buferio simbolio adresa
+    cmp dl,0
+    je nuvisa                   ; visa eilute
+    mov [si], byte ptr '<'      ; sutrumpinta eilute
+nuvisa:
+
+
+    lea si,buf                  ; i SI siunciame pirmo buferio simbolio adresa
+    add si,4                    ; 8 buferio baito adresas
+
+dar:                            ; zyme DAR
+    xor dx,dx               ; logine XOR funcija isvalo DX (= mov DX,0)
+    div ten                 ; Zodine DX.AX turinio dalyba is 10
+                            ; po operacijos liekana - DX, dalmuo AX
+    add dl,30h              ; Simbolio formavimas (pvz., '1'=31Hex)
+    dec si                  ; (nuorodos) SI pastumimas kairen buferyje
+    mov [si],dl             ; DL turinio nusiuntimas adresu, laikomu SI
+    cmp ax,0                ; AX lyginimas su nuliu
+    jg  dar                 ; jei AX>0 , dar galim gauti viena liekana
+; ------------------------------ ciklo pabaiga (until not)
+
+    pop cx                  ; is steko atstatomos registru reiksmes
+    pop dx
+    pop si
+    ret                     ; grizimas is funkcijos (steke buvo 
+                            ; issaugotas sekancios po "call numout"
+                            ; komandos adresas)
+endp numout                 ; proceduros NUMOUT pabaiga
+;=========================================================================
+
+ends cseg                       ; kodo segmento pabaiga
+end main                        ; pradinio teksto pabaiga, MAIN nurodo
+                ; pirmojo kvieciamo modulio numeri

@@ -1,0 +1,44 @@
+stekas segment stack
+       db 256 dup (?)
+stekas ends         
+                    
+Duomenys segment    
+       a db 4      
+       b db 3  
+       c db 2  
+       smsme db 'Dimitrianas Kondrasovas II - 1/3',13,10,'$'
+       smsuzd db 'x = (a^2 + 3*b*c)/c',13,10, 'Atsakymas ALe $'
+Duomenys ends                                                 
+                                                              
+Programa segment                                              
+assume cs:programa, ds:duomenys, ss:stekas                    
+start:                                                
+      mov ax, duomenys                                
+      mov ds, ax                                      
+                                                      
+      mov ax, 0002h     
+      int 10h           
+      mov ah, 09h                                     
+      lea dx,smsme      
+      int 21h           
+      mov ah, 09h       
+      lea dx, smsuzd    
+      int 21h           
+                        
+skaiciuoju:                        
+      mov ax,0
+      mov al,a
+      mul a
+      mov bx,ax
+      mov ax,3
+      mul b
+      mul c   
+      add ax,bx
+      div c           
+  exit:
+     mov ah, 07h        
+     int 21h            
+     mov ah, 4ch        
+     int 21h            
+programa ends           
+end start 

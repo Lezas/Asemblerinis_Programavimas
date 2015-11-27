@@ -1,0 +1,14 @@
+1. A*B
+3. Ivesti 10 skaiciu ir juos sudeti.
+4. C=a^2+2b
+5. Programa, kuri suskaièiuoja kiek yra masyve aprasytame duomenø segmente,
+teigiamø skaièiø.
+9.c=12/ab
+19.c=(a*b)/10
+25.c=(a+b)*100/b
+26. c=(a+2b)/3
+27. c=((a+b)*100/a
+28. x=(a*2+b*c)/(d-3)
+31. Ivesti 10 skaiciu ir juos sudeti
+32. c=a^2+2b
+33.Ivesti pavarde per klaviatura. Nustatyti kiek yra duomenu segmente aprasytame atsitiktiniu duomenu masyve simboliu, kurie atitinka ivestos pavardes pirma raide. masyva aprashyti duomentu segmente ir jo elementu kiekis ra 100

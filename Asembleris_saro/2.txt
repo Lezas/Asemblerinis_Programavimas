@@ -1,0 +1,25 @@
+Stekas SEGMENT STACK
+	DB 256 DUP(?)
+Stekas ENDS
+Duom SEGMENT
+	a DB 100
+	b DB 97
+	c DB 2
+	d DB 1
+	x DB 0
+Duom ENDS
+Prog SEGMENT
+	ASSUME DS:Duom, CS:Prog, SS: Stekas
+START: MOV AX, Duom
+	MOV DS,AX
+	MOV AX, 0
+	MOV AL, a
+	
+	ADD AL,b
+	DIV c
+	MUL d
+	MOV x,AL
+	MOV AH,4Ch
+	INT 21h  
+Prog ENDS
+END START

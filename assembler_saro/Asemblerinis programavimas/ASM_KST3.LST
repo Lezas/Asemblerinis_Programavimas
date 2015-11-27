@@ -1,0 +1,81 @@
+Turbo Assembler	 Version 2.0	    12/14/08 22:40:55	    Page 1
+ASM_KST3.ASM
+
+      1				     ;
+      2				     ; Kestutis	Stankevicius, II-06/3
+      3				     ; Asemblerinis programavimas
+      4				     ;
+      5				     ; 3 Auditorijos darbas:
+      6				     ;
+      7				     ; (a+b)-c = ?
+      8				     ;
+      9	0000			     stekas SEGMENT STACK
+     10	0000  80*(00)		      DB 128 DUP (0) ; isskiriame atmintyje 128	baitus
+     11	0080			     stekas ENDS
+     12
+     13	0000			     duomenys SEGMENT
+     14				     ; aprasome	kintamuosius
+     15	0000  05		      a	DB 5
+     16	0001  03		      b	DB 3
+     17	0002  01		      c	DB 1
+     18
+     19	0003			     duomenys ENDS
+     20
+     21	0000			     programa SEGMENT
+     22				      ASSUME CS:programa, DS:duomenys, SS:stekas
+     23
+     24	0000			     START:
+     25				     ; pradzia
+     26	0000  B8 0000s		     MOV AX, duomenys
+     27	0003  8E D8		     MOV DS, AX
+     28
+     29				     ; isvalyti	ekrana
+     30	0005  B8 0002		     MOV AX, 0002h
+     31	0008  CD 10		     INT 10h
+     32
+     33				     ; skaiciavimai
+     34	000A  A0 0000r		     MOV AL, a
+     35	000D  02 06 0001r	     ADD AL, b
+     36	0011  2A 06 0002r	     SUB AL, c
+     37	0015  04 30		     ADD AL, 30h
+     38				     ; atvaizdavimas
+     39	0017  8A D0		     MOV DL, AL
+     40	0019  B4 02		     MOV AH, 02h
+     41	001B  CD 21		     INT 21H
+     42
+     43				     ; paspausti bet koki klavisa
+     44	001D  B4 07		     MOV AH, 07h
+     45	001F  CD 21		     INT 21h
+     46
+     47				     ; iseiti is programos
+     48	0021  B4 4C		     MOV AH, 4ch
+     49	0023  CD 21		     INT 21h
+     50
+     51	0025			     programa ENDS
+     52
+     53				     END START
+
+Symbol Table
+
+
+Symbol Name			  Type	 Value
+
+??DATE				  Text	 "12/14/08"
+??FILENAME			  Text	 "ASM_KST3"
+??TIME				  Text	 "22:40:55"
+??VERSION			  Number 0200
+@CPU				  Text	 0101H
+@CURSEG				  Text	 PROGRAMA
+@FILENAME			  Text	 ASM_KST3
+@WORDSIZE			  Text	 2
+A				  Byte	 DUOMENYS:0000
+B				  Byte	 DUOMENYS:0001
+C				  Byte	 DUOMENYS:0002
+START				  Near	 PROGRAMA:0000
+
+Groups & Segments		  Bit Size Align  Combine Class
+
+DUOMENYS			  16  0003 Para	  none
+PROGRAMA			  16  0025 Para	  none
+STEKAS				  16  0080 Para	  Stack
+

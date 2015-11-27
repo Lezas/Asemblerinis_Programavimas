@@ -1,0 +1,21 @@
+Turbo Assembler  Version 3.2  Copyright (c) 1988, 1992 Borland International
+
+Assembling file:   C:\TEMP\TRECIAS.ASM  to  C:\TASM\TEMP\TRECIAS.OBJ
+**Error** C:\TEMP\TRECIAS.ASM(15) Illegal instruction
+**Error** C:\TEMP\TRECIAS.ASM(32) Undefined symbol: REZ
+**Error** C:\TEMP\TRECIAS.ASM(33) Undefined symbol: REZ
+*Warning* C:\TEMP\TRECIAS.ASM(33) Argument needs type override
+**Error** C:\TEMP\TRECIAS.ASM(35) Undefined symbol: DES
+*Warning* C:\TEMP\TRECIAS.ASM(35) Argument needs type override
+**Error** C:\TEMP\TRECIAS.ASM(36) Undefined symbol: REZ
+**Error** C:\TEMP\TRECIAS.ASM(37) Undefined symbol: REZ
+*Warning* C:\TEMP\TRECIAS.ASM(37) Argument needs type override
+**Error** C:\TEMP\TRECIAS.ASM(40) Undefined symbol: REZ
+**Error** C:\TEMP\TRECIAS.ASM(41) Undefined symbol: REZ
+*Warning* C:\TEMP\TRECIAS.ASM(41) Argument needs type override
+**Error** C:\TEMP\TRECIAS.ASM(44) Undefined symbol: REZ
+Error messages:    9
+Warning messages:  4
+Passes:            1
+Remaining memory:  415k
+

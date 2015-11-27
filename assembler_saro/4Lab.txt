@@ -1,0 +1,35 @@
+stekas SEGMENT STACK
+       DB 256 DUP (?)
+stekas ENDS
+
+duomenys SEGMENT
+         origp DB '$','samaduailetsupokaiksikisap'
+tekstp DB 10, 13, 26 DUP(0)
+duomenys ENDS
+
+programa SEGMENT
+         ASSUME CS:programa, DS:duomenys, SS:stekas
+         START:
+         MOV AX, duomenys
+         MOV DS, AX
+          
+MOV AH, '$'
+LEA SI, origp+25
+LEA DI, tekstp+2 
+
+PRAD:
+DEC SI
+CMP [SI], AH
+JE spausdinimas
+MOV AL, [SI]
+MOV [DI], AL
+INC DI
+JMP PRAD 
+
+         spausdinimas:
+MOV [DI], AH
+MOV AH, 09h
+LEA DI, tekstp
+         INT 21h
+programa ENDS
+END START
