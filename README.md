@@ -1,2 +1,2 @@
-# Asemblerinis_Programavimas
+# Asemblerinis Programavimas
 Asemblerinio programavimo užduotys. 
